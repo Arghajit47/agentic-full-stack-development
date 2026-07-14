@@ -1,0 +1,45 @@
+// Prisma schema for KAN-7 — Home Page Featured Properties & Testimonials
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  price       Int
+  location    String
+  bedrooms    Int
+  bathrooms   Int
+  areaSqft    Int
+  imageUrl    String
+  isFeatured  Boolean  @default(false)
+  galleryUrls String   // JSON text — string[]
+  features    String   // JSON text — string[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  clientName    String
+  clientAvatarUrl String
+  rating        Int
+  reviewText    String
+  propertyTitle String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
