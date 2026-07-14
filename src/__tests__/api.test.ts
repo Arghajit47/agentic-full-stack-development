@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from "vitest";
+import { describe, it, expect, beforeEach, afterAll, vi } from "vitest";
 import { GET as getFeaturedProperties } from "@/app/api/properties/featured/route";
 import { GET as getFeaturedReviews } from "@/app/api/reviews/featured/route";
 import { GET as getSettings } from "@/app/api/settings/route";
@@ -146,6 +146,14 @@ describe("GET /api/properties/featured", () => {
     const body = await getJsonBody(res);
     expect(body).toEqual([]);
   });
+
+  it("returns 500 with { error: string } when the DB throws", async () => {
+    vi.spyOn(prisma.property, "findMany").mockRejectedValueOnce(new Error("DB down"));
+    const res = await getFeaturedProperties();
+    expect(res.status).toBe(500);
+    const body = (await getJsonBody(res)) as { error: string };
+    expect(typeof body.error).toBe("string");
+  });
 });
 
 describe("GET /api/reviews/featured", () => {
@@ -228,6 +236,14 @@ describe("GET /api/reviews/featured", () => {
     const body = await getJsonBody(res);
     expect(body).toEqual([]);
   });
+
+  it("returns 500 with { error: string } when the DB throws", async () => {
+    vi.spyOn(prisma.review, "findMany").mockRejectedValueOnce(new Error("DB down"));
+    const res = await getFeaturedReviews();
+    expect(res.status).toBe(500);
+    const body = (await getJsonBody(res)) as { error: string };
+    expect(typeof body.error).toBe("string");
+  });
 });
 
 describe("GET /api/settings", () => {
@@ -277,6 +293,14 @@ describe("GET /api/settings", () => {
     expect(res.status).toBe(200);
     const body = await getJsonBody(res);
     expect(body).toEqual({});
+  });
+
+  it("returns 500 with { error: string } when the DB throws", async () => {
+    vi.spyOn(prisma.siteSetting, "findMany").mockRejectedValueOnce(new Error("DB down"));
+    const res = await getSettings();
+    expect(res.status).toBe(500);
+    const body = (await getJsonBody(res)) as { error: string };
+    expect(typeof body.error).toBe("string");
   });
 });
 
