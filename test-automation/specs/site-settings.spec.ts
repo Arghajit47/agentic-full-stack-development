@@ -1,5 +1,5 @@
-import { test } from "../fixtures/api-fixtures";
-import { BaseAPI, settingsSchema } from "../base/api-base";
+import { test } from "@fixtures/api-fixtures";
+import { BaseAPI, settingsSchema } from "@base/api-base";
 
 test.describe("Site Settings API", () => {
   test("returns 200 with settings object", async ({ settingsApi }) => {

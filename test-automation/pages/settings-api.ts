@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAPI, type Response } from "../base/api-base";
+import { BaseAPI, type Response } from "@base/api-base";
 
 const PATH = "/api/settings";
 const REQUIRED_KEYS = ["properties_heading", "properties_subheading", "reviews_heading", "reviews_subheading"] as const;

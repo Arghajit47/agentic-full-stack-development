@@ -1,5 +1,5 @@
-import { test, expect } from "../fixtures/api-fixtures";
-import { BaseAPI, propertySchema } from "../base/api-base";
+import { test, expect } from "@fixtures/api-fixtures";
+import { BaseAPI, propertySchema } from "@base/api-base";
 import { execSync } from "node:child_process";
 
 test.describe("Featured Properties API", () => {

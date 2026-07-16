@@ -1,9 +1,35 @@
 import { request, expect, type APIRequestContext } from "@playwright/test";
 import { execSync } from "node:child_process";
-import { propertySchema, reviewSchema, settingsSchema } from "../../src/lib/validators";
+import { z } from "zod";
 
 const BASE_URL = "http://localhost:3000";
 const DB = "../prisma/dev.db";
+
+const propertySchema = z.object({
+  id: z.number().int(),
+  slug: z.string(),
+  title: z.string(),
+  price: z.number().int(),
+  location: z.string(),
+  bedrooms: z.number().int(),
+  bathrooms: z.number().int(),
+  areaSqft: z.number().int(),
+  imageUrl: z.string(),
+  isFeatured: z.boolean(),
+  galleryUrls: z.array(z.string()),
+  features: z.array(z.string()),
+});
+
+const reviewSchema = z.object({
+  id: z.number().int(),
+  clientName: z.string(),
+  clientAvatarUrl: z.string(),
+  rating: z.number().int().min(1).max(5),
+  reviewText: z.string(),
+  propertyTitle: z.string().nullable(),
+});
+
+const settingsSchema = z.record(z.string(), z.string());
 
 /** Base API test class — common HTTP actions, assertions, and DB helpers. */
 export abstract class BaseAPI {
@@ -51,11 +77,6 @@ export abstract class BaseAPI {
   static assertEmptyObject(res: Response): void {
     BaseAPI.assertStatus(res, 200);
     expect(res.body, "body is empty object").toEqual({});
-  }
-
-  static assertError500(res: Response): void {
-    expect(res.status, "status is 500").toBe(500);
-    expect(typeof (res.body as { error: unknown }).error, "error is string").toBe("string");
   }
 
   static assertMaxCount(arr: unknown[], max: number): void {

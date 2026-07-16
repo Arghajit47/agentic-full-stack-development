@@ -1,5 +1,5 @@
-import { test, expect } from "../fixtures/api-fixtures";
-import { BaseAPI, reviewSchema } from "../base/api-base";
+import { test, expect } from "@fixtures/api-fixtures";
+import { BaseAPI, reviewSchema } from "@base/api-base";
 
 test.describe("Featured Reviews API", () => {
   test("returns 200 with reviews", async ({ reviewsApi }) => {

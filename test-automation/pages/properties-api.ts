@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { BaseAPI, type Response } from "../base/api-base";
+import { BaseAPI, type Response } from "@base/api-base";
 
 export interface Property {
   id: number;
