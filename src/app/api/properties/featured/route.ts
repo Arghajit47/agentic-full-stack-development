@@ -10,7 +10,7 @@ export async function GET() {
       orderBy: { createdAt: "asc" },
     });
 
-    const result = properties.map((p) => ({
+    const result = properties.map((p: typeof properties[number]) => ({
       id: p.id,
       slug: p.slug,
       title: p.title,

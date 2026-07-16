@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Test automation package — isolated, has own tooling
+    "test-automation/**",
   ]),
 ]);
 
