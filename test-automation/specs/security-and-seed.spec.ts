@@ -1,7 +1,7 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/api-fixtures";
+import { BaseAPI } from "../base/api-base";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { BaseAPI } from "../base/api-base";
 
 test.describe("Security & Seed Validation", () => {
   test("npm audit — zero high/critical vulnerabilities", () => {
@@ -9,6 +9,7 @@ test.describe("Security & Seed Validation", () => {
     let exitCode = 0;
     try {
       auditOut = execSync("npm audit --audit-level=high --json 2>&1", {
+        cwd: "..",
         encoding: "utf-8",
         timeout: 60_000,
       });
@@ -25,7 +26,7 @@ test.describe("Security & Seed Validation", () => {
   });
 
   test("Prisma schema has Property, Review, SiteSetting with correct fields", () => {
-    const schema = readFileSync("prisma/schema.prisma", "utf-8");
+    const schema = readFileSync("../prisma/schema.prisma", "utf-8");
     expect(schema).toMatch(/model\s+Property\s*\{/);
     expect(schema).toMatch(/model\s+Review\s*\{/);
     expect(schema).toMatch(/model\s+SiteSetting\s*\{/);
@@ -38,7 +39,7 @@ test.describe("Security & Seed Validation", () => {
     expect(schema, "propertyTitle nullable").toMatch(/propertyTitle\s+String\?/);
     expect(schema).toMatch(/key\s+String\s+@unique/);
     expect(schema).toMatch(/value\s+String/);
-    const validate = execSync("npx prisma validate 2>&1", { encoding: "utf-8", timeout: 30_000 });
+    const validate = execSync("npx prisma validate 2>&1", { cwd: "..", encoding: "utf-8", timeout: 30_000 });
     expect(validate.toLowerCase(), "prisma validate passes").toContain("valid");
   });
 

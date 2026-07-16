@@ -1,0 +1,16 @@
+{
+  "name": "agentic-test-automation",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test:api": "npx playwright test --config=playwright.api.config.ts",
+    "test:ui": "npx playwright test --config=playwright.ui.config.ts",
+    "test": "npm run test:api && npm run test:ui",
+    "test:report": "npx playwright show-report /tmp/playwright-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

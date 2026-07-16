@@ -1,9 +1,9 @@
 import { request, expect, type APIRequestContext } from "@playwright/test";
 import { execSync } from "node:child_process";
-import { propertySchema, reviewSchema, settingsSchema } from "@/lib/validators";
+import { propertySchema, reviewSchema, settingsSchema } from "../../src/lib/validators";
 
 const BASE_URL = "http://localhost:3000";
-const DB = "prisma/dev.db";
+const DB = "../prisma/dev.db";
 
 /** Base API test class — common HTTP actions, assertions, and DB helpers. */
 export abstract class BaseAPI {
@@ -62,7 +62,7 @@ export abstract class BaseAPI {
     expect(arr.length, `count ≤ ${max}`).toBeLessThanOrEqual(max);
   }
 
-  static assertSchemaEach<T>(arr: unknown[], schema: { safeParse: (v: unknown) => { success: boolean } }): void {
+  static assertSchemaEach(arr: unknown[], schema: { safeParse: (v: unknown) => { success: boolean } }): void {
     for (const item of arr) {
       expect(schema.safeParse(item).success, "schema validation").toBe(true);
     }
@@ -75,7 +75,7 @@ export abstract class BaseAPI {
   // ── DB helpers ────────────────────────────────────────────────
 
   static reseed(): void {
-    execSync("npm run seed", { stdio: "ignore" });
+    execSync("npm run seed", { cwd: "..", stdio: "ignore" });
   }
 
   static clearTables(tables: string[]): void {
