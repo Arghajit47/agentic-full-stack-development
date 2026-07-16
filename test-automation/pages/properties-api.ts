@@ -1,27 +1,16 @@
 import { expect } from "@playwright/test";
-import { BaseAPI, type Response } from "../base/api-base";
+import { BaseAPI, type Response } from "@base/api-base";
+import { API_PATHS } from "@constants/index";
 
 export interface Property {
-  id: number;
-  slug: string;
-  title: string;
-  price: number;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  areaSqft: number;
-  imageUrl: string;
-  isFeatured: boolean;
-  galleryUrls: string[];
-  features: string[];
+  id: number; slug: string; title: string; price: number; location: string;
+  bedrooms: number; bathrooms: number; areaSqft: number; imageUrl: string;
+  isFeatured: boolean; galleryUrls: string[]; features: string[];
 }
 
-const PATH = "/api/properties/featured";
-
-/** Page-specific actions/assertions for the Featured Properties API. */
 export class PropertiesAPI extends BaseAPI {
   async fetchFeatured(): Promise<Response> {
-    return this.get(PATH);
+    return this.get(API_PATHS.PROPERTIES_FEATURED);
   }
 
   getProperties(res: Response): Property[] {

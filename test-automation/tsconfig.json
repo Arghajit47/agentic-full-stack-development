@@ -10,8 +10,13 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["../src/*"]
+      "@base/*": ["./base/*"],
+      "@pages/*": ["./pages/*"],
+      "@fixtures/*": ["./fixtures/*"],
+      "@constants/*": ["./constants/*"],
+      "@src/*": ["../src/*"]
     }
   },
   "include": ["./**/*.ts"],

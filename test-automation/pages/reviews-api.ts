@@ -1,21 +1,15 @@
 import { expect } from "@playwright/test";
-import { BaseAPI, type Response } from "../base/api-base";
+import { BaseAPI, type Response } from "@base/api-base";
+import { API_PATHS, RATING_RANGE } from "@constants/index";
 
 export interface Review {
-  id: number;
-  clientName: string;
-  clientAvatarUrl: string;
-  rating: number;
-  reviewText: string;
-  propertyTitle: string | null;
+  id: number; clientName: string; clientAvatarUrl: string;
+  rating: number; reviewText: string; propertyTitle: string | null;
 }
 
-const PATH = "/api/reviews/featured";
-
-/** Page-specific actions/assertions for the Featured Reviews API. */
 export class ReviewsAPI extends BaseAPI {
   async fetchFeatured(): Promise<Response> {
-    return this.get(PATH);
+    return this.get(API_PATHS.REVIEWS_FEATURED);
   }
 
   getReviews(res: Response): Review[] {
@@ -23,14 +17,13 @@ export class ReviewsAPI extends BaseAPI {
   }
 
   assertHasNullablePropertyTitle(reviews: Review[]): void {
-    const nullReview = reviews.find((r) => r.propertyTitle === null);
-    expect(nullReview, "at least one null propertyTitle").toBeDefined();
+    expect(reviews.find((r) => r.propertyTitle === null), "at least one null propertyTitle").toBeDefined();
   }
 
   assertRatingRange(reviews: Review[]): void {
     for (const r of reviews) {
-      expect(r.rating, `rating ${r.rating} in 1-5`).toBeGreaterThanOrEqual(1);
-      expect(r.rating, `rating ${r.rating} in 1-5`).toBeLessThanOrEqual(5);
+      expect(r.rating, `rating ${r.rating} in ${RATING_RANGE.MIN}-${RATING_RANGE.MAX}`).toBeGreaterThanOrEqual(RATING_RANGE.MIN);
+      expect(r.rating, `rating ${r.rating} in ${RATING_RANGE.MIN}-${RATING_RANGE.MAX}`).toBeLessThanOrEqual(RATING_RANGE.MAX);
     }
   }
 }

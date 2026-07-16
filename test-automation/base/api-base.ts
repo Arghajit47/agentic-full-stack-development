@@ -1,11 +1,34 @@
 import { request, expect, type APIRequestContext } from "@playwright/test";
 import { execSync } from "node:child_process";
-import { propertySchema, reviewSchema, settingsSchema } from "../../src/lib/validators";
+import { z } from "zod";
+import { BASE_URL, DB_PATH } from "@constants/index";
 
-const BASE_URL = "http://localhost:3000";
-const DB = "../prisma/dev.db";
+const propertySchema = z.object({
+  id: z.number().int(),
+  slug: z.string(),
+  title: z.string(),
+  price: z.number().int(),
+  location: z.string(),
+  bedrooms: z.number().int(),
+  bathrooms: z.number().int(),
+  areaSqft: z.number().int(),
+  imageUrl: z.string(),
+  isFeatured: z.boolean(),
+  galleryUrls: z.array(z.string()),
+  features: z.array(z.string()),
+});
 
-/** Base API test class — common HTTP actions, assertions, and DB helpers. */
+const reviewSchema = z.object({
+  id: z.number().int(),
+  clientName: z.string(),
+  clientAvatarUrl: z.string(),
+  rating: z.number().int().min(1).max(5),
+  reviewText: z.string(),
+  propertyTitle: z.string().nullable(),
+});
+
+const settingsSchema = z.record(z.string(), z.string());
+
 export abstract class BaseAPI {
   protected ctx: APIRequestContext | null = null;
 
@@ -18,15 +41,11 @@ export abstract class BaseAPI {
     this.ctx = null;
   }
 
-  // ── HTTP ──────────────────────────────────────────────────────
-
   protected async get(path: string): Promise<Response> {
     if (!this.ctx) throw new Error("init() not called");
     const res = await this.ctx.get(path);
     return { status: res.status(), body: await res.json() };
   }
-
-  // ── Assertions ────────────────────────────────────────────────
 
   static assertStatus(res: Response, expected: number): void {
     expect(res.status, `status must be ${expected}`).toBe(expected);
@@ -53,37 +72,28 @@ export abstract class BaseAPI {
     expect(res.body, "body is empty object").toEqual({});
   }
 
-  static assertError500(res: Response): void {
-    expect(res.status, "status is 500").toBe(500);
-    expect(typeof (res.body as { error: unknown }).error, "error is string").toBe("string");
-  }
-
   static assertMaxCount(arr: unknown[], max: number): void {
     expect(arr.length, `count ≤ ${max}`).toBeLessThanOrEqual(max);
   }
 
   static assertSchemaEach(arr: unknown[], schema: { safeParse: (v: unknown) => { success: boolean } }): void {
-    for (const item of arr) {
-      expect(schema.safeParse(item).success, "schema validation").toBe(true);
-    }
+    for (const item of arr) expect(schema.safeParse(item).success, "schema validation").toBe(true);
   }
 
   static assertSchemaObject(obj: unknown, schema: { safeParse: (v: unknown) => { success: boolean } }): void {
     expect(schema.safeParse(obj).success, "schema validation").toBe(true);
   }
 
-  // ── DB helpers ────────────────────────────────────────────────
-
   static reseed(): void {
     execSync("npm run seed", { cwd: "..", stdio: "ignore" });
   }
 
   static clearTables(tables: string[]): void {
-    for (const t of tables) execSync(`sqlite3 ${DB} "DELETE FROM ${t};"`);
+    for (const t of tables) execSync(`sqlite3 ${DB_PATH} "DELETE FROM ${t};"`);
   }
 
   static dbQuery(sql: string): string {
-    return execSync(`sqlite3 ${DB} "${sql}"`, { encoding: "utf-8" }).trim();
+    return execSync(`sqlite3 ${DB_PATH} "${sql}"`, { encoding: "utf-8" }).trim();
   }
 
   static dbCount(table: string): number {
@@ -91,9 +101,5 @@ export abstract class BaseAPI {
   }
 }
 
-export interface Response {
-  status: number;
-  body: unknown;
-}
-
+export interface Response { status: number; body: unknown; }
 export { propertySchema, reviewSchema, settingsSchema };

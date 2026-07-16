@@ -1,13 +1,14 @@
-import { test, expect } from "../fixtures/api-fixtures";
-import { BaseAPI, propertySchema } from "../base/api-base";
+import { test, expect } from "@fixtures/api-fixtures";
+import { BaseAPI, propertySchema } from "@base/api-base";
 import { execSync } from "node:child_process";
+import { SEED_COUNTS, MAX_FEATURED, TABLES } from "@constants/index";
 
 test.describe("Featured Properties API", () => {
   test("returns 200 with featured properties", async ({ propertiesApi }) => {
     const res = await propertiesApi.fetchFeatured();
     BaseAPI.assertStatus(res, 200);
     const props = propertiesApi.getProperties(res);
-    expect(props.length, "5 featured in seed").toBe(5);
+    expect(props.length, `${SEED_COUNTS.FEATURED_PROPERTIES} featured in seed`).toBe(SEED_COUNTS.FEATURED_PROPERTIES);
   });
 
   test("all returned properties have isFeatured=true", async ({ propertiesApi }) => {
@@ -19,7 +20,7 @@ test.describe("Featured Properties API", () => {
   test("returns at most 6 featured properties", async ({ propertiesApi }) => {
     const res = await propertiesApi.fetchFeatured();
     const props = propertiesApi.getProperties(res);
-    BaseAPI.assertMaxCount(props, 6);
+    BaseAPI.assertMaxCount(props, MAX_FEATURED.PROPERTIES);
   });
 
   test("galleryUrls and features are arrays, not JSON text", async ({ propertiesApi }) => {
@@ -36,7 +37,7 @@ test.describe("Featured Properties API", () => {
   });
 
   test("empty DB returns [] not error", async ({ propertiesApi }) => {
-    BaseAPI.clearTables(["Property"]);
+    BaseAPI.clearTables([TABLES.PROPERTY]);
     const res = await propertiesApi.fetchFeatured();
     BaseAPI.assertEmptyArray(res);
   });
