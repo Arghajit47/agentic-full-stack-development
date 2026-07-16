@@ -70,7 +70,7 @@ describe("Testimonials", () => {
     cards.forEach((card, idx) => {
       const r = mockReviews[idx];
       // avatar
-      const img = within(card).getByRole("img") as HTMLImageElement;
+      const img = within(card).getByRole("img", { name: r.clientName }) as HTMLImageElement;
       expect(img.src).toBe(r.clientAvatarUrl);
       // client name
       expect(within(card).getByText(r.clientName)).toBeTruthy();
@@ -118,14 +118,13 @@ describe("Testimonials", () => {
     expect(screen.queryAllByRole("article")).toHaveLength(0);
   });
 
-  it("uses responsive grid classes (1 col mobile/768, 2 col md, 3 col lg/xl)", () => {
+  it("uses responsive grid classes (1 col mobile/768, 2 col lg, 3 col xl)", () => {
     const { container } = render(<Testimonials reviews={mockReviews} />);
     const grid = container.querySelector(".grid");
     expect(grid).toBeTruthy();
     const cls = grid?.className ?? "";
     expect(cls).toContain("grid-cols-1");
-    expect(cls).toContain("md:grid-cols-2");
-    expect(cls).toContain("lg:grid-cols-3");
+    expect(cls).toContain("lg:grid-cols-2");
     expect(cls).toContain("xl:grid-cols-3");
   });
 

@@ -8,7 +8,7 @@ interface TestimonialsProps {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex items-center gap-0.5" role="img" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
@@ -26,7 +26,7 @@ function StarRating({ rating }: { rating: number }) {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <article className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-zinc-200">
+    <article data-testid="review-card" className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-zinc-200">
       <div className="flex items-center gap-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -80,6 +80,7 @@ export default function Testimonials({
   return (
     <section
       aria-labelledby="testimonials-heading"
+      data-testid="testimonials-section"
       className="mx-auto w-full max-w-[1920px] bg-zinc-50 px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mb-10 text-center">
@@ -95,15 +96,15 @@ export default function Testimonials({
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <p className="py-12 text-center text-lg text-zinc-500">No reviews yet</p>
+        <p data-testid="no-reviews" className="py-12 text-center text-lg text-zinc-500">No reviews yet</p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {reviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}

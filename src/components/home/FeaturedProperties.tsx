@@ -14,7 +14,7 @@ interface FeaturedPropertiesProps {
 
 function PropertyCard({ property }: { property: Property }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-zinc-200 transition-shadow hover:shadow-xl">
+    <article data-testid="property-card" className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-zinc-200 transition-shadow hover:shadow-xl">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -83,6 +83,7 @@ export default function FeaturedProperties({
   return (
     <section
       aria-labelledby="featured-properties-heading"
+      data-testid="featured-properties-section"
       className="mx-auto w-full max-w-[1920px] px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mb-10 text-center">
@@ -98,15 +99,15 @@ export default function FeaturedProperties({
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
         </div>
       ) : properties.length === 0 ? (
-        <p className="py-12 text-center text-lg text-zinc-500">No properties found</p>
+        <p data-testid="no-properties" className="py-12 text-center text-lg text-zinc-500">No properties found</p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {properties.map((property) => (
             <PropertyCard key={property.id} property={property} />
           ))}
@@ -117,6 +118,7 @@ export default function FeaturedProperties({
         <div className="mt-12 text-center">
           <button
             type="button"
+            data-testid="explore-properties-cta"
             className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
           >
             Explore Properties

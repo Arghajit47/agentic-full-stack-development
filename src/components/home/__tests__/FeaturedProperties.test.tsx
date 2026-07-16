@@ -149,7 +149,7 @@ describe("FeaturedProperties", () => {
     expect(screen.queryByRole("button", { name: /explore properties/i })).toBeNull();
   });
 
-  it("uses responsive grid classes (1 col mobile, 2 col sm/md, 3 col lg/xl)", () => {
+  it("uses responsive grid classes (1 col mobile, 2 col sm/lg, 3 col xl)", () => {
     const { container } = render(
       <FeaturedProperties properties={mockProperties} />
     );
@@ -159,7 +159,7 @@ describe("FeaturedProperties", () => {
     const cls = grid?.className ?? "";
     expect(cls).toContain("grid-cols-1");
     expect(cls).toContain("sm:grid-cols-2");
-    expect(cls).toContain("lg:grid-cols-3");
+    expect(cls).toContain("lg:grid-cols-2");
     expect(cls).toContain("xl:grid-cols-3");
   });
 
