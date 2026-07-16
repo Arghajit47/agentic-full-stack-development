@@ -2,12 +2,8 @@ import { expect } from "@playwright/test";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { BaseAPI } from "@base/api-base";
+import { SCHEMA_PATH, PROPERTY_FIELDS, REVIEW_FIELDS, TABLES, SEED_COUNTS } from "@constants/index";
 
-const SCHEMA_PATH = "../prisma/schema.prisma";
-const PROPERTY_FIELDS = ["id", "slug", "title", "price", "location", "bedrooms", "bathrooms", "areaSqft", "imageUrl", "isFeatured", "galleryUrls", "features"];
-const REVIEW_FIELDS = ["clientName", "clientAvatarUrl", "rating", "reviewText", "propertyTitle"];
-
-/** Page-specific actions/assertions for Prisma schema and security validation. */
 export class SchemaAPI extends BaseAPI {
   assertNoHighCriticalVulns(): void {
     let auditOut = "";
@@ -42,11 +38,11 @@ export class SchemaAPI extends BaseAPI {
 
   assertSeedCounts(): void {
     BaseAPI.reseed();
-    expect(BaseAPI.dbCount("Property"), "6 properties").toBe(6);
-    expect(BaseAPI.dbCount("Review"), "5 reviews").toBe(5);
-    expect(BaseAPI.dbCount("SiteSetting"), "14 settings").toBe(14);
-    expect(Number(BaseAPI.dbQuery("SELECT COUNT(*) FROM Property WHERE isFeatured=1;")), "5 featured").toBe(5);
-    expect(Number(BaseAPI.dbQuery("SELECT COUNT(*) FROM Review WHERE propertyTitle IS NULL;")), "1 null propertyTitle").toBe(1);
-    expect(BaseAPI.dbQuery("SELECT MIN(rating), MAX(rating) FROM Review;"), "ratings 2-5").toBe("2|5");
+    expect(BaseAPI.dbCount(TABLES.PROPERTY), `${SEED_COUNTS.PROPERTIES} properties`).toBe(SEED_COUNTS.PROPERTIES);
+    expect(BaseAPI.dbCount(TABLES.REVIEW), `${SEED_COUNTS.REVIEWS} reviews`).toBe(SEED_COUNTS.REVIEWS);
+    expect(BaseAPI.dbCount(TABLES.SITE_SETTING), `${SEED_COUNTS.SETTINGS} settings`).toBe(SEED_COUNTS.SETTINGS);
+    expect(Number(BaseAPI.dbQuery(`SELECT COUNT(*) FROM ${TABLES.PROPERTY} WHERE isFeatured=1;`)), `${SEED_COUNTS.FEATURED_PROPERTIES} featured`).toBe(SEED_COUNTS.FEATURED_PROPERTIES);
+    expect(Number(BaseAPI.dbQuery(`SELECT COUNT(*) FROM ${TABLES.REVIEW} WHERE propertyTitle IS NULL;`)), `${SEED_COUNTS.NULL_PROPERTY_TITLES} null propertyTitle`).toBe(SEED_COUNTS.NULL_PROPERTY_TITLES);
+    expect(BaseAPI.dbQuery("SELECT MIN(rating), MAX(rating) FROM Review;"), `ratings ${SEED_COUNTS.MIN_RATING}-${SEED_COUNTS.MAX_RATING}`).toBe(`${SEED_COUNTS.MIN_RATING}|${SEED_COUNTS.MAX_RATING}`);
   }
 }

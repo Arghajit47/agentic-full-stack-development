@@ -1,13 +1,10 @@
 import { expect } from "@playwright/test";
 import { BaseAPI, type Response } from "@base/api-base";
+import { API_PATHS, REQUIRED_SETTING_KEYS } from "@constants/index";
 
-const PATH = "/api/settings";
-const REQUIRED_KEYS = ["properties_heading", "properties_subheading", "reviews_heading", "reviews_subheading"] as const;
-
-/** Page-specific actions/assertions for the Site Settings API. */
 export class SettingsAPI extends BaseAPI {
   async fetchSettings(): Promise<Response> {
-    return this.get(PATH);
+    return this.get(API_PATHS.SETTINGS);
   }
 
   getSettings(res: Response): Record<string, string> {
@@ -15,7 +12,7 @@ export class SettingsAPI extends BaseAPI {
   }
 
   assertRequiredKeys(settings: Record<string, string>): void {
-    for (const key of REQUIRED_KEYS) {
+    for (const key of REQUIRED_SETTING_KEYS) {
       expect(settings[key], `key "${key}" present`).toBeDefined();
     }
   }

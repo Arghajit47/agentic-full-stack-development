@@ -1,18 +1,19 @@
 import { test, expect } from "@fixtures/api-fixtures";
 import { BaseAPI, reviewSchema } from "@base/api-base";
+import { SEED_COUNTS, MAX_FEATURED, TABLES } from "@constants/index";
 
 test.describe("Featured Reviews API", () => {
   test("returns 200 with reviews", async ({ reviewsApi }) => {
     const res = await reviewsApi.fetchFeatured();
     BaseAPI.assertStatus(res, 200);
     const reviews = reviewsApi.getReviews(res);
-    expect(reviews.length, "5 reviews in seed").toBe(5);
+    expect(reviews.length, `${SEED_COUNTS.REVIEWS} reviews in seed`).toBe(SEED_COUNTS.REVIEWS);
   });
 
   test("returns at most 5 reviews", async ({ reviewsApi }) => {
     const res = await reviewsApi.fetchFeatured();
     const reviews = reviewsApi.getReviews(res);
-    BaseAPI.assertMaxCount(reviews, 5);
+    BaseAPI.assertMaxCount(reviews, MAX_FEATURED.REVIEWS);
   });
 
   test("reviews match reviewSchema", async ({ reviewsApi }) => {
@@ -34,7 +35,7 @@ test.describe("Featured Reviews API", () => {
   });
 
   test("empty DB returns [] not error", async ({ reviewsApi }) => {
-    BaseAPI.clearTables(["Review"]);
+    BaseAPI.clearTables([TABLES.REVIEW]);
     const res = await reviewsApi.fetchFeatured();
     BaseAPI.assertEmptyArray(res);
   });

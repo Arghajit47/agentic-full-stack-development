@@ -1,4 +1,5 @@
 import { defineConfig } from "@playwright/test";
+import { BASE_URL } from "@constants/index";
 
 export default defineConfig({
   testDir: "./specs",
@@ -7,6 +8,6 @@ export default defineConfig({
   workers: undefined,
   reporter: [["html", { outputFolder: "/tmp/playwright-report-ui" }], ["list"]],
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: BASE_URL,
   },
 });

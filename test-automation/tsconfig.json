@@ -15,6 +15,7 @@
       "@base/*": ["./base/*"],
       "@pages/*": ["./pages/*"],
       "@fixtures/*": ["./fixtures/*"],
+      "@constants/*": ["./constants/*"],
       "@src/*": ["../src/*"]
     }
   },

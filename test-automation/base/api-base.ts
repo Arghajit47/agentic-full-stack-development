@@ -1,9 +1,7 @@
 import { request, expect, type APIRequestContext } from "@playwright/test";
 import { execSync } from "node:child_process";
 import { z } from "zod";
-
-const BASE_URL = "http://localhost:3000";
-const DB = "../prisma/dev.db";
+import { BASE_URL, DB_PATH } from "@constants/index";
 
 const propertySchema = z.object({
   id: z.number().int(),
@@ -31,7 +29,6 @@ const reviewSchema = z.object({
 
 const settingsSchema = z.record(z.string(), z.string());
 
-/** Base API test class — common HTTP actions, assertions, and DB helpers. */
 export abstract class BaseAPI {
   protected ctx: APIRequestContext | null = null;
 
@@ -44,15 +41,11 @@ export abstract class BaseAPI {
     this.ctx = null;
   }
 
-  // ── HTTP ──────────────────────────────────────────────────────
-
   protected async get(path: string): Promise<Response> {
     if (!this.ctx) throw new Error("init() not called");
     const res = await this.ctx.get(path);
     return { status: res.status(), body: await res.json() };
   }
-
-  // ── Assertions ────────────────────────────────────────────────
 
   static assertStatus(res: Response, expected: number): void {
     expect(res.status, `status must be ${expected}`).toBe(expected);
@@ -84,27 +77,23 @@ export abstract class BaseAPI {
   }
 
   static assertSchemaEach(arr: unknown[], schema: { safeParse: (v: unknown) => { success: boolean } }): void {
-    for (const item of arr) {
-      expect(schema.safeParse(item).success, "schema validation").toBe(true);
-    }
+    for (const item of arr) expect(schema.safeParse(item).success, "schema validation").toBe(true);
   }
 
   static assertSchemaObject(obj: unknown, schema: { safeParse: (v: unknown) => { success: boolean } }): void {
     expect(schema.safeParse(obj).success, "schema validation").toBe(true);
   }
 
-  // ── DB helpers ────────────────────────────────────────────────
-
   static reseed(): void {
     execSync("npm run seed", { cwd: "..", stdio: "ignore" });
   }
 
   static clearTables(tables: string[]): void {
-    for (const t of tables) execSync(`sqlite3 ${DB} "DELETE FROM ${t};"`);
+    for (const t of tables) execSync(`sqlite3 ${DB_PATH} "DELETE FROM ${t};"`);
   }
 
   static dbQuery(sql: string): string {
-    return execSync(`sqlite3 ${DB} "${sql}"`, { encoding: "utf-8" }).trim();
+    return execSync(`sqlite3 ${DB_PATH} "${sql}"`, { encoding: "utf-8" }).trim();
   }
 
   static dbCount(table: string): number {
@@ -112,9 +101,5 @@ export abstract class BaseAPI {
   }
 }
 
-export interface Response {
-  status: number;
-  body: unknown;
-}
-
+export interface Response { status: number; body: unknown; }
 export { propertySchema, reviewSchema, settingsSchema };
