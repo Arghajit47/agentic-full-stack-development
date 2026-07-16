@@ -32,6 +32,8 @@ function ReviewCard({ review }: { review: Review }) {
         <img
           src={review.clientAvatarUrl}
           alt={review.clientName}
+          width={56}
+          height={56}
           className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-zinc-100"
           loading="lazy"
         />
