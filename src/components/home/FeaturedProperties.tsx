@@ -29,11 +29,17 @@ function useResponsiveCardCount() {
 interface FeaturedPropertiesProps {
   data?: Property[];
   isLoading?: boolean;
+  heading?: string;
+  subheading?: string;
+  onPropertyClick?: (slug: string) => void;
 }
 
 export function FeaturedProperties({
   data = featuredProperties,
   isLoading = false,
+  heading = "Featured Properties",
+  subheading = "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein.",
+  onPropertyClick = (slug: string) => console.log(slug),
 }: FeaturedPropertiesProps) {
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
@@ -63,14 +69,13 @@ export function FeaturedProperties({
           data-testid="featured-properties-heading"
           className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
         >
-          Featured Properties
+          {heading}
         </h2>
         <p
           data-testid="featured-properties-subheading"
           className="mt-3 max-w-2xl text-base text-[#999999] sm:text-lg"
         >
-          Explore our handpicked selection of featured properties. Each listing offers a glimpse
-          into exceptional homes and investments available through Estatein.
+          {subheading}
         </p>
       </div>
 
@@ -176,6 +181,7 @@ export function FeaturedProperties({
                       <button
                         type="button"
                         data-testid={`view-details-${property.id}`}
+                        onClick={() => onPropertyClick(property.slug ?? "")}
                         className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
                       >
                         View property details
