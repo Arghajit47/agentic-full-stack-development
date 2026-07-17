@@ -52,7 +52,7 @@ export const featuredProperties: Property[] = [
     bathrooms: 3,
     areaSqft: 2800,
     imageUrl:
-      "https://images.unsplash.com/photo-1568605114967-8130f81a6e54?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ export const featuredProperties: Property[] = [
     bathrooms: 2,
     areaSqft: 1600,
     imageUrl:
-      "https://images.unsplash.com/photo-1600596542815-ff54214efb73?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
   },
   {
     id: 6,

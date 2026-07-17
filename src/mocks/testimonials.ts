@@ -42,7 +42,7 @@ export const testimonials: Review[] = [
     id: 4,
     clientName: "David Thompson",
     clientAvatarUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658ab05498a?auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
     rating: 5,
     reviewText:
       "Outstanding service. The attention to detail and market knowledge is unmatched. Highly recommended.",
@@ -51,7 +51,7 @@ export const testimonials: Review[] = [
     id: 5,
     clientName: "Jessica Williams",
     clientAvatarUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a67a1c6?auto=format&fit=crop&w=200&q=80",
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80",
     rating: 4,
     reviewText:
       "Smooth transaction and excellent communication throughout. Couldn't be happier with our new loft.",

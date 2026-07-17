@@ -14,7 +14,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col flex-1 bg-white font-sans">
+    <div className="flex flex-col flex-1 bg-zinc-950 font-sans text-zinc-100">
       <FeaturedProperties isLoading={loading} />
       <Testimonials isLoading={loading} />
     </div>
