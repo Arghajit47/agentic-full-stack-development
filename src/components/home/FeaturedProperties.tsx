@@ -220,7 +220,7 @@ export function FeaturedProperties({
 
       {!isLoading && data.length === 0 && (
         <p data-testid="no-properties" className="py-12 text-center text-lg text-zinc-400">
-          No properties found
+          No featured properties
         </p>
       )}
     </section>

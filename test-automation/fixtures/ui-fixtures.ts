@@ -8,7 +8,7 @@ type UIFixtures = {
 
 /**
  * UI test fixtures. Each fixture creates a fresh browser context with a HomeUI
- * page object. No reseed — UI tests hit the static-mock home page, not the API/DB.
+ * page object. Integration specs hit the real API/DB, so reseed before each test.
  */
 export const test = base.extend<UIFixtures>({
   homeUi: async ({ page }, use) => {

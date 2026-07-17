@@ -126,7 +126,7 @@ export const UI_TEXT = {
   TESTIMONIALS_SUBHEADING:
     "Real stories from real clients who found their perfect home with us.",
   CTA_LABEL: "Explore Properties",
-  NO_PROPERTIES: "No properties found",
+  NO_PROPERTIES: "No featured properties",
   NO_REVIEWS: "No reviews yet",
 } as const;
 
@@ -228,3 +228,45 @@ export const TESTIMONIAL_MOCKS = [
 
 // Star rating aria-label template used by the Testimonials StarRating component.
 export const STAR_ARIA_TEMPLATE = "{rating} out of 5 stars";
+
+// ── KAN-8 integration tests (real API + rendered UI) ─────────────
+export const INTEGRATION_TEXT = {
+  SEED_PROPERTIES_HEADING: "Featured Properties",
+  SEED_PROPERTIES_SUBHEADING: "Explore our handpicked selection of premium homes",
+  SEED_REVIEWS_HEADING: "What Our Clients Say",
+  SEED_REVIEWS_SUBHEADING: "Real stories from happy homeowners",
+  ERROR_FALLBACK: "Unable to load properties. Please try again later.",
+} as const;
+
+export const INTEGRATION_TESTIDS = {
+  HOME_ERROR: "home-error",
+  FEATURED_HEADING: "featured-properties-heading",
+  FEATURED_SUBHEADING: "featured-properties-subheading",
+  TESTIMONIALS_HEADING: "testimonials-heading",
+  TESTIMONIALS_SUBHEADING: "testimonials-subheading",
+  REVIEW_STARS: "review-stars",
+} as const;
+
+export const STAR_SELECTORS = {
+  FILLED: ".fill-[#703BF7].text-[#703BF7]",
+  EMPTY: ".text-zinc-700",
+} as const;
+
+export const INTEGRATION_COUNTS = {
+  VISIBLE_CARDS_DESKTOP: 3,
+  VISIBLE_CARDS_LAPTOP: 2,
+  VISIBLE_CARDS_MOBILE: 1,
+  STAR_TOTAL: 5,
+} as const;
+
+export const PRICE_FORMAT = {
+  LOCALE: "en-US",
+  CURRENCY: "USD",
+  MAX_FRACTION_DIGITS: 0,
+} as const;
+
+export const STUB_IMAGE = {
+  CONTENT_TYPE: "image/png",
+  BASE64:
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1YAAAAASUVORK5CYII=",
+} as const;
