@@ -23,11 +23,15 @@ function useResponsiveCardCount() {
 interface TestimonialsProps {
   data?: Review[];
   isLoading?: boolean;
+  heading?: string;
+  subheading?: string;
 }
 
 export function Testimonials({
   data = testimonials,
   isLoading = false,
+  heading = "What Our Clients Say",
+  subheading = "Read the success stories and heartfelt testimonials from our valued clients. Discover why they chose Estatein for their real estate needs.",
 }: TestimonialsProps) {
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
@@ -57,14 +61,13 @@ export function Testimonials({
           data-testid="testimonials-heading"
           className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
         >
-          What Our Clients Say
+          {heading}
         </h2>
         <p
           data-testid="testimonials-subheading"
           className="mt-3 max-w-2xl text-base text-[#999999] sm:text-lg"
         >
-          Read the success stories and heartfelt testimonials from our valued clients. Discover why
-          they chose Estatein for their real estate needs.
+          {subheading}
         </p>
       </div>
 

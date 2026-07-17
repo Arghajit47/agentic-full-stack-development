@@ -1,5 +1,6 @@
 export interface Property {
   id: number;
+  slug: string;
   title: string;
   description: string;
   price: number;
@@ -13,6 +14,7 @@ export interface Property {
 export const featuredProperties: Property[] = [
   {
     id: 1,
+    slug: "modern-luxury-villa",
     title: "Modern Luxury Villa",
     description: "Spacious contemporary villa with floor-to-ceiling windows, open-plan living, and a private garden.",
     price: 1250000,
@@ -25,6 +27,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: 2,
+    slug: "downtown-penthouse",
     title: "Downtown Penthouse",
     description: "Stunning top-floor penthouse with panoramic city views and premium finishes throughout.",
     price: 895000,
@@ -37,6 +40,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: 3,
+    slug: "beachfront-estate",
     title: "Beachfront Estate",
     description: "Direct ocean access with private beach, infinity pool, and expansive outdoor living areas.",
     price: 2150000,
@@ -49,6 +53,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: 4,
+    slug: "suburban-family-home",
     title: "Suburban Family Home",
     description: "Move-in ready family home in a quiet neighborhood with great schools nearby.",
     price: 475000,
@@ -61,6 +66,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: 5,
+    slug: "contemporary-loft",
     title: "Contemporary Loft",
     description: "Industrial-chic loft with exposed brick, high ceilings, and modern amenities.",
     price: 620000,
@@ -73,6 +79,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: 6,
+    slug: "hillside-modern-retreat",
     title: "Hillside Modern Retreat",
     description: "Architectural masterpiece nestled in the hills with seamless indoor-outdoor flow.",
     price: 1780000,
