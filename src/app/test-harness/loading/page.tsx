@@ -1,9 +1,9 @@
-import FeaturedProperties from "@/components/home/FeaturedProperties";
-import Testimonials from "@/components/home/Testimonials";
+import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { Testimonials } from "@/components/home/Testimonials";
 
 export default function LoadingHarness() {
   return (
-    <div className="flex flex-col flex-1 bg-white font-sans">
+    <div className="flex flex-col flex-1 bg-zinc-950 font-sans">
       <FeaturedProperties isLoading />
       <Testimonials isLoading />
     </div>
