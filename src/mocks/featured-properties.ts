@@ -81,6 +81,6 @@ export const featuredProperties: Property[] = [
     bathrooms: 4,
     propertyType: "Villa",
     imageUrl:
-      "https://images.unsplash.com/photo-1600596542815-ff54214efb73?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
   },
 ];

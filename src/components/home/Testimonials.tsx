@@ -9,7 +9,8 @@ function useResponsiveCardCount() {
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w >= 1024) setCount(3);
+      if (w >= 1280) setCount(3);
+      else if (w >= 1024) setCount(2);
       else setCount(1);
     };
     update();
