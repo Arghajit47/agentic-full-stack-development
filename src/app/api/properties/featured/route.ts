@@ -6,7 +6,6 @@ export async function GET() {
   try {
     const properties = await prisma.property.findMany({
       where: { isFeatured: true },
-      take: 6,
       orderBy: { createdAt: "asc" },
     });
 
@@ -14,11 +13,13 @@ export async function GET() {
       id: p.id,
       slug: p.slug,
       title: p.title,
+      description: p.description,
       price: p.price,
       location: p.location,
       bedrooms: p.bedrooms,
       bathrooms: p.bathrooms,
       areaSqft: p.areaSqft,
+      propertyType: p.propertyType,
       imageUrl: p.imageUrl,
       isFeatured: p.isFeatured,
       galleryUrls: parseJsonArray(p.galleryUrls),

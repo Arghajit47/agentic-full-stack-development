@@ -12,11 +12,13 @@ model Property {
   id          Int      @id @default(autoincrement())
   slug        String   @unique
   title       String
+  description String
   price       Int
   location    String
   bedrooms    Int
   bathrooms   Int
   areaSqft    Int
+  propertyType String
   imageUrl    String
   isFeatured  Boolean  @default(false)
   galleryUrls String   // JSON text — string[]

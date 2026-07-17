@@ -2,159 +2,152 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const PROPERTY_TITLES = [
+  "Modern Villa in Sunset Hills",
+  "Downtown Loft Penthouse",
+  "Beachfront Cottage in Malibu",
+  "Suburban Family Home in Austin",
+  "Luxury Condo with Miami Skyline View",
+  "Cozy Studio Cabin in Aspen",
+  "Garden Estate in Napa Valley",
+  "Urban Penthouse in Chicago",
+  "Lake House in Seattle",
+  "Mountain Cabin in Denver",
+  "Riverside Apartment in Boston",
+  "Historic Townhouse in Nashville",
+  "Modern Bungalow in Portland",
+  "Skyline Tower in San Diego",
+  "Cozy Studio in Phoenix",
+  "Grand Mansion in Atlanta",
+  "Seaside Villa in Dallas",
+  "Parkside Duplex in San Francisco",
+  "Executive Suite in Philadelphia",
+  "Country Farmhouse in Las Vegas",
+];
+
+const LOCATIONS = [
+  "Sunset Hills, CA",
+  "Downtown, NY",
+  "Malibu, CA",
+  "Austin, TX",
+  "Miami, FL",
+  "Aspen, CO",
+  "Napa Valley, CA",
+  "Chicago, IL",
+  "Seattle, WA",
+  "Denver, CO",
+  "Boston, MA",
+  "Nashville, TN",
+  "Portland, OR",
+  "San Diego, CA",
+  "Phoenix, AZ",
+  "Atlanta, GA",
+  "Dallas, TX",
+  "San Francisco, CA",
+  "Philadelphia, PA",
+  "Las Vegas, NV",
+];
+
+const PROPERTY_TYPES = [
+  "Villa", "Penthouse", "Cottage", "House", "Condo", "Cabin",
+  "Estate", "Penthouse", "House", "Cabin", "Apartment", "Townhouse",
+  "Bungalow", "Tower", "Studio", "Mansion", "Villa", "Duplex", "Suite", "Farmhouse",
+];
+
+const FEATURES = [
+  ["Swimming Pool", "Smart Home", "Solar Panels", "Garden"],
+  ["Floor-to-Ceiling Windows", "City View", "Concierge"],
+  ["Ocean View", "Private Beach Access", "Fireplace", "Patio"],
+  ["Backyard", "Garage", "Open Kitchen", "Study Room"],
+  ["Skyline View", "Gym Access", "Rooftop Pool", "Doorman"],
+  ["Mountain View", "Wood Stove", "Hiking Trails Nearby"],
+  ["Vineyard View", "Wine Cellar", "Chef's Kitchen", "Guest House"],
+  ["High Ceilings", "Private Terrace", "Gourmet Kitchen"],
+  ["Dock Access", "Waterfront", "Floor-to-Ceiling Windows"],
+  ["Hot Tub", "Ski Access", "Stone Fireplace"],
+  ["River View", "Balcony", "Fitness Center"],
+  ["Original Hardwood", "Courtyard", "Updated Kitchen"],
+  ["Craftsman Details", "Front Porch", "Modern Appliances"],
+  ["Panoramic Views", "Concierge", "Pool"],
+  ["Minimalist Design", "Rooftop Access", "Co-working Space"],
+  ["Home Theater", "Wine Room", "Pool House"],
+  ["Private Beach", "Outdoor Kitchen", "Infinity Pool"],
+  ["Park View", "Garage", "Roof Deck"],
+  ["Concierge", "Business Center", "Valet Parking"],
+  ["Barn", "Acreage", "Porch Swing"],
+];
+
+const REVIEW_NAMES = [
+  "Sarah Johnson", "Michael Chen", "Emily Rodriguez", "David Kim", "Jessica Williams",
+  "Robert Brown", "Amanda Davis", "James Miller", "Laura Wilson", "Daniel Moore",
+  "Sophia Taylor", "Christopher Anderson", "Olivia Thomas", "Matthew Jackson", "Ava White",
+  "Ethan Harris", "Isabella Martin", "William Thompson", "Mia Garcia", "Alexander Martinez",
+];
+
+const REVIEW_TEXTS = [
+  "Absolutely seamless experience from start to finish. Highly recommended!",
+  "Great service and a professional team. They understood exactly what we wanted.",
+  "The best real estate decision we ever made. Exceeded all expectations.",
+  "Good overall, though the process took a bit longer than expected.",
+  "Communication could have been better, but the property was nice.",
+  "Outstanding market knowledge and attention to detail. Would use again.",
+  "Friendly agents and a smooth closing process. Very happy with our new home.",
+  "Helped us find the perfect rental in a competitive market. Thank you!",
+  "Honest advice and no pressure. Exactly what we needed as first-time buyers.",
+  "The virtual tours saved us so much time. Found our home within two weeks.",
+];
+
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function avatarUrl(name: string): string {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=703BF7&color=fff&size=128`;
+}
+
 async function main() {
-  // Clean slate
   await prisma.property.deleteMany();
   await prisma.review.deleteMany();
   await prisma.siteSetting.deleteMany();
 
-  // --- 6 Properties (5 featured, 1 not) ---
-  const properties = [
-    {
-      slug: "modern-villa-sunset-hills",
-      title: "Modern Villa in Sunset Hills",
-      price: 1250000,
-      location: "Sunset Hills, CA",
-      bedrooms: 4,
-      bathrooms: 3,
-      areaSqft: 3200,
-      imageUrl: "https://images.unsplash.com/photo-1613442765392-71f49fe1a4c9?w=800",
-      isFeatured: true,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1613442765392-71f49fe1a4c9?w=800",
-        "https://images.unsplash.com/photo-1600596542815-ff1a8d6c943c?w=800",
-      ]),
-      features: JSON.stringify(["Swimming Pool", "Smart Home", "Solar Panels", "Garden"]),
-    },
-    {
-      slug: "downtown-loft-penthouse",
-      title: "Downtown Loft Penthouse",
-      price: 875000,
-      location: "Downtown, NY",
-      bedrooms: 2,
-      bathrooms: 2,
-      areaSqft: 1800,
-      imageUrl: "https://images.unsplash.com/photo-1600585154340-be2b97a7d1f1?w=800",
-      isFeatured: true,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1600585154340-be2b97a7d1f1?w=800",
-        "https://images.unsplash.com/photo-1600585152220-90c63e269f09?w=800",
-      ]),
-      features: JSON.stringify(["Floor-to-Ceiling Windows", "City View", "Concierge"]),
-    },
-    {
-      slug: "beachfront-cottage-malibu",
-      title: "Beachfront Cottage in Malibu",
-      price: 2100000,
-      location: "Malibu, CA",
-      bedrooms: 3,
-      bathrooms: 2,
-      areaSqft: 2400,
-      imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c899?w=800",
-      isFeatured: true,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c899?w=800",
-        "https://images.unsplash.com/photo-1505228391849-ea6f2a9a8d2d?w=800",
-      ]),
-      features: JSON.stringify(["Ocean View", "Private Beach Access", "Fireplace", "Patio"]),
-    },
-    {
-      slug: "suburban-family-home-austin",
-      title: "Suburban Family Home in Austin",
-      price: 540000,
-      location: "Austin, TX",
-      bedrooms: 5,
-      bathrooms: 3,
-      areaSqft: 3600,
-      imageUrl: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
-      isFeatured: true,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
-        "https://images.unsplash.com/photo-1583847268970-a3e8a9b6c2e3?w=800",
-      ]),
-      features: JSON.stringify(["Backyard", "Garage", "Open Kitchen", "Study Room"]),
-    },
-    {
-      slug: "luxury-condo-miami-skyline",
-      title: "Luxury Condo with Miami Skyline View",
-      price: 980000,
-      location: "Miami, FL",
-      bedrooms: 3,
-      bathrooms: 3,
-      areaSqft: 2100,
-      imageUrl: "https://images.unsplash.com/photo-1545324418-cc1a3a10f657?w=800",
-      isFeatured: true,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1545324418-cc1a3a10f657?w=800",
-        "https://images.unsplash.com/photo-1493809842364-78817add864c?w=800",
-      ]),
-      features: JSON.stringify(["Skyline View", "Gym Access", "Rooftop Pool", "Doorman"]),
-    },
-    {
-      slug: "cozy-studio-cabin-aspenn",
-      title: "Cozy Studio Cabin in Aspen",
-      price: 320000,
-      location: "Aspen, CO",
-      bedrooms: 1,
-      bathrooms: 1,
-      areaSqft: 650,
-      imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800",
-      isFeatured: false,
-      galleryUrls: JSON.stringify([
-        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800",
-      ]),
-      features: JSON.stringify(["Mountain View", "Wood Stove", "Hiking Trails Nearby"]),
-    },
-  ];
+  const properties = PROPERTY_TITLES.map((title, i) => ({
+    slug: slugify(title),
+    title,
+    description: `${title} — ${FEATURES[i].join(", ")}. A beautiful home waiting for the right buyer.`,
+    price: 250000 + i * 75000 + (i % 3) * 25000,
+    location: LOCATIONS[i],
+    bedrooms: 1 + (i % 6),
+    bathrooms: 1 + (i % 4),
+    areaSqft: 800 + i * 250,
+    propertyType: PROPERTY_TYPES[i],
+    imageUrl: `/images/properties/property-${(i % 6) + 1}.jpg`,
+    isFeatured: true,
+    galleryUrls: JSON.stringify([
+      `/images/properties/property-${(i % 6) + 1}.jpg`,
+    ]),
+    features: JSON.stringify(FEATURES[i]),
+  }));
 
   for (const p of properties) {
     await prisma.property.create({ data: p });
   }
 
-  // --- 5 Reviews (ratings 1-5, one with null propertyTitle) ---
-  const reviews = [
-    {
-      clientName: "Sarah Johnson",
-      clientAvatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
-      rating: 5,
-      reviewText: "Absolutely seamless experience from start to finish. Found our dream home in under a week!",
-      propertyTitle: "Modern Villa in Sunset Hills",
-    },
-    {
-      clientName: "Michael Chen",
-      clientAvatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-      rating: 4,
-      reviewText: "Great service and professional team. They understood exactly what we were looking for.",
-      propertyTitle: "Downtown Loft Penthouse",
-    },
-    {
-      clientName: "Emily Rodriguez",
-      clientAvatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
-      rating: 5,
-      reviewText: "The best real estate decision we ever made. The beachfront property exceeded all expectations.",
-      propertyTitle: "Beachfront Cottage in Malibu",
-    },
-    {
-      clientName: "David Kim",
-      clientAvatarUrl: "https://images.unsplash.com/photo-1500648767731-6d968f1f1b1f?w=100",
-      rating: 3,
-      reviewText: "Good overall, though the process took a bit longer than expected. Happy with the result.",
-      propertyTitle: null,
-    },
-    {
-      clientName: "Jessica Williams",
-      clientAvatarUrl: "https://images.unsplash.com/photo-1534528741775-1254dd9d9b0f?w=100",
-      rating: 2,
-      reviewText: "Communication could have been better. The property was nice but some details were overlooked.",
-      propertyTitle: "Suburban Family Home in Austin",
-    },
-  ];
+  const propertyTitles = properties.map((p) => p.title);
+  const reviews = REVIEW_NAMES.map((clientName, i) => ({
+    clientName,
+    clientAvatarUrl: avatarUrl(clientName),
+    rating: i < 5 ? [5, 5, 4, 5, 4][i] : (i % 5) + 1,
+    reviewText: REVIEW_TEXTS[i % REVIEW_TEXTS.length],
+    propertyTitle: i % 4 === 0 ? null : propertyTitles[i % propertyTitles.length],
+  }));
 
   for (const r of reviews) {
     await prisma.review.create({ data: r });
   }
 
-  // --- 14 Site Settings ---
   const settings = [
     { key: "site_name", value: "EstateHub" },
     { key: "site_tagline", value: "Find Your Perfect Home" },
@@ -176,7 +169,7 @@ async function main() {
     await prisma.siteSetting.create({ data: s });
   }
 
-  console.log("Seed complete: 6 properties, 5 reviews, 14 settings");
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings`);
 }
 
 main()

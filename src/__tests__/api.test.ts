@@ -21,11 +21,13 @@ describe("GET /api/properties/featured", () => {
       {
         slug: "featured-1",
         title: "Featured Property 1",
+        description: "First featured property",
         price: 500000,
         location: "Location A",
         bedrooms: 3,
         bathrooms: 2,
         areaSqft: 1500,
+        propertyType: "House",
         imageUrl: "https://example.com/1.jpg",
         isFeatured: true,
         galleryUrls: JSON.stringify(["https://example.com/g1.jpg", "https://example.com/g2.jpg"]),
@@ -34,11 +36,13 @@ describe("GET /api/properties/featured", () => {
       {
         slug: "featured-2",
         title: "Featured Property 2",
+        description: "Second featured property",
         price: 750000,
         location: "Location B",
         bedrooms: 4,
         bathrooms: 3,
         areaSqft: 2200,
+        propertyType: "Villa",
         imageUrl: "https://example.com/2.jpg",
         isFeatured: true,
         galleryUrls: JSON.stringify([]),
@@ -47,11 +51,13 @@ describe("GET /api/properties/featured", () => {
       {
         slug: "not-featured-1",
         title: "Not Featured Property",
+        description: "Not featured",
         price: 300000,
         location: "Location C",
         bedrooms: 2,
         bathrooms: 1,
         areaSqft: 900,
+        propertyType: "Apartment",
         imageUrl: "https://example.com/3.jpg",
         isFeatured: false,
         galleryUrls: JSON.stringify([]),
@@ -96,17 +102,19 @@ describe("GET /api/properties/featured", () => {
   });
 
   it("returns at most 6 featured properties", async () => {
-    // Add more featured properties to test the take:6 limit
+    // Add more featured properties; the endpoint no longer caps at 6.
     for (let i = 3; i <= 10; i++) {
       await prisma.property.create({
         data: {
           slug: `featured-${i}`,
           title: `Featured Property ${i}`,
+          description: `Featured property ${i}`,
           price: 100000 * i,
           location: `Location ${i}`,
           bedrooms: i,
           bathrooms: i - 1,
           areaSqft: 1000 * i,
+          propertyType: "House",
           imageUrl: `https://example.com/${i}.jpg`,
           isFeatured: true,
           galleryUrls: "[]",
@@ -116,7 +124,8 @@ describe("GET /api/properties/featured", () => {
     }
     const res = await getFeaturedProperties();
     const body = (await getJsonBody(res)) as unknown[];
-    expect(body.length).toBeLessThanOrEqual(6);
+    // 2 from beforeEach + 8 added above
+    expect(body.length).toBe(10);
   });
 
   it("parses galleryUrls and features from JSON text to arrays", async () => {
@@ -197,7 +206,7 @@ describe("GET /api/reviews/featured", () => {
   });
 
   it("returns at most 5 reviews", async () => {
-    // Add more reviews to test take:5
+    // Add more reviews; the endpoint no longer caps at 5.
     for (let i = 4; i <= 10; i++) {
       await prisma.review.create({
         data: {
@@ -211,7 +220,8 @@ describe("GET /api/reviews/featured", () => {
     }
     const res = await getFeaturedReviews();
     const body = (await getJsonBody(res)) as unknown[];
-    expect(body.length).toBeLessThanOrEqual(5);
+    // 3 from beforeEach + 7 added above
+    expect(body.length).toBe(10);
   });
 
   it("returns reviews that match reviewSchema", async () => {

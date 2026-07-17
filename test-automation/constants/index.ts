@@ -44,12 +44,12 @@ export const REVIEW_FIELDS = [
 
 // ── Seed data & validation bounds ────────────────────────────────
 export const SEED_COUNTS = {
-  PROPERTIES: 6,
-  REVIEWS: 5,
+  PROPERTIES: 20,
+  REVIEWS: 20,
   SETTINGS: 14,
-  FEATURED_PROPERTIES: 5,
+  FEATURED_PROPERTIES: 20,
   NULL_PROPERTY_TITLES: 1,
-  MIN_RATING: 2,
+  MIN_RATING: 1,
   MAX_RATING: 5,
 } as const;
 

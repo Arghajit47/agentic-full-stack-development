@@ -22,8 +22,7 @@ export const featuredProperties: Property[] = [
     bedrooms: 5,
     bathrooms: 4,
     propertyType: "Villa",
-    imageUrl:
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-1.jpg",
   },
   {
     id: 2,
@@ -35,8 +34,7 @@ export const featuredProperties: Property[] = [
     bedrooms: 3,
     bathrooms: 2,
     propertyType: "Penthouse",
-    imageUrl:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-2.jpg",
   },
   {
     id: 3,
@@ -48,8 +46,7 @@ export const featuredProperties: Property[] = [
     bedrooms: 6,
     bathrooms: 5,
     propertyType: "Estate",
-    imageUrl:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-3.jpg",
   },
   {
     id: 4,
@@ -61,8 +58,7 @@ export const featuredProperties: Property[] = [
     bedrooms: 4,
     bathrooms: 3,
     propertyType: "House",
-    imageUrl:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-4.jpg",
   },
   {
     id: 5,
@@ -74,8 +70,7 @@ export const featuredProperties: Property[] = [
     bedrooms: 2,
     bathrooms: 2,
     propertyType: "Loft",
-    imageUrl:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-5.jpg",
   },
   {
     id: 6,
@@ -87,7 +82,6 @@ export const featuredProperties: Property[] = [
     bedrooms: 4,
     bathrooms: 4,
     propertyType: "Villa",
-    imageUrl:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
+    imageUrl: "/images/properties/property-6.jpg",
   },
 ];
