@@ -49,21 +49,22 @@ export function Testimonials({
     <section
       aria-labelledby="testimonials-heading"
       data-testid="testimonials-section"
-      className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 sm:px-6 lg:px-8"
+      className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 text-zinc-100 sm:px-6 lg:px-8"
     >
       <div className="mb-10 text-left">
         <h2
           id="testimonials-heading"
           data-testid="testimonials-heading"
-          className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl"
+          className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
         >
           What Our Clients Say
         </h2>
         <p
           data-testid="testimonials-subheading"
-          className="mt-3 max-w-2xl text-base text-zinc-400 sm:text-lg"
+          className="mt-3 max-w-2xl text-base text-[#999999] sm:text-lg"
         >
-          Real stories from real clients who found their perfect home with us
+          Read the success stories and heartfelt testimonials from our valued clients. Discover why
+          they chose Estatein for their real estate needs.
         </p>
       </div>
 
@@ -79,7 +80,7 @@ export function Testimonials({
           data-testid="testimonials-prev-arrow"
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
             canGoLeft
-              ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
+              ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
           }`}
         >
@@ -93,7 +94,11 @@ export function Testimonials({
         >
           {isLoading
             ? Array.from({ length: cardsVisible }).map((_, i) => (
-                <div key={`skeleton-${i}`} data-testid="review-skeleton" className="animate-pulse">
+                <div
+                  key={`skeleton-${i}`}
+                  data-testid="review-skeleton"
+                  className="h-[260px] animate-pulse md:h-[280px] lg:h-[300px]"
+                >
                   <div className="flex items-center gap-4">
                     <div className="h-14 w-14 rounded-full bg-zinc-800" />
                     <div className="flex flex-col gap-2">
@@ -111,9 +116,12 @@ export function Testimonials({
                 </div>
               ))
             : visibleCards.map((review) => (
-                <article key={review.id} data-testid="review-card" className="flex flex-col">
+                <article
+                  key={review.id}
+                  data-testid="review-card"
+                  className="flex h-[260px] flex-col md:h-[280px] lg:h-[300px]"
+                >
                   <div className="flex items-center gap-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={review.clientAvatarUrl}
                       alt={review.clientName}
@@ -123,14 +131,14 @@ export function Testimonials({
                     <div>
                       <h3
                         data-testid={`review-name-${review.id}`}
-                        className="font-semibold text-zinc-100"
+                        className="font-semibold text-white"
                       >
                         {review.clientName}
                       </h3>
                       {review.propertyTitle && (
                         <p
                           data-testid={`review-property-${review.id}`}
-                          className="text-sm text-zinc-500"
+                          className="text-sm text-[#666666]"
                         >
                           {review.propertyTitle}
                         </p>
@@ -140,21 +148,21 @@ export function Testimonials({
                   <div
                     className="mt-4 flex gap-0.5"
                     role="img"
-                      aria-label={`${review.rating} out of 5 stars`}
-                      data-testid={`review-stars-${review.id}`}
+                    aria-label={`${review.rating} out of 5 stars`}
+                    data-testid={`review-stars-${review.id}`}
                   >
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
                         className={`h-5 w-5 ${
-                          i < review.rating ? "fill-violet-500 text-violet-500" : "text-zinc-700"
+                          i < review.rating ? "fill-[#703BF7] text-[#703BF7]" : "text-zinc-700"
                         }`}
                       />
                     ))}
                   </div>
                   <p
                     data-testid={`review-text-${review.id}`}
-                    className="mt-4 text-sm text-zinc-400"
+                    className="mt-4 line-clamp-3 text-sm text-[#999999]"
                   >
                     {review.reviewText}
                   </p>
@@ -170,7 +178,7 @@ export function Testimonials({
           data-testid="testimonials-next-arrow"
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
             canGoRight
-              ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
+              ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
           }`}
         >
