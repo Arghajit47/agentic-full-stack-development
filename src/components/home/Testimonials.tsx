@@ -26,17 +26,19 @@ function StarRating({ rating }: { rating: number }) {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <article data-testid="review-card" className="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-zinc-200">
+    <article data-testid="review-card" className="flex flex-col gap-4 rounded-2xl bg-zinc-900 p-6 shadow-md ring-1 ring-zinc-800">
       <div className="flex items-center gap-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={review.clientAvatarUrl}
           alt={review.clientName}
-          className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-zinc-100"
+          width={56}
+          height={56}
+          className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-zinc-700"
           loading="lazy"
         />
         <div className="flex flex-col">
-          <span className="text-base font-semibold text-zinc-900">
+          <span className="text-base font-semibold text-zinc-100">
             {review.clientName}
           </span>
           {review.propertyTitle && (
@@ -45,28 +47,28 @@ function ReviewCard({ review }: { review: Review }) {
         </div>
       </div>
       <StarRating rating={review.rating} />
-      <p className="text-sm leading-relaxed text-zinc-600">&ldquo;{review.reviewText}&rdquo;</p>
+      <p className="text-sm leading-relaxed text-zinc-400">&ldquo;{review.reviewText}&rdquo;</p>
     </article>
   );
 }
 
 function SkeletonCard() {
   return (
-    <div className="animate-pulse rounded-2xl bg-white p-6 shadow-md ring-1 ring-zinc-200">
+    <div className="animate-pulse rounded-2xl bg-zinc-900 p-6 shadow-md ring-1 ring-zinc-800">
       <div className="flex items-center gap-4">
-        <div className="h-14 w-14 rounded-full bg-zinc-200" />
+        <div className="h-14 w-14 rounded-full bg-zinc-800" />
         <div className="flex flex-col gap-2">
-          <div className="h-4 w-24 rounded bg-zinc-200" />
-          <div className="h-3 w-20 rounded bg-zinc-200" />
+          <div className="h-4 w-24 rounded bg-zinc-800" />
+          <div className="h-3 w-20 rounded bg-zinc-800" />
         </div>
       </div>
       <div className="mt-4 flex gap-0.5">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-5 w-5 rounded bg-zinc-200" />
+          <div key={i} className="h-5 w-5 rounded bg-zinc-800" />
         ))}
       </div>
-      <div className="mt-4 h-4 w-full rounded bg-zinc-200" />
-      <div className="mt-2 h-4 w-3/4 rounded bg-zinc-200" />
+      <div className="mt-4 h-4 w-full rounded bg-zinc-800" />
+      <div className="mt-2 h-4 w-3/4 rounded bg-zinc-800" />
     </div>
   );
 }
@@ -81,16 +83,16 @@ export default function Testimonials({
     <section
       aria-labelledby="testimonials-heading"
       data-testid="testimonials-section"
-      className="mx-auto w-full max-w-[1920px] bg-zinc-50 px-4 py-16 sm:px-6 lg:px-8"
+      className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mb-10 text-center">
         <h2
           id="testimonials-heading"
-          className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl"
+          className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl"
         >
           What Our Clients Say
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-base text-zinc-500 sm:text-lg">
+        <p className="mx-auto mt-3 max-w-2xl text-base text-zinc-400 sm:text-lg">
           Real stories from real clients who found their perfect home with us.
         </p>
       </div>
@@ -102,7 +104,7 @@ export default function Testimonials({
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <p data-testid="no-reviews" className="py-12 text-center text-lg text-zinc-500">No reviews yet</p>
+        <p data-testid="no-reviews" className="py-12 text-center text-lg text-zinc-400">No reviews yet</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {reviews.map((review) => (

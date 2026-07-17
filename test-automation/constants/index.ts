@@ -69,3 +69,162 @@ export const REQUIRED_SETTING_KEYS = [
   "reviews_heading",
   "reviews_subheading",
 ] as const;
+
+// ── UI test harness ──────────────────────────────────────────────
+// Route paths for component test fixtures rendered under /test-harness/.
+export const UI_ROUTES = {
+  HOME: "/",
+  EMPTY_PROPERTIES: "/test-harness/empty-properties",
+  EMPTY_REVIEWS: "/test-harness/empty-reviews",
+  LOADING: "/test-harness/loading",
+} as const;
+
+// data-testid selectors — single source of truth for UI page object.
+export const UI_TESTIDS = {
+  FEATURED_SECTION: "featured-properties-section",
+  PROPERTY_CARD: "property-card",
+  EXPLORE_CTA: "explore-properties-cta",
+  NO_PROPERTIES: "no-properties",
+  TESTIMONIALS_SECTION: "testimonials-section",
+  REVIEW_CARD: "review-card",
+  NO_REVIEWS: "no-reviews",
+} as const;
+
+// Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.
+// Test cases use 375/768/1024/1440/1920.
+export const VIEWPORTS = {
+  MOBILE: { width: 375, height: 667 },
+  TABLET: { width: 768, height: 1024 },
+  LAPTOP: { width: 1024, height: 768 },
+  DESKTOP: { width: 1440, height: 900 },
+  WIDE: { width: 1920, height: 1080 },
+} as const;
+
+// Expected grid column counts per viewport.
+export const FEATURED_GRID_COLS = {
+  WIDE: 3,
+  DESKTOP: 3,
+  LAPTOP: 2,
+  TABLET: 2,
+  MOBILE: 1,
+} as const;
+
+export const TESTIMONIALS_GRID_COLS = {
+  WIDE: 3,
+  DESKTOP: 3,
+  LAPTOP: 2,
+  TABLET: 1,
+  MOBILE: 1,
+} as const;
+
+// Headings & subheadings (static copy from components).
+export const UI_TEXT = {
+  FEATURED_HEADING: "Featured Properties",
+  FEATURED_SUBHEADING:
+    "Discover our handpicked selection of premium properties available right now.",
+  TESTIMONIALS_HEADING: "What Our Clients Say",
+  TESTIMONIALS_SUBHEADING:
+    "Real stories from real clients who found their perfect home with us.",
+  CTA_LABEL: "Explore Properties",
+  NO_PROPERTIES: "No properties found",
+  NO_REVIEWS: "No reviews yet",
+} as const;
+
+// Expected rendered counts.
+export const UI_COUNTS = {
+  PROPERTY_CARDS: 6,
+  REVIEW_CARDS: 5,
+  SKELETON_PROPERTY: 6,
+  SKELETON_REVIEW: 5,
+} as const;
+
+// Featured property mock data (mirrors src/mocks/featured-properties.ts).
+// Specs compare rendered card text against these expected values.
+export const FEATURED_PROPERTY_MOCKS = [
+  {
+    title: "Modern Luxury Villa",
+    price: 1250000,
+    priceFormatted: "$1,250,000",
+    location: "Beverly Hills, CA",
+    bedrooms: 5,
+    bathrooms: 4,
+    areaSqft: 4200,
+  },
+  {
+    title: "Downtown Penthouse",
+    price: 895000,
+    priceFormatted: "$895,000",
+    location: "New York, NY",
+    bedrooms: 3,
+    bathrooms: 2,
+    areaSqft: 2100,
+  },
+  {
+    title: "Beachfront Estate",
+    price: 2150000,
+    priceFormatted: "$2,150,000",
+    location: "Malibu, CA",
+    bedrooms: 6,
+    bathrooms: 5,
+    areaSqft: 5800,
+  },
+  {
+    title: "Suburban Family Home",
+    price: 475000,
+    priceFormatted: "$475,000",
+    location: "Austin, TX",
+    bedrooms: 4,
+    bathrooms: 3,
+    areaSqft: 2800,
+  },
+  {
+    title: "Contemporary Loft",
+    price: 620000,
+    priceFormatted: "$620,000",
+    location: "Chicago, IL",
+    bedrooms: 2,
+    bathrooms: 2,
+    areaSqft: 1600,
+  },
+  {
+    title: "Hillside Modern Retreat",
+    price: 1780000,
+    priceFormatted: "$1,780,000",
+    location: "Scottsdale, AZ",
+    bedrooms: 4,
+    bathrooms: 4,
+    areaSqft: 3900,
+  },
+] as const;
+
+// Testimonials mock data (mirrors src/mocks/testimonials.ts).
+export const TESTIMONIAL_MOCKS = [
+  {
+    clientName: "Sarah Johnson",
+    rating: 5,
+    propertyTitle: "Modern Luxury Villa",
+  },
+  {
+    clientName: "Michael Chen",
+    rating: 5,
+    propertyTitle: "Downtown Penthouse",
+  },
+  {
+    clientName: "Emily Rodriguez",
+    rating: 4,
+    propertyTitle: "Suburban Family Home",
+  },
+  {
+    clientName: "David Thompson",
+    rating: 5,
+    propertyTitle: null,
+  },
+  {
+    clientName: "Jessica Williams",
+    rating: 4,
+    propertyTitle: "Contemporary Loft",
+  },
+] as const;
+
+// Star rating aria-label template used by the Testimonials StarRating component.
+export const STAR_ARIA_TEMPLATE = "{rating} out of 5 stars";

@@ -14,38 +14,40 @@ interface FeaturedPropertiesProps {
 
 function PropertyCard({ property }: { property: Property }) {
   return (
-    <article data-testid="property-card" className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-zinc-200 transition-shadow hover:shadow-xl">
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+    <article data-testid="property-card" className="group flex flex-col overflow-hidden rounded-2xl bg-zinc-900 shadow-md ring-1 ring-zinc-800 transition-shadow hover:shadow-xl">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-800">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={property.imageUrl}
           alt={property.title}
+          width={600}
+          height={450}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-lg font-semibold text-zinc-900">{property.title}</h3>
-          <span className="shrink-0 text-lg font-bold text-indigo-600">
+          <h3 className="text-lg font-semibold text-zinc-100">{property.title}</h3>
+          <span className="shrink-0 text-lg font-bold text-indigo-400">
             {priceFormatter.format(property.price)}
           </span>
         </div>
-        <p className="flex items-center gap-1.5 text-sm text-zinc-500">
-          <MapPin className="h-4 w-4 shrink-0 text-zinc-400" />
+        <p className="flex items-center gap-1.5 text-sm text-zinc-400">
+          <MapPin className="h-4 w-4 shrink-0 text-zinc-500" />
           {property.location}
         </p>
-        <div className="mt-auto flex items-center gap-4 border-t border-zinc-100 pt-4 text-sm text-zinc-600">
+        <div className="mt-auto flex items-center gap-4 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
           <span className="flex items-center gap-1.5">
-            <Bed className="h-4 w-4 text-zinc-400" />
+            <Bed className="h-4 w-4 text-zinc-500" />
             {property.bedrooms} Beds
           </span>
           <span className="flex items-center gap-1.5">
-            <Bath className="h-4 w-4 text-zinc-400" />
+            <Bath className="h-4 w-4 text-zinc-500" />
             {property.bathrooms} Baths
           </span>
           <span className="flex items-center gap-1.5">
-            <Maximize className="h-4 w-4 text-zinc-400" />
+            <Maximize className="h-4 w-4 text-zinc-500" />
             {property.areaSqft.toLocaleString("en-US")} sqft
           </span>
         </div>
@@ -56,18 +58,18 @@ function PropertyCard({ property }: { property: Property }) {
 
 function SkeletonCard() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-zinc-200">
-      <div className="aspect-[4/3] w-full bg-zinc-200" />
+    <div className="animate-pulse overflow-hidden rounded-2xl bg-zinc-900 shadow-md ring-1 ring-zinc-800">
+      <div className="aspect-[4/3] w-full bg-zinc-800" />
       <div className="flex flex-col gap-3 p-5">
         <div className="flex items-center justify-between">
-          <div className="h-5 w-32 rounded bg-zinc-200" />
-          <div className="h-5 w-20 rounded bg-zinc-200" />
+          <div className="h-5 w-32 rounded bg-zinc-800" />
+          <div className="h-5 w-20 rounded bg-zinc-800" />
         </div>
-        <div className="h-4 w-24 rounded bg-zinc-200" />
+        <div className="h-4 w-24 rounded bg-zinc-800" />
         <div className="flex gap-4 pt-4">
-          <div className="h-4 w-16 rounded bg-zinc-200" />
-          <div className="h-4 w-16 rounded bg-zinc-200" />
-          <div className="h-4 w-20 rounded bg-zinc-200" />
+          <div className="h-4 w-16 rounded bg-zinc-800" />
+          <div className="h-4 w-16 rounded bg-zinc-800" />
+          <div className="h-4 w-20 rounded bg-zinc-800" />
         </div>
       </div>
     </div>
@@ -89,11 +91,11 @@ export default function FeaturedProperties({
       <div className="mb-10 text-center">
         <h2
           id="featured-properties-heading"
-          className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl"
+          className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl"
         >
           Featured Properties
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-base text-zinc-500 sm:text-lg">
+        <p className="mx-auto mt-3 max-w-2xl text-base text-zinc-400 sm:text-lg">
           Discover our handpicked selection of premium properties available right now.
         </p>
       </div>
@@ -105,7 +107,7 @@ export default function FeaturedProperties({
           ))}
         </div>
       ) : properties.length === 0 ? (
-        <p data-testid="no-properties" className="py-12 text-center text-lg text-zinc-500">No properties found</p>
+        <p data-testid="no-properties" className="py-12 text-center text-lg text-zinc-400">No properties found</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {properties.map((property) => (
