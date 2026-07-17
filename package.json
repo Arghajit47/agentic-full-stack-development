@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "DATABASE_URL='file:./prisma/test.db' npx prisma db push --force-reset && DATABASE_URL='file:./prisma/test.db' vitest run",
+    "test:watch": "DATABASE_URL='file:./prisma/test.db' vitest"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
