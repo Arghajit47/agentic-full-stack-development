@@ -1,177 +1,146 @@
-import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, within, cleanup } from "@testing-library/react";
-import FeaturedProperties from "@/components/home/FeaturedProperties";
-import type { Property } from "@/mocks/featured-properties";
+import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
+import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { featuredProperties } from "@/mocks/featured-properties";
 
-afterEach(() => cleanup());
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
-const mockProperties: Property[] = [
-  {
-    id: 1,
-    title: "Modern Luxury Villa",
-    price: 1250000,
-    location: "Beverly Hills, CA",
-    bedrooms: 5,
-    bathrooms: 4,
-    areaSqft: 4200,
-    imageUrl: "https://example.com/1.jpg",
-  },
-  {
-    id: 2,
-    title: "Downtown Penthouse",
-    price: 895000,
-    location: "New York, NY",
-    bedrooms: 3,
-    bathrooms: 2,
-    areaSqft: 2100,
-    imageUrl: "https://example.com/2.jpg",
-  },
-  {
-    id: 3,
-    title: "Beachfront Estate",
-    price: 2150000,
-    location: "Malibu, CA",
-    bedrooms: 6,
-    bathrooms: 5,
-    areaSqft: 5800,
-    imageUrl: "https://example.com/3.jpg",
-  },
-  {
-    id: 4,
-    title: "Suburban Family Home",
-    price: 475000,
-    location: "Austin, TX",
-    bedrooms: 4,
-    bathrooms: 3,
-    areaSqft: 2800,
-    imageUrl: "https://example.com/4.jpg",
-  },
-  {
-    id: 5,
-    title: "Contemporary Loft",
-    price: 620000,
-    location: "Chicago, IL",
-    bedrooms: 2,
-    bathrooms: 2,
-    areaSqft: 1600,
-    imageUrl: "https://example.com/5.jpg",
-  },
-  {
-    id: 6,
-    title: "Hillside Modern Retreat",
-    price: 1780000,
-    location: "Scottsdale, AZ",
-    bedrooms: 4,
-    bathrooms: 4,
-    areaSqft: 3900,
-    imageUrl: "https://example.com/6.jpg",
-  },
-];
+// Mock responsive hook to return 3 cards (desktop)
+vi.mock("react", async (importActual) => {
+  const actual = await importActual<typeof import("react")>();
+  return {
+    ...actual,
+    useState: actual.useState,
+    // Override the effect-based responsive hook by mocking window
+  };
+});
+
+// Set window width for desktop (3 cards)
+beforeAll(() => {
+  Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1920 });
+});
+
+afterEach(cleanup);
 
 describe("FeaturedProperties", () => {
-  it("renders heading 'Featured Properties' and a subheading", () => {
-    render(<FeaturedProperties properties={mockProperties} />);
-    expect(screen.getByText("Featured Properties")).toBeTruthy();
-    // subheading placeholder
-    expect(
-      screen.getByText(/handpicked selection of premium properties/i)
-    ).toBeTruthy();
+  it("renders the heading 'Featured Properties'", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("featured-properties-heading")).toHaveTextContent("Featured Properties");
   });
 
-  it("renders exactly 6 property cards", () => {
-    render(<FeaturedProperties properties={mockProperties} />);
-    // 6 article elements (cards)
-    const cards = screen.getAllByRole("article");
-    expect(cards).toHaveLength(6);
+  it("heading is left-aligned", () => {
+    render(<FeaturedProperties />);
+    const heading = screen.getByTestId("featured-properties-heading");
+    expect(heading.parentElement?.className).toContain("text-left");
   });
 
-  it("displays image, title, formatted price, location, beds/baths/area in each card", () => {
-    render(<FeaturedProperties properties={mockProperties} />);
-    const cards = screen.getAllByRole("article");
-    expect(cards).toHaveLength(6);
+  it("renders the subheading", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("featured-properties-subheading")).toBeInTheDocument();
+  });
 
-    cards.forEach((card, idx) => {
-      const p = mockProperties[idx];
-      // title
-      expect(within(card).getByText(p.title)).toBeTruthy();
-      // price formatted
-      const expected = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(p.price);
-      expect(within(card).getByText(expected)).toBeTruthy();
-      // location
-      expect(within(card).getByText(p.location)).toBeTruthy();
-      // beds / baths / area
-      expect(within(card).getByText(`${p.bedrooms} Beds`)).toBeTruthy();
-      expect(within(card).getByText(`${p.bathrooms} Baths`)).toBeTruthy();
-      expect(
-        within(card).getByText(`${p.areaSqft.toLocaleString("en-US")} sqft`)
-      ).toBeTruthy();
-      // image
-      const img = within(card).getByRole("img") as HTMLImageElement;
-      expect(img.src).toBe(p.imageUrl);
+  it("renders 3 visible property cards at 1920px (not 6)", () => {
+    render(<FeaturedProperties />);
+    const cards = screen.getAllByTestId(/property-card/);
+    expect(cards).toHaveLength(3);
+  });
+
+  it("renders left and right navigation arrows", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("prev-arrow")).toBeInTheDocument();
+    expect(screen.getByTestId("next-arrow")).toBeInTheDocument();
+  });
+
+  it("left arrow is disabled on first page", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("prev-arrow")).toBeDisabled();
+  });
+
+  it("right arrow is enabled when more data exists", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("next-arrow")).not.toBeDisabled();
+  });
+
+  it("renders property image in each card", () => {
+    render(<FeaturedProperties />);
+    const images = screen.getAllByRole("img", { name: /Modern|Downtown|Beachfront/i });
+    expect(images).toHaveLength(3);
+  });
+
+  it("renders property title in each card", () => {
+    render(<FeaturedProperties />);
+    featuredProperties.slice(0, 3).forEach((p) => {
+      expect(screen.getByTestId(`property-title-${p.id}`)).toHaveTextContent(p.title);
     });
   });
 
-  it("renders 'Explore Properties' CTA button below the section", () => {
-    render(<FeaturedProperties properties={mockProperties} />);
-    const btn = screen.getByRole("button", { name: /explore properties/i });
-    expect(btn).toBeTruthy();
-  });
-
-  it("shows loading skeleton state while loading", () => {
-    render(<FeaturedProperties properties={mockProperties} isLoading />);
-    // No articles rendered during loading
-    expect(screen.queryAllByRole("article")).toHaveLength(0);
-    // CTA not rendered while loading
-    expect(screen.queryByRole("button", { name: /explore properties/i })).toBeNull();
-  });
-
-  it("transitions out of loading state when isLoading flips to false", () => {
-    const { rerender } = render(
-      <FeaturedProperties properties={mockProperties} isLoading />
-    );
-    expect(screen.queryAllByRole("article")).toHaveLength(0);
-    rerender(<FeaturedProperties properties={mockProperties} isLoading={false} />);
-    expect(screen.getAllByRole("article")).toHaveLength(6);
-  });
-
-  it("renders 'No properties found' when data array is empty", () => {
-    render(<FeaturedProperties properties={[]} />);
-    expect(screen.getByText("No properties found")).toBeTruthy();
-    expect(screen.queryAllByRole("article")).toHaveLength(0);
-  });
-
-  it("does not render CTA when no properties", () => {
-    render(<FeaturedProperties properties={[]} />);
-    expect(screen.queryByRole("button", { name: /explore properties/i })).toBeNull();
-  });
-
-  it("uses responsive grid classes (1 col mobile, 2 col sm/lg, 3 col xl)", () => {
-    const { container } = render(
-      <FeaturedProperties properties={mockProperties} />
-    );
-    // Find the grid div (contains all cards)
-    const grid = container.querySelector(".grid");
-    expect(grid).toBeTruthy();
-    const cls = grid?.className ?? "";
-    expect(cls).toContain("grid-cols-1");
-    expect(cls).toContain("sm:grid-cols-2");
-    expect(cls).toContain("lg:grid-cols-2");
-    expect(cls).toContain("xl:grid-cols-3");
-  });
-
-  it("formats price with Intl.NumberFormat (no decimals)", () => {
-    render(<FeaturedProperties properties={mockProperties} />);
-    expect(screen.getByText("$1,250,000")).toBeTruthy();
-    expect(screen.getByText("$895,000")).toBeTruthy();
-  });
-
-  it("falls back to default mock data when no properties prop is passed", () => {
+  it("renders property description in each card", () => {
     render(<FeaturedProperties />);
-    // Default mock has 6 properties
-    expect(screen.getAllByRole("article")).toHaveLength(6);
+    featuredProperties.slice(0, 3).forEach((p) => {
+      expect(screen.getByTestId(`property-description-${p.id}`)).toHaveTextContent(p.description);
+    });
+  });
+
+  it("renders specs row with bedrooms, bathrooms, and property type (not area)", () => {
+    render(<FeaturedProperties />);
+    const firstCard = screen.getByTestId(`property-specs-${featuredProperties[0].id}`);
+    expect(firstCard).toHaveTextContent(`${featuredProperties[0].bedrooms} bedrooms`);
+    expect(firstCard).toHaveTextContent(`${featuredProperties[0].bathrooms} bathrooms`);
+    expect(firstCard).toHaveTextContent(featuredProperties[0].propertyType);
+    expect(firstCard).not.toHaveTextContent("sqft");
+    expect(firstCard).not.toHaveTextContent("area");
+  });
+
+  it("renders 'Price' label above price value", () => {
+    render(<FeaturedProperties />);
+    const priceLabel = screen.getByTestId(`price-label-${featuredProperties[0].id}`);
+    expect(priceLabel).toHaveTextContent("Price");
+  });
+
+  it("renders formatted price value", () => {
+    render(<FeaturedProperties />);
+    const priceSection = screen.getByTestId(`property-price-${featuredProperties[0].id}`);
+    expect(priceSection).toHaveTextContent("$1,250,000");
+  });
+
+  it("renders 'View property details' button in each card", () => {
+    render(<FeaturedProperties />);
+    featuredProperties.slice(0, 3).forEach((p) => {
+      expect(screen.getByTestId(`view-details-${p.id}`)).toHaveTextContent("View property details");
+    });
+  });
+
+  it("renders 'Explore Properties' CTA below section", () => {
+    render(<FeaturedProperties />);
+    expect(screen.getByTestId("explore-properties-cta")).toHaveTextContent("Explore Properties");
+  });
+
+  it("renders skeleton loading state", () => {
+    render(<FeaturedProperties isLoading={true} />);
+    expect(screen.getAllByTestId(/skeleton|property-skeleton/)).toHaveLength(3);
+  });
+
+  it("renders empty state when data is empty", () => {
+    render(<FeaturedProperties data={[]} />);
+    expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
+  });
+
+  it("cards have no visible border/ring (blended with bg)", () => {
+    render(<FeaturedProperties />);
+    const cards = screen.getAllByTestId(/property-card/);
+    cards.forEach((card) => {
+      expect(card.className).not.toContain("ring");
+      expect(card.className).not.toContain("border");
+      expect(card.className).not.toContain("shadow");
+    });
+  });
+
+  it("section has dark background", () => {
+    render(<FeaturedProperties />);
+    const section = screen.getByTestId("featured-properties-section");
+    expect(section.className).toContain("bg-zinc-950");
   });
 });

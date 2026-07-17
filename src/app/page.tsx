@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FeaturedProperties from "@/components/home/FeaturedProperties";
-import Testimonials from "@/components/home/Testimonials";
+import { FeaturedProperties } from "@/components/home/FeaturedProperties";
+import { Testimonials } from "@/components/home/Testimonials";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
