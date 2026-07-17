@@ -125,7 +125,7 @@ describe("FeaturedProperties", () => {
 
   it("renders empty state when data is empty", () => {
     render(<FeaturedProperties data={[]} />);
-    expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
+    expect(screen.getByTestId("no-properties")).toHaveTextContent("No featured properties");
   });
 
   it("cards have no visible border/ring (blended with bg)", () => {

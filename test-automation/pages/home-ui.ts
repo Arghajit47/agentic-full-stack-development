@@ -10,6 +10,12 @@ import {
   FEATURED_PROPERTY_MOCKS,
   TESTIMONIAL_MOCKS,
   STAR_ARIA_TEMPLATE,
+  INTEGRATION_TEXT,
+  INTEGRATION_TESTIDS,
+  INTEGRATION_COUNTS,
+  PRICE_FORMAT,
+  STUB_IMAGE,
+  API_PATHS,
 } from "@constants/index";
 
 type ViewportKey = keyof typeof VIEWPORTS;
@@ -29,6 +35,11 @@ export class HomeUI {
   readonly testimonialsSection: Locator;
   readonly reviewCards: Locator;
   readonly noReviews: Locator;
+  readonly featuredHeading: Locator;
+  readonly featuredSubheading: Locator;
+  readonly testimonialsHeading: Locator;
+  readonly testimonialsSubheading: Locator;
+  readonly homeError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -39,6 +50,11 @@ export class HomeUI {
     this.testimonialsSection = page.getByTestId(UI_TESTIDS.TESTIMONIALS_SECTION);
     this.reviewCards = page.getByTestId(UI_TESTIDS.REVIEW_CARD);
     this.noReviews = page.getByTestId(UI_TESTIDS.NO_REVIEWS);
+    this.featuredHeading = page.getByTestId(INTEGRATION_TESTIDS.FEATURED_HEADING);
+    this.featuredSubheading = page.getByTestId(INTEGRATION_TESTIDS.FEATURED_SUBHEADING);
+    this.testimonialsHeading = page.getByTestId(INTEGRATION_TESTIDS.TESTIMONIALS_HEADING);
+    this.testimonialsSubheading = page.getByTestId(INTEGRATION_TESTIDS.TESTIMONIALS_SUBHEADING);
+    this.homeError = page.getByTestId(INTEGRATION_TESTIDS.HOME_ERROR);
   }
 
   async gotoHome(): Promise<void> {
@@ -263,6 +279,159 @@ export class HomeUI {
     await this.page.waitForTimeout(500);
     expect(errors, "zero console/page errors").toEqual([]);
     return errors;
+  }
+
+  // ── KAN-8 integration helpers ─────────────────────────────────────
+
+  async interceptFeaturedRoutes(): Promise<void> {
+    await this.page.route(API_PATHS.PROPERTIES_FEATURED, (route) => route.continue());
+    await this.page.route(API_PATHS.REVIEWS_FEATURED, (route) => route.continue());
+    await this.page.route(API_PATHS.SETTINGS, (route) => route.continue());
+  }
+
+  async assertApiCalls(): Promise<void> {
+    const responses: Record<string, boolean> = {};
+    this.page.on("response", (res) => {
+      const url = res.url();
+      if (url.includes(API_PATHS.PROPERTIES_FEATURED)) responses[API_PATHS.PROPERTIES_FEATURED] = true;
+      if (url.includes(API_PATHS.REVIEWS_FEATURED)) responses[API_PATHS.REVIEWS_FEATURED] = true;
+      if (url.includes(API_PATHS.SETTINGS)) responses[API_PATHS.SETTINGS] = true;
+    });
+    await this.gotoHome();
+    await expect.poll(() => responses[API_PATHS.PROPERTIES_FEATURED]).toBe(true);
+    await expect.poll(() => responses[API_PATHS.REVIEWS_FEATURED]).toBe(true);
+    await expect.poll(() => responses[API_PATHS.SETTINGS]).toBe(true);
+  }
+
+  async assertHeadingsFromSettings(): Promise<void> {
+    await expect(this.featuredHeading).toHaveText(INTEGRATION_TEXT.SEED_PROPERTIES_HEADING);
+    await expect(this.featuredSubheading).toHaveText(INTEGRATION_TEXT.SEED_PROPERTIES_SUBHEADING);
+    await expect(this.testimonialsHeading).toHaveText(INTEGRATION_TEXT.SEED_REVIEWS_HEADING);
+    await expect(this.testimonialsSubheading).toHaveText(INTEGRATION_TEXT.SEED_REVIEWS_SUBHEADING);
+  }
+
+  async assertLoadingSkeletons(): Promise<void> {
+    // Delay API responses so the loading skeletons are visible on initial paint.
+    const delay = 1000;
+    await this.page.route(API_PATHS.PROPERTIES_FEATURED, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      const response = await route.fetch();
+      await route.fulfill({ response });
+    });
+    await this.page.route(API_PATHS.REVIEWS_FEATURED, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      const response = await route.fetch();
+      await route.fulfill({ response });
+    });
+    await this.page.route(API_PATHS.SETTINGS, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      const response = await route.fetch();
+      await route.fulfill({ response });
+    });
+    await this.page.goto(UI_ROUTES.HOME);
+    // While API calls are delayed, cards should not yet be rendered.
+    await expect(this.propertyCards).toHaveCount(0);
+    await expect(this.reviewCards).toHaveCount(0);
+    await expect(this.featuredSection.locator("[data-testid='property-skeleton']")).toHaveCount(
+      INTEGRATION_COUNTS.VISIBLE_CARDS_DESKTOP,
+    );
+    await expect(this.testimonialsSection.locator("[data-testid='review-skeleton']")).toHaveCount(
+      INTEGRATION_COUNTS.VISIBLE_CARDS_DESKTOP,
+    );
+    // Wait for delayed routes to finish fulfilling before cleanup so handlers don't error.
+    await this.page.waitForTimeout(delay + 500);
+    await this.page.unrouteAll({ behavior: "ignoreErrors" });
+  }
+
+  async assertErrorFallback(): Promise<void> {
+    await this.page.route(API_PATHS.PROPERTIES_FEATURED, (route) => route.abort("failed"));
+    await this.page.route(API_PATHS.REVIEWS_FEATURED, (route) => route.abort("failed"));
+    await this.page.route(API_PATHS.SETTINGS, (route) => route.abort("failed"));
+    await this.page.goto(UI_ROUTES.HOME);
+    await this.homeError.waitFor({ state: "visible" });
+    await expect(this.homeError).toHaveText(INTEGRATION_TEXT.ERROR_FALLBACK);
+    await this.page.unrouteAll({ behavior: "ignoreErrors" });
+  }
+
+  async assertCurrencyFormat(price: number, expected: string): Promise<void> {
+    const formatter = new Intl.NumberFormat(PRICE_FORMAT.LOCALE, {
+      style: "currency",
+      currency: PRICE_FORMAT.CURRENCY,
+      maximumFractionDigits: PRICE_FORMAT.MAX_FRACTION_DIGITS,
+    });
+    expect(formatter.format(price)).toBe(expected);
+  }
+
+  async assertFirstPropertyPriceFormatted(): Promise<void> {
+    const firstCard = this.propertyCards.first();
+    const priceContainer = firstCard.locator("[data-testid^='property-price-']");
+    const priceText = await priceContainer.textContent();
+    expect(priceText, "price text present").toBeTruthy();
+    expect(priceText, "USD currency format").toMatch(/\$\d{1,3}(,\d{3})+/);
+  }
+
+  async assertStarRatingForFirstReview(): Promise<void> {
+    const firstCard = this.reviewCards.first();
+    const stars = firstCard.locator("[data-testid^='review-stars-']").locator("svg");
+    await expect(stars).toHaveCount(INTEGRATION_COUNTS.STAR_TOTAL);
+    const starClasses = await stars.evaluateAll((nodes: SVGSVGElement[]) =>
+      nodes.map((n) => n.getAttribute("class") ?? ""),
+    );
+    const filledCount = starClasses.filter((c) => c.includes("fill-[#703BF7]")).length;
+    const emptyCount = starClasses.filter((c) => c.includes("text-zinc-700")).length;
+    expect(filledCount, "filled star count").toBe(TESTIMONIAL_MOCKS[0].rating);
+    expect(emptyCount, "empty star count").toBe(
+      INTEGRATION_COUNTS.STAR_TOTAL - TESTIMONIAL_MOCKS[0].rating,
+    );
+  }
+
+  async assertAllImagesLoaded(): Promise<void> {
+    await this.gotoHome();
+    await this.page.route(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i, (route) =>
+      route.fulfill({
+        contentType: STUB_IMAGE.CONTENT_TYPE,
+        body: Buffer.from(STUB_IMAGE.BASE64, "base64"),
+      }),
+    );
+    // A reload is needed after route interception so the browser fetches the stubbed image.
+    await this.page.goto(UI_ROUTES.HOME);
+    await this.propertyCards.first().waitFor({ state: "visible" });
+    const broken = await expect.poll(
+      async () => {
+        return await this.page.evaluate((): string[] => {
+          return Array.from(document.querySelectorAll("img"))
+            .map((el) => el as HTMLImageElement)
+            .filter((img) => img.naturalWidth === 0)
+            .map((img) => img.src);
+        });
+      },
+      { message: "all images loaded", timeout: 10_000 },
+    ).toEqual([]);
+    await this.page.unrouteAll({ behavior: "ignoreErrors" });
+  }
+
+  async assertNoImage404s(): Promise<void> {
+    const failed: string[] = [];
+    this.page.on("response", (res) => {
+      if (res.url().match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i) && res.status() >= 400) {
+        failed.push(res.url());
+      }
+    });
+    await this.gotoHome();
+    await this.page.waitForLoadState("networkidle");
+    expect(failed, "zero image 404s").toEqual([]);
+  }
+
+  async clickFirstPropertyCardAndCaptureSlug(): Promise<string> {
+    const logs: string[] = [];
+    this.page.on("console", (msg) => {
+      if (msg.type() === "log") logs.push(msg.text());
+    });
+    const firstCard = this.propertyCards.first();
+    const button = firstCard.getByRole("button", { name: "View property details" });
+    await button.click();
+    await expect.poll(() => logs.length).toBeGreaterThan(0);
+    return logs[logs.length - 1];
   }
 }
 
