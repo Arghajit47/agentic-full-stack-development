@@ -23,7 +23,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 5,
     bathrooms: 4,
     propertyType: "Villa",
-    imageUrl: "/images/properties/property-1.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200",
     area: "4,200 sq ft"
   },
   {
@@ -36,12 +36,12 @@ export const propertiesListings: Property[] = [
     bedrooms: 7,
     bathrooms: 8,
     propertyType: "Mansion",
-    imageUrl: "/images/properties/property-2.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1605219073478-377879776959?q=80&w=1200",
     area: "8,500 sq ft"
   },
   {
     id: 3,
-    slug: "cozy-forest-cottage",
+    slug: la"cozy-forest-cottage",
     title: "Cozy Forest Cottage",
     description: "Charming rustic cottage nestled in the woods with stone fireplace and beautiful wrap-around deck.",
     price: 380000,
@@ -49,7 +49,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 2,
     bathrooms: 1.5,
     propertyType: "Cottage",
-    imageUrl: "/images/properties/property-3.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1449156003053-37596676c792?q=80&w=1200",
     area: "1,200 sq ft"
   },
   {
@@ -62,7 +62,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 6,
     bathrooms: 5,
     propertyType: "Estate",
-    imageUrl: "/images/properties/property-4.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200",
     area: "5,800 sq ft"
   },
   {
@@ -75,7 +75,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 4,
     bathrooms: 3,
     propertyType: "House",
-    imageUrl: "/images/properties/property-5.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1568605114946-7a5af1e59122?q=80&w=1200",
     area: "2,400 sq ft"
   },
   {
@@ -88,8 +88,8 @@ export const propertiesListings: Property[] = [
     bedrooms: 4,
     bathrooms: 4,
     propertyType: "Villa",
-    imageUrl: "/images/properties/property-6.jpg",
-    area: "3,600 sq ft"
+    imageUrl: "https://images.unsplash.com/photo-1600584593094-8733deed9130?q=80&w=1200",
+    area: " la3,600 sq ft"
   },
   {
     id: 7,
@@ -101,12 +101,12 @@ export const propertiesListings: Property[] = [
     bedrooms: 8,
     bathrooms: 9,
     propertyType: "Mansion",
-    imageUrl: "/images/properties/property-2.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1512917774070-47669f70b77a?q=80&w=1200",
     area: "10,200 sq ft"
   },
   {
     id: 8,
-    slug: "lakeside-stone-cottage",
+    slug: la"lakeside-stone-cottage",
     title: "Lakeside Stone Cottage",
     description: "Quaint stone cottage with private dock, paddleboard storage, and stunning sunrise views over the lake.",
     price: 520000,
@@ -114,7 +114,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 3,
     bathrooms: 2,
     propertyType: "Cottage",
-    imageUrl: "/images/properties/property-3.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1470053604238-d77971d33583?q=80&w=1200",
     area: "1,550 sq ft"
   },
   {
@@ -127,7 +127,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 5,
     bathrooms: 6,
     propertyType: "Estate",
-    imageUrl: "/images/properties/property-4.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200",
     area: "6,100 sq ft"
   },
   {
@@ -140,7 +140,7 @@ export const propertiesListings: Property[] = [
     bedrooms: 4,
     bathrooms: 3.5,
     propertyType: "House",
-    imageUrl: "/images/properties/property-5.jpg",
+    imageUrl: "https://images.unsplash.com/photo-156860511494 la6-S9S de a- la l l v l a r a d v la la d l a la la l a l a l l a l a la a la",
     area: "3,100 sq ft"
   }
 ];
