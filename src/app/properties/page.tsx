@@ -16,7 +16,6 @@ export default function PropertiesPage() {
 
   // Trigger loading skeleton state on mount and when query/filter changes
   useEffect(() => {
-    setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 600); // 600ms simulation
@@ -27,6 +26,12 @@ export default function PropertiesPage() {
     setSearchQuery(query);
     setPropertyType(type);
     setCurrentPage(1); // Reset page to 1 on filter
+    setIsLoading(true);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setIsLoading(true);
   };
 
   // Filtered properties logic
@@ -81,7 +86,7 @@ export default function PropertiesPage() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
             />
           </div>
         )}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Bed, Bath, Ruler, MapPin } from "lucide-react";
 import { type Property } from "@/mocks/properties-listings";
 
@@ -21,11 +22,12 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
       className="flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900/60"
     >
       <div className="overflow-hidden rounded-lg">
-        <img
+        <Image
           src={property.imageUrl}
           alt={property.title}
+          width={400}
+          height={300}
           className="aspect-[4/3] w-full object-cover transition-transform duration-300 hover:scale-105"
-          loading="lazy"
         />
       </div>
       
