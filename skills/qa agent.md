@@ -375,3 +375,85 @@ if __name__ == "__main__":
     sys.exit(0 if ok else 1)
 ```
 
+### 4. `create_automation_pr.py`
+Commits the changes, pushes the branch, and raises a GitHub Pull Request for automation/test files automatically.
+
+```python
+import os
+import sys
+import urllib.request
+import json
+import subprocess
+
+def load_env():
+    env = {}
+    for path in [os.path.expanduser('~/.env'), '.env']:
+        if os.path.exists(path):
+            with open(path) as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        k, v = line.split('=', 1)
+                        env[k.strip()] = v.strip().strip('"').strip("'")
+    return env
+
+def run_cmd(args):
+    res = subprocess.run(args, capture_output=True, text=True)
+    if res.returncode != 0:
+        raise Exception(f"Command {' '.join(args)} failed: {res.stderr}")
+    return res.stdout.strip()
+
+def raise_automation_pr(pr_number_parent, branch_name, title, description):
+    env = load_env()
+    token = env.get('GITHUB_TOKEN')
+    if not token:
+        print("Error: GITHUB_TOKEN not found in env")
+        sys.exit(1)
+        
+    repo = "Arghajit47/agentic-full-stack-development"
+    url = f"https://api.github.com/repos/{repo}/pulls"
+    
+    # 1. Commit and Push
+    print("Staging and committing files...")
+    run_cmd(["git", "add", "."])
+    run_cmd(["git", "commit", "-m", f"test(automation): add test spec for {pr_number_parent}"])
+    print(f"Pushing branch {branch_name} to origin...")
+    run_cmd(["git", "push", "origin", branch_name])
+    
+    # 2. Raise PR
+    payload = {
+        "title": title,
+        "head": branch_name,
+        "base": "main",
+        "body": description
+    }
+    
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode('utf-8'),
+        headers={
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+        },
+        method="POST"
+    )
+    
+    try:
+        with urllib.request.urlopen(req) as res:
+            res_data = json.loads(res.read().decode('utf-8'))
+            print("Successfully created Pull Request:", res_data.get("html_url"))
+    except Exception as e:
+        if hasattr(e, 'read'):
+            print("Failed to create Pull Request:", e.read().decode('utf-8'))
+        else:
+            print("Failed to create Pull Request:", e)
+
+if __name__ == "__main__":
+    if len(sys.argv) < 5:
+        print("Usage: python3 create_automation_pr.py <PARENT_JIRA_KEY> <BRANCH_NAME> <TITLE> <DESCRIPTION>")
+        sys.exit(1)
+    jira_key, branch, title, desc = sys.argv[1:5]
+    raise_automation_pr(jira_key, branch, title, desc)
+```
+
