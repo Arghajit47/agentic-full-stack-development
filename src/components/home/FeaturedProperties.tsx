@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
 import { Bed, Bath, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { featuredProperties, type Property } from "@/mocks/featured-properties";
 
@@ -209,13 +210,13 @@ export function FeaturedProperties({
       </div>
 
       <div className="mt-10 text-left">
-        <button
-          type="button"
+        <Link
+          href="/properties"
           data-testid="explore-properties-cta"
-          className="rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
+          className="inline-block rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
         >
           Explore Properties
-        </button>
+        </Link>
       </div>
 
       {!isLoading && data.length === 0 && (
