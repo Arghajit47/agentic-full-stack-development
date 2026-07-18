@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Run db push + seed at BUILD TIME so the seeded SQLite is baked into the deployment
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
