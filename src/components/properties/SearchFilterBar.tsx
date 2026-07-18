@@ -71,14 +71,7 @@ export function SearchFilterBar({
             value={type}
             onChange={handleTypeChange}
             data-testid="property-type-filter"
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 py-3 px-4 text-sm text-white outline-none focus:border-violet-600 transition-colors appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`,
-              backgroundPosition: "right 0.75rem center",
-              backgroundSize: "1.25rem",
-              backgroundRepeat: "no-repeat",
-              paddingRight: "2.5rem"
-            }}
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 py-3 px-4 text-sm text-white outline-none focus:border-violet-600 transition-colors appearance-none cursor-pointer property-select"
           >
             <option value="All" className="bg-zinc-900">All Types</option>
             <option value="Villa" className="bg-zinc-900">Villa</option>
