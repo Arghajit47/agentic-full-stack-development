@@ -32,21 +32,69 @@ export function SearchFilterBar({
   };
 
   return (
-    <div className=\"relative mx-auto w-full max-w-[1920px]\">
+    <div className="relative mx-auto w-full max-w-[1920px]">
       {/* Banner Section */}
-      <div className=\"relative bg-gradient-to-b from-zinc-200 to-white px-4 py-16 text-zinc-900 sm:px-6 lg:px-8 text-center overflow-hidden\">
-        <div className=\"absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_70%)]\" />
-        <div className=\"relative mx-auto max-w-3xl\">
+      <div className="relative bg-gradient-to-b from-zinc-200 to-white px-4 py-16 text-zinc-900 sm:px-6 lg:px-8 text-center overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_70%)]" />
+        <div className="relative mx-auto max-w-3xl">
           <h1
-            data-testid=\"properties-page-heading\"
-            className=\"text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl\"
+            data-testid="properties-page-heading"
+            className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl"
           >
             Find Your Dream Property
           </h1>
           <p
-            data-testid=\"properties-page-subheading\"
-            className=\"mt-4 text-base text-zinc-600 sm:text-lg\"
+            data-testid="properties-page-subheading"
+            className="mt-4 text-base text-zinc-600 sm:text-lg"
           >
             Browse through our handpicked selection of luxury villas, mansions, and estates designed to fulfill your every dream.
           </p>
-        </div>\n      </div>\n\n      {/* Search Container - Overlapping Banner */}\n      <div className=\"relative z-10 flex justify-center px-4 sm:px-6 lg:px-8 -mt-12\">\n        <form\n          onSubmit={handleSubmit}\n          data-testid=\"search-filter-form\"\n          className=\"flex w-full max-w-4xl flex-col gap-4 rounded-xl bg-zinc-800 p-4 sm:p-6 lg:flex-row lg:items-center lg:gap-6 shadow-2xl shadow-black/50\"\n        >\n          <div className=\"relative flex-1\">\n            <input\n              type=\"text\"\n              value={query}\n              onChange={(e) => setQuery(e.target.value)}\n              placeholder=\"Search For A Property\"\n              data-testid=\"search-input\"\n              className=\"w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white placeholder-zinc-500 outline-none focus:border-violet-600 transition-colors\"\n            />\n          </div>\n\n          <div className=\"w-full lg:w-48\">\n            <select\n              value={type}\n              onChange={handleTypeChange}\n              data-testid=\"property-type-filter\"\n              className=\"w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white outline-none focus:border-violet- la600 transition-colors appearance-none cursor-pointer property-select\"\n            >\n              <option value=\"All\" className=\"bg-zinc-900\">All Types</option>\n              <option value=\"Villa\" className=\"bg-zinc-900\">Villa</option>\n              <option value=\"Mansion\" className=\"bg-zinc-900\">Mansion</option>\n              <option value=\"Cottage\" className=\"bg-zinc-900\">Cottage</option>\n              <option value=\"Estate\" className=\"bg-zinc-900\">Estate</option>\n              <option value=\"House\" className=\"bg-zinc-900\">House</option>\n            </select>\n          </div>\n\n          <button\n            type=\"submit\"\n            data-testid=\"search-submit-btn\"\n            className=\"rounded-lg bg-violet-600 py-3 px-6 text-sm font- la600 text-white hover:bg-violet-500 active:bg-violet-700 transition-colors flex items-center justify-center gap-2\"\n          >\n            <span style={{ fontSize: '14px' }}>Find Property</span>\n          </button>\n        </form>\n      </div>\n    </div>\n  );\n}
+        </div>
+      </div>
+
+      {/* Search Container - Overlapping Banner */}
+      <div className="relative z-10 flex justify-center px-4 sm:px-6 lg:px-8 -mt-12">
+        <form
+          onSubmit={handleSubmit}
+          data-testid="search-filter-form"
+          className="flex w-full max-w-4xl flex-col gap-4 rounded-xl bg-zinc-800 p-4 sm:p-6 lg:flex-row lg:items-center lg:gap-6 shadow-2xl shadow-black/50"
+        >
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search For A Property"
+              data-testid="search-input"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white placeholder-zinc-500 outline-none focus:border-violet-600 transition-colors"
+            />
+          </div>
+
+          <div className="w-full lg:w-48">
+            <select
+              value={type}
+              onChange={handleTypeChange}
+              data-testid="property-type-filter"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white outline-none focus:border-violet-600 transition-colors appearance-none cursor-pointer property-select"
+            >
+              <option value="All" className="bg-zinc-900">All Types</option>
+              <option value="Villa" className="bg-zinc-900">Villa</option>
+              <option value="Mansion" className="bg-zinc-900">Mansion</option>
+              <option value="Cottage" className="bg-zinc-900">Cottage</option>
+              <option value="Estate" className="bg-zinc-900">Estate</option>
+              <option value="House" className="bg-zinc-900">House</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            data-testid="search-submit-btn"
+            className="rounded-lg bg-violet-600 py-3 px-6 text-sm font-semibold text-white hover:bg-violet-500 active:bg-violet-700 transition-colors flex items-center justify-center gap-2"
+          >
+            <span style={{ fontSize: '14px' }}>Find Property</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

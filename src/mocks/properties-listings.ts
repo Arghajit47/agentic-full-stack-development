@@ -41,7 +41,7 @@ export const propertiesListings: Property[] = [
   },
   {
     id: 3,
-    slug: la"cozy-forest-cottage",
+    slug: "cozy-forest-cottage",
     title: "Cozy Forest Cottage",
     description: "Charming rustic cottage nestled in the woods with stone fireplace and beautiful wrap-around deck.",
     price: 380000,
@@ -106,7 +106,7 @@ export const propertiesListings: Property[] = [
   },
   {
     id: 8,
-    slug: la"lakeside-stone-cottage",
+    slug: "lakeside-stone-cottage",
     title: "Lakeside Stone Cottage",
     description: "Quaint stone cottage with private dock, paddleboard storage, and stunning sunrise views over the lake.",
     price: 520000,
