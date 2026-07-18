@@ -1,10 +1,10 @@
 [build]
-  command = "npm run build"
+  command = "npm run db:prepare && npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
+  DATABASE_URL = "file:./prisma/dev.db"
 
-# Run db push + seed at BUILD TIME so the seeded SQLite is baked into the deployment
 [[plugins]]
   package = "@netlify/plugin-nextjs"
