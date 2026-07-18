@@ -20,7 +20,7 @@ describe("Properties Page integration", () => {
       expect(screen.queryByTestId("property-grid-loading")).not.toBeInTheDocument();
     }, { timeout: 1500 });
 
-    expect(screen.getByTestId("properties-page-heading")).toHaveTextContent("Discover a World of Possibilities");
+    expect(screen.getByTestId("properties-page-heading")).toHaveTextContent("Find Your Dream Property");
     expect(screen.getByTestId("property-grid")).toBeInTheDocument();
     
     // We have 10 mock items, page size is 6, so first page should have 6 items
