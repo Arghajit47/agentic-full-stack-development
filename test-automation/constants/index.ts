@@ -77,6 +77,7 @@ export const UI_ROUTES = {
   EMPTY_PROPERTIES: "/test-harness/empty-properties",
   EMPTY_REVIEWS: "/test-harness/empty-reviews",
   LOADING: "/test-harness/loading",
+  PROPERTIES: "/properties",
 } as const;
 
 // data-testid selectors — single source of truth for UI page object.
@@ -88,6 +89,12 @@ export const UI_TESTIDS = {
   TESTIMONIALS_SECTION: "testimonials-section",
   REVIEW_CARD: "review-card",
   NO_REVIEWS: "no-reviews",
+  // KAN-58 — Properties page SearchFilterBar
+  PROPERTIES_PAGE_HEADING: "properties-page-heading",
+  SEARCH_SUBMIT_BTN: "search-submit-btn",
+  SEARCH_INPUT: "search-input",
+  PROPERTY_GRID: "property-grid",
+  PROPERTY_TYPE_FILTER: "property-type-filter",
 } as const;
 
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.
@@ -128,6 +135,10 @@ export const UI_TEXT = {
   CTA_LABEL: "Explore Properties",
   NO_PROPERTIES: "No featured properties",
   NO_REVIEWS: "No reviews yet",
+  // KAN-58 — Properties page SearchFilterBar
+  PROPERTIES_PAGE_HEADING: "Find Your Dream Property",
+  SEARCH_SUBMIT_BTN: "Find Property",
+  SEARCH_PLACEHOLDER: "Search For A Property",
 } as const;
 
 // Expected rendered counts.
