@@ -5,6 +5,7 @@ export async function GET() {
   try {
     const reviews = await prisma.review.findMany({
       orderBy: { createdAt: "asc" },
+      take: 5,
     });
 
     const result = reviews.map((r) => ({

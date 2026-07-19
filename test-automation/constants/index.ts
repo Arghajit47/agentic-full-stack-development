@@ -80,23 +80,6 @@ export const UI_ROUTES = {
   PROPERTIES: "/properties",
 } as const;
 
-// data-testid selectors — single source of truth for UI page object.
-export const UI_TESTIDS = {
-  FEATURED_SECTION: "featured-properties-section",
-  PROPERTY_CARD: "property-card",
-  EXPLORE_CTA: "explore-properties-cta",
-  NO_PROPERTIES: "no-properties",
-  TESTIMONIALS_SECTION: "testimonials-section",
-  REVIEW_CARD: "review-card",
-  NO_REVIEWS: "no-reviews",
-  // KAN-58 — Properties page SearchFilterBar
-  PROPERTIES_PAGE_HEADING: "properties-page-heading",
-  SEARCH_SUBMIT_BTN: "search-submit-btn",
-  SEARCH_INPUT: "search-input",
-  PROPERTY_GRID: "property-grid",
-  PROPERTY_TYPE_FILTER: "property-type-filter",
-} as const;
-
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.
 // Test cases use 375/768/1024/1440/1920.
 export const VIEWPORTS = {

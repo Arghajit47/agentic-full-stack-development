@@ -7,6 +7,7 @@ export async function GET() {
     const properties = await prisma.property.findMany({
       where: { isFeatured: true },
       orderBy: { createdAt: "asc" },
+      take: 6,
     });
 
     const result = properties.map((p: typeof properties[number]) => ({

@@ -1,10 +1,10 @@
 export const PROPERTIES_LOCATORS = {
-  heading: "[data-testid='properties-page-heading']",
-  searchInput: "[data-testid='search-input']",
-  filter: "[data-testid='property-type-filter']",
-  propertyGrid: "[data-testid='property-grid']",
-  propertyCard: "[data-testid='property-card']",
-  paginationIndicator: "[data-testid='pagination-indicator']",
-  nextPageBtn: "[data-testid='next-page-btn']",
-}
-    
+  heading: "properties-page-heading",
+  searchInput: "search-input",
+  searchSubmitBtn: "search-submit-btn",
+  propertyGrid: "property-grid",
+  propertyCard: "property-card",
+  propertyTypeFilter: "property-type-filter",
+  paginationIndicator: "pagination-indicator",
+  nextPageBtn: "next-page-btn",
+} as const;

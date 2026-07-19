@@ -1,20 +1,16 @@
 import { test as base, expect, type Page } from "@playwright/test";
 import { HomeUI } from "@pages/home-ui";
 import { PropertiesUI } from "@pages/properties-ui";
-import { PROPERTIES_LOCATORS } from "@locators/propertiespage-locators";
-import {HOMEPAGE_LOCATORS} from "@locators/homepage-locators";
 
 type UIFixtures = {
   homeUi: HomeUI;
   homeUiPage: Page;
   propertiesUi: PropertiesUI;
   propertiesUiPage: Page;
-  propertiesLocators: typeof PROPERTIES_LOCATORS;
-  homepageLocators: typeof HOMEPAGE_LOCATORS;
 };
 
 /**
- * UI test fixtures. Each fixture creates a fresh browser context with a HomeUI
+ * UI test fixtures. Each fixture creates a fresh browser context with a HomeUI/PropertiesUI
  * page object. Integration specs hit the real API/DB, so reseed before each test.
  */
 export const test = base.extend<UIFixtures>({
@@ -31,12 +27,6 @@ export const test = base.extend<UIFixtures>({
   },
   propertiesUiPage: async ({ page }, use) => {
     await use(page);
-  },
-  propertiesLocators: async ({ page: _page }, use) => {
-    await use(PROPERTIES_LOCATORS);
-  },
-  homepageLocators: async ({ page: _page }, use) => {
-    await use(HOMEPAGE_LOCATORS);
   },
 });
 

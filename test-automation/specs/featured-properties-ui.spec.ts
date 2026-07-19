@@ -1,5 +1,6 @@
 import { test, expect } from "@fixtures/ui-fixtures";
-import { VIEWPORTS, UI_TESTIDS, UI_COUNTS, FEATURED_GRID_COLS } from "@constants/index";
+import { VIEWPORTS, UI_COUNTS, FEATURED_GRID_COLS } from "@constants/index";
+import { HOMEPAGE_LOCATORS } from "@locators/homepage-locators";
 
 test.describe("Featured Properties UI — TC-001 to TC-016", () => {
   test("TC-001 renders heading \"Featured Properties\"", async ({ homeUi }) => {
@@ -91,15 +92,15 @@ test.describe("Featured Properties UI — TC-001 to TC-016", () => {
     await homeUi.gotoHome();
     await expect(homeUi.featuredSection).toHaveAttribute(
       "data-testid",
-      UI_TESTIDS.FEATURED_SECTION,
+      HOMEPAGE_LOCATORS.featuredSection,
     );
     await expect(homeUi.propertyCards.first()).toHaveAttribute(
       "data-testid",
-      UI_TESTIDS.PROPERTY_CARD,
+      HOMEPAGE_LOCATORS.propertyCards,
     );
     await expect(homeUi.exploreCta).toHaveAttribute(
       "data-testid",
-      UI_TESTIDS.EXPLORE_CTA,
+      HOMEPAGE_LOCATORS.exploreCta,
     );
     expect(UI_COUNTS.PROPERTY_CARDS).toBe(6);
     expect(FEATURED_GRID_COLS.WIDE).toBe(3);
