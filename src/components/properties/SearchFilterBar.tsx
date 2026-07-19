@@ -12,7 +12,7 @@ interface SearchFilterBarProps {
 
 export function SearchFilterBar({
   heading = "Find Your Dream Property",
-  subheading = "Browse through our handpicked selection of luxury villas, mansions, and estates designed to fulfill your every dream.",
+  subheading = "Welcome to Estatein, where your dream property awaits in every corner of our beautiful world. Explore our curated selection of properties, each offering a unique story and a chance to redefine your life. With categories to suit every dreamer, your journey ",
   onSearch,
   initialQuery = "",
   initialType = "All"
@@ -41,13 +41,13 @@ export function SearchFilterBar({
             data-testid="properties-page-heading"
             className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl"
           >
-            Find Your Dream Property
+            {heading}
           </h1>
           <p
             data-testid="properties-page-subheading"
             className="mt-4 text-base text-zinc-600 sm:text-lg"
           >
-            Browse through our handpicked selection of luxury villas, mansions, and estates designed to fulfill your every dream.
+            {subheading}
           </p>
         </div>
       </div>
