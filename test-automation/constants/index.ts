@@ -1,7 +1,7 @@
 /** Centralized constants for the test-automation suite — single source of truth. */
 
 // ── API ──────────────────────────────────────────────────────────
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "https://real-estates-estatein.netlify.app";
 
 export const API_PATHS = {
   PROPERTIES_FEATURED: "/api/properties/featured",
