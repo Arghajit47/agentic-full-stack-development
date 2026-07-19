@@ -16,6 +16,7 @@
       "@pages/*": ["./pages/*"],
       "@fixtures/*": ["./fixtures/*"],
       "@constants/*": ["./constants/*"],
+      "@locators/*": ["./locators/*"],
       "@src/*": ["../src/*"]
     }
   },

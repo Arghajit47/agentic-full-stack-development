@@ -1,20 +1,20 @@
-import { test, expect } from "@fixtures/properties-fixtures";
+import { test } from "@fixtures/ui-fixtures";
 
 test.describe("Properties Page — KAN-58 visual fixes", () => {
   test.beforeEach(async ({ propertiesUiPage }) => {
-    await propertiesUiPage.goto("http://localhost:3000/properties");
+    await propertiesUiPage.goto("/properties");
   });
 
   test("TC-061 renders heading 'Find Your Dream Property'", async ({
     propertiesUi,
   }) => {
-    propertiesUi.assertHeading();
+    await propertiesUi.assertHeading();
   });
 
   test("TC-062 search submit button text is 'Find Property'", async ({
     propertiesUi,
   }) => {
-    propertiesUi.assertSearchSubmitBtnText();
+    await propertiesUi.assertSearchSubmitBtnText();
   });
 
   test("TC-063 no console errors on load", async ({ propertiesUi }) => {

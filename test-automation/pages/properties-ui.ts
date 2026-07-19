@@ -34,12 +34,12 @@ export class PropertiesUI {
     await this.propertyCards.first().waitFor({ state: "visible" });
   }
 
-  assertHeading(): void {
-    expect(this.heading).toHaveText(UI_TEXT.PROPERTIES_PAGE_HEADING);
+  async assertHeading(): Promise<void> {
+    await expect(this.heading).toHaveText(UI_TEXT.PROPERTIES_PAGE_HEADING);
   }
 
-  assertSearchSubmitBtnText(): void {
-    expect(this.searchSubmitBtn).toHaveText(UI_TEXT.SEARCH_SUBMIT_BTN);
+  async assertSearchSubmitBtnText(): Promise<void> {
+    await expect(this.searchSubmitBtn).toHaveText(UI_TEXT.SEARCH_SUBMIT_BTN);
   }
 
   async assertPropertyCardsVisible(): Promise<void> {
