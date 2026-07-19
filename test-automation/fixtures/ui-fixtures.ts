@@ -1,33 +1,39 @@
-import { test as base, expect, type Page } from "@playwright/test";
-import { HomeUI } from "@pages/home-ui";
-import { PropertiesUI } from "@pages/properties-ui";
+import { test as base, type Page } from "@playwright/test";
+import { HomePage } from "@pages/frontend/home-page";
+import { PropertiesPage } from "@pages/frontend/properties-page";
 
-type UIFixtures = {
-  homeUi: HomeUI;
-  homeUiPage: Page;
-  propertiesUi: PropertiesUI;
-  propertiesUiPage: Page;
-};
+
 
 /**
- * UI test fixtures. Each fixture creates a fresh browser context with a HomeUI/PropertiesUI
- * page object. Integration specs hit the real API/DB, so reseed before each test.
+ * Defines the custom fixtures available in the test suite.
+ * Each property represents an instance of a page object that will be
+ * automatically initialized and made available to every test.
  */
-export const test = base.extend<UIFixtures>({
-  homeUi: async ({ page }, use) => {
-    const ui = new HomeUI(page);
-    await use(ui);
+type MyFixtures = {
+  homepage: HomePage;
+  propertiesPage: PropertiesPage;
+
+};
+
+
+export const test = base.extend<MyFixtures>({
+  /**
+   * Provides a HomePage instance to tests.
+   * @param page - The Playwright Page object supplied by the test runner.
+   * @param use - Function to signal that the fixture is ready for consumption.
+   */
+  homepage: async ({ page }: { page: Page }, use) => {
+    await use(new HomePage(page));
   },
-  homeUiPage: async ({ page }, use) => {
-    await use(page);
-  },
-  propertiesUi: async ({ page }, use) => {
-    const ui = new PropertiesUI(page);
-    await use(ui);
-  },
-  propertiesUiPage: async ({ page }, use) => {
-    await use(page);
+
+  /**
+   * Provides a PropertiesPage instance to tests.
+   * @param page - The Playwright Page object supplied by the test runner.
+   * @param use - Function to signal that the fixture is ready for consumption.
+   */
+  propertiesPage: async ({ page }: { page: Page }, use) => {
+    await use(new PropertiesPage(page));
   },
 });
 
-export { expect };
+export { expect } from "@playwright/test";
