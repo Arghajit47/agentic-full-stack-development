@@ -1,7 +1,7 @@
 import { expect, type Page, type Locator } from "@playwright/test";
+import { HOMEPAGE_LOCATORS } from "@locators/homepage-locators";
 import {
   UI_ROUTES,
-  UI_TESTIDS,
   UI_TEXT,
   UI_COUNTS,
   VIEWPORTS,
@@ -11,7 +11,6 @@ import {
   TESTIMONIAL_MOCKS,
   STAR_ARIA_TEMPLATE,
   INTEGRATION_TEXT,
-  INTEGRATION_TESTIDS,
   INTEGRATION_COUNTS,
   PRICE_FORMAT,
   STUB_IMAGE,
@@ -43,18 +42,18 @@ export class HomeUI {
 
   constructor(page: Page) {
     this.page = page;
-    this.featuredSection = page.getByTestId(UI_TESTIDS.FEATURED_SECTION);
-    this.propertyCards = page.getByTestId(UI_TESTIDS.PROPERTY_CARD);
-    this.exploreCta = page.getByTestId(UI_TESTIDS.EXPLORE_CTA);
-    this.noProperties = page.getByTestId(UI_TESTIDS.NO_PROPERTIES);
-    this.testimonialsSection = page.getByTestId(UI_TESTIDS.TESTIMONIALS_SECTION);
-    this.reviewCards = page.getByTestId(UI_TESTIDS.REVIEW_CARD);
-    this.noReviews = page.getByTestId(UI_TESTIDS.NO_REVIEWS);
-    this.featuredHeading = page.getByTestId(INTEGRATION_TESTIDS.FEATURED_HEADING);
-    this.featuredSubheading = page.getByTestId(INTEGRATION_TESTIDS.FEATURED_SUBHEADING);
-    this.testimonialsHeading = page.getByTestId(INTEGRATION_TESTIDS.TESTIMONIALS_HEADING);
-    this.testimonialsSubheading = page.getByTestId(INTEGRATION_TESTIDS.TESTIMONIALS_SUBHEADING);
-    this.homeError = page.getByTestId(INTEGRATION_TESTIDS.HOME_ERROR);
+    this.featuredSection = page.getByTestId(HOMEPAGE_LOCATORS.featuredSection);
+    this.propertyCards = page.getByTestId(HOMEPAGE_LOCATORS.propertyCards);
+    this.exploreCta = page.getByTestId(HOMEPAGE_LOCATORS.exploreCta);
+    this.noProperties = page.getByTestId(HOMEPAGE_LOCATORS.noProperties);
+    this.testimonialsSection = page.getByTestId(HOMEPAGE_LOCATORS.testimonialsSection);
+    this.reviewCards = page.getByTestId(HOMEPAGE_LOCATORS.reviewCards);
+    this.noReviews = page.getByTestId(HOMEPAGE_LOCATORS.noReviews);
+    this.featuredHeading = page.getByTestId(HOMEPAGE_LOCATORS.featuredHeading);
+    this.featuredSubheading = page.getByTestId(HOMEPAGE_LOCATORS.featuredSubheading);
+    this.testimonialsHeading = page.getByTestId(HOMEPAGE_LOCATORS.testimonialsHeading);
+    this.testimonialsSubheading = page.getByTestId(HOMEPAGE_LOCATORS.testimonialsSubheading);
+    this.homeError = page.getByTestId(HOMEPAGE_LOCATORS.homeError);
   }
 
   async gotoHome(): Promise<void> {

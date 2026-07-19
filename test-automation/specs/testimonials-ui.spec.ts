@@ -1,5 +1,6 @@
 import { test, expect } from "@fixtures/ui-fixtures";
-import { VIEWPORTS, UI_TESTIDS, UI_COUNTS, TESTIMONIALS_GRID_COLS } from "@constants/index";
+import { VIEWPORTS, UI_COUNTS, TESTIMONIALS_GRID_COLS } from "@constants/index";
+import { HOMEPAGE_LOCATORS } from "@locators/homepage-locators";
 
 test.describe("Testimonials UI — TC-017 to TC-031, TC-034", () => {
   test("TC-017 renders heading \"What Our Clients Say\"", async ({ homeUi }) => {
@@ -90,11 +91,11 @@ test.describe("Testimonials UI — TC-017 to TC-031, TC-034", () => {
     await homeUi.gotoHome();
     await expect(homeUi.testimonialsSection).toHaveAttribute(
       "data-testid",
-      UI_TESTIDS.TESTIMONIALS_SECTION,
+      HOMEPAGE_LOCATORS.testimonialsSection,
     );
     await expect(homeUi.reviewCards.first()).toHaveAttribute(
       "data-testid",
-      UI_TESTIDS.REVIEW_CARD,
+      HOMEPAGE_LOCATORS.reviewCards,
     );
     expect(UI_COUNTS.REVIEW_CARDS).toBe(5);
     expect(TESTIMONIALS_GRID_COLS.WIDE).toBe(3);
