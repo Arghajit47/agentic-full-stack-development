@@ -2,10 +2,28 @@ import { expect, type Page, type Locator } from "@playwright/test";
 import { PROPERTIES_LOCATORS } from "@locators/propertiespage-locators";
 import { UI_ROUTES, UI_TEXT } from "@constants/index";
 
+export interface Property {
+  id: number;
+  slug: string;
+  title: string;
+  price: number;
+  location: string;
+  bedrooms: number;
+  bathrooms: number;
+  areaSqft: number;
+  imageUrl: string;
+}
+
+export interface PropertiesResponse {
+  items: Property[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 /**
  * Page object for the /properties page.
- * Owns all Playwright locators and assertions for the Properties page SearchFilterBar.
- * Specs call methods only — no Playwright primitives leak into spec files.
+ * Owns all Playwright locators and encapsulates all actions and assertions.
  */
 export class PropertiesUI {
   readonly page: Page;
@@ -30,66 +48,105 @@ export class PropertiesUI {
     this.nextPageBtn = page.getByTestId(PROPERTIES_LOCATORS.nextPageBtn);
   }
 
-  async gotoProperties(): Promise<void> {
+  async verifyAllPropertiesPageFunctionality(): Promise<void> {
+    const requestContext = this.page.request;
+
+    // 1. Fetch live settings and check page header elements
+    const settingsRes = await requestContext.get("/api/settings");
+    expect(settingsRes.status()).toBe(200);
+    const settings: Record<string, string> = await settingsRes.json();
+
+    const expectedHeading = settings.properties_heading ?? UI_TEXT.PROPERTIES_PAGE_HEADING;
+    const expectedSubmitBtnText = settings.search_submit_btn_text ?? UI_TEXT.SEARCH_SUBMIT_BTN;
+
     await this.page.goto(UI_ROUTES.PROPERTIES);
     await this.propertyCards.first().waitFor({ state: "visible" });
-  }
 
-  async assertHeading(): Promise<void> {
-    await expect(this.heading).toHaveText(UI_TEXT.PROPERTIES_PAGE_HEADING);
-  }
-
-  async assertSearchSubmitBtnText(): Promise<void> {
-    await expect(this.searchSubmitBtn).toHaveText(UI_TEXT.SEARCH_SUBMIT_BTN);
-  }
-
-  async assertPropertyCardsVisible(): Promise<void> {
-    await expect(this.propertyCards.first()).toBeVisible();
-  }
-
-  async assertHeadingAndInputs(): Promise<void> {
-    await expect(this.heading).toHaveText(UI_TEXT.PROPERTIES_PAGE_HEADING);
+    // Assert headers and search controls
+    await expect(this.heading).toHaveText(expectedHeading);
     await expect(this.searchInput).toBeVisible();
     await expect(this.searchInput).toHaveAttribute("placeholder", "Search For A Property");
     await expect(this.propertyTypeFilter).toBeVisible();
-  }
+    await expect(this.searchSubmitBtn).toHaveText(expectedSubmitBtnText);
 
-  async assertLoadingSkeletonsTransition(): Promise<void> {
-    await expect(this.propertyGrid).toBeVisible({ timeout: 2000 });
-    await expect(this.propertyCards).toHaveCount(6);
-  }
+    // 2. Fetch live initial page 1 properties (limit=6)
+    const initialRes = await requestContext.get("/api/properties?page=1&limit=6");
+    expect(initialRes.status()).toBe(200);
+    const initialData: PropertiesResponse = await initialRes.json();
 
-  async filterByType(type: string, expectedCount: number, title1: string, title2: string): Promise<void> {
     await expect(this.propertyGrid).toBeVisible();
-    await this.propertyTypeFilter.selectOption(type);
-    // Wait for loading skeleton to resolve
+    await expect(this.propertyCards).toHaveCount(initialData.items.length);
+
+    for (let i = 0; i < initialData.items.length; i++) {
+      const card = this.propertyCards.nth(i);
+      const expectedTitle = initialData.items[i].title;
+      await expect(card.getByRole("heading", { level: 3 })).toHaveText(expectedTitle);
+    }
+
+    // 3. Verify Filtering (Live Mansion fetch)
+    const filterRes = await requestContext.get("/api/properties?type=Mansion&page=1&limit=6");
+    expect(filterRes.status()).toBe(200);
+    const filterData: PropertiesResponse = await filterRes.json();
+
+    await this.propertyTypeFilter.selectOption("Mansion");
+    // Wait for transition skeleton to resolve
     await this.page.waitForTimeout(700);
 
-    await expect(this.propertyCards).toHaveCount(expectedCount);
-    await expect(this.page.locator('[data-testid="property-title-2"]')).toHaveText(title1);
-    await expect(this.page.locator('[data-testid="property-title-7"]')).toHaveText(title2);
-  }
+    await expect(this.propertyCards).toHaveCount(filterData.items.length);
+    for (let i = 0; i < filterData.items.length; i++) {
+      const card = this.propertyCards.nth(i);
+      await expect(card.getByRole("heading", { level: 3 })).toHaveText(filterData.items[i].title);
+    }
 
-  async searchFor(query: string, expectedCount: number, expectedTitle: string): Promise<void> {
-    await expect(this.propertyGrid).toBeVisible();
-    await this.searchInput.fill(query);
+    // Reset filter to All
+    await this.propertyTypeFilter.selectOption("All");
+    await this.page.waitForTimeout(700);
+
+    // 4. Verify Searching (Live "Malibu" fetch)
+    const searchRes = await requestContext.get("/api/properties?search=Malibu&page=1&limit=6");
+    expect(searchRes.status()).toBe(200);
+    const searchData: PropertiesResponse = await searchRes.json();
+
+    await this.searchInput.fill("Malibu");
     await this.searchSubmitBtn.click();
-    // Wait for search response and rendering
     await this.page.waitForTimeout(700);
 
-    await expect(this.propertyCards).toHaveCount(expectedCount);
-    await expect(this.page.locator('[data-testid="property-title-4"]')).toHaveText(expectedTitle);
-  }
+    await expect(this.propertyCards).toHaveCount(searchData.items.length);
+    for (let i = 0; i < searchData.items.length; i++) {
+      const card = this.propertyCards.nth(i);
+      await expect(card.getByRole("heading", { level: 3 })).toHaveText(searchData.items[i].title);
+    }
 
-  async assertPagination(expectedPage1: string, expectedPage2: string, expectedCardsPage2: number): Promise<void> {
-    await expect(this.propertyGrid).toBeVisible();
-    await expect(this.paginationIndicator).toHaveText(expectedPage1);
+    // Clear search
+    await this.searchInput.fill("");
+    await this.searchSubmitBtn.click();
+    await this.page.waitForTimeout(700);
+
+    // 5. Verify Pagination
+    const page1Res = await requestContext.get("/api/properties?page=1&limit=6");
+    const page2Res = await requestContext.get("/api/properties?page=2&limit=6");
+    expect(page1Res.status()).toBe(200);
+    expect(page2Res.status()).toBe(200);
+    const page1Data: PropertiesResponse = await page1Res.json();
+    const page2Data: PropertiesResponse = await page2Res.json();
+
+    const totalPages = Math.ceil(page1Data.total / 6);
+    const expectedPage1Text = `Page 1 of ${totalPages}`;
+    const expectedPage2Text = `Page 2 of ${totalPages}`;
+
+    await expect(this.paginationIndicator).toHaveText(expectedPage1Text);
     await this.nextPageBtn.click();
-    // Wait for transition
     await this.page.waitForTimeout(700);
 
-    await expect(this.paginationIndicator).toHaveText(expectedPage2);
-    await expect(this.propertyCards).toHaveCount(expectedCardsPage2);
+    await expect(this.paginationIndicator).toHaveText(expectedPage2Text);
+    await expect(this.propertyCards).toHaveCount(page2Data.items.length);
+    for (let i = 0; i < page2Data.items.length; i++) {
+      const card = this.propertyCards.nth(i);
+      await expect(card.getByRole("heading", { level: 3 })).toHaveText(page2Data.items[i].title);
+    }
+
+    // 6. Verify zero console/page errors
+    await this.assertNoConsoleErrors();
   }
 
   async assertNoConsoleErrors(): Promise<void> {
