@@ -1,180 +1,283 @@
-# Test Automation Instructions
+# 🚨 MANDATORY TEST AUTOMATION ARCHITECTURE & SYSTEM DIRECTIVES
 
-Strict rules. No exceptions. Code review enforces every line below.
+> **ATTENTION ALL AI AGENTS & DEVELOPERS:**
+> THIS DOCUMENT IS THE SUPREME SPECIFICATION FOR THIS REPOSITORY'S AUTOMATION FRAMEWORK.
+> YOU MUST READ, COMPLY WITH, AND STRICTLY ENFORCE EVERY SINGLE RULE AND PATTERN DETAILED HEREIN.
+> **ZERO TOLERANCE FOR DEVIATIONS, MOCK FALLBACKS, EXTRA SPEC FILES, OR RAW LOCATORS.**
 
-## 1. Architecture
+---
 
-POM-Fixture pattern. Three layers, strict dependency direction:
+## 📋 TABLE OF CONTENTS
+1. [Core Architectural Philosophy](#1-core-architectural-philosophy)
+2. [Folder Structure & File Naming Conventions](#2-folder-structure--file-naming-conventions)
+3. [Strict Layering & Dependency Flow](#3-strict-layering--dependency-flow)
+4. [Detailed Layer Specification & Templates](#4-detailed-layer-specification--templates)
+   - [A. Constants Layer (`constants/`)](#a-constants-layer-constants)
+   - [B. Locators Layer (`locators/`)](#b-locators-layer-locators)
+   - [C. Base Layer (`base/`)](#c-base-layer-base)
+   - [D. Pages Layer (`pages/`)](#d-pages-layer-pages)
+   - [E. Fixtures Layer (`fixtures/`)](#e-fixtures-layer-fixtures)
+   - [F. Specs Layer (`specs/`)](#f-specs-layer-specs)
+5. [The 10 Non-Negotiable AI Rules (DOs & DON'Ts)](#5-the-10-non-negotiable-ai-rules-dos--donts)
+6. [Verification & Definition of Done](#6-verification--definition-of-done)
+
+---
+
+## 1. CORE ARCHITECTURAL PHILOSOPHY
+
+The test automation framework relies on a **Strict Page Object Model (POM) + Custom Fixtures** architecture.
+
+Key principles:
+1. **Single Source of Truth**: Text copy, expected counts, API paths, and grid configs MUST be stored in `constants/`.
+2. **Full CSS Selector Encapsulation**: Locators live exclusively in `locators/` and MUST be full CSS attribute selectors (`[data-testid="..."]`).
+3. **No UI Raw Locators in Pages or Specs**: Page objects pass locator keys to `this.initializationPage` methods. Specs never touch locators.
+4. **Single Spec File Per UI Page or Backend Domain**: `home-page.spec.ts` handles the Home page; `properties-page.spec.ts` handles the Properties page; `api-endpoints.spec.ts` handles Backend APIs.
+5. **No AI Shortcuts or Mock Fallbacks**: Tests MUST validate real, dynamic API responses against real UI elements without silent swallows, try/catch fallbacks, or dummy data injection.
+
+---
+
+## 2. FOLDER STRUCTURE & FILE NAMING CONVENTIONS
 
 ```
-specs/ → fixtures/ → pages/ → base/
-                                ↑
-                            constants/
+test-automation/
+├── base/
+│   ├── api-base.ts                  # ApiHelper class for API requests (baseURL pre-configured)
+│   └── ui-base.ts                   # InitializationPage class with generic UI interactions & assertions
+├── constants/
+│   ├── api-constants.ts             # API endpoints, TypeScript interfaces, & Zod validation schemas
+│   ├── homepage-constants.ts        # UI copy, grid column rules, expected counts for Home page
+│   ├── properties-constants.ts      # UI copy, grid column rules, expected counts for Properties page
+│   └── index.ts                     # Single barrel re-export for ALL constants
+├── fixtures/
+│   ├── api-fixtures.ts              # Playwright test extension injecting `backendApi`
+│   └── ui-fixtures.ts               # Playwright test extension injecting `homepage` & `propertiesPage`
+├── locators/
+│   ├── homepage-locators.ts         # Full CSS attribute selectors ([data-testid="..."]) for Home page
+│   └── propertiespage-locators.ts   # Full CSS attribute selectors ([data-testid="..."]) for Properties page
+├── pages/
+│   ├── backend/
+│   │   └── api.ts                   # BackendApi page object encapsulating standalone API & schema validation
+│   └── frontend/
+│       ├── home-page.ts             # HomePage page object using InitializationPage & ApiHelper
+│       └── properties-page.ts       # PropertiesPage page object using InitializationPage & ApiHelper
+├── specs/
+│   ├── backend-test/
+│   │   └── api-endpoints.spec.ts    # Single spec file for backend API schema & status 200 checks
+│   └── frontend-integration-test/
+│       ├── home-page.spec.ts        # Single spec file for Home page UI & integration
+│       └── properties-page.spec.ts  # Single spec file for Properties page UI & integration
+├── global-setup.js                  # Global setup (seeds DB before test runs)
+├── package.json                     # Test scripts (`npm run test`, `npm run test:ui`, `npm run test:api`)
+├── playwright.config.ts             # Main Playwright configuration defining projects
+└── tsconfig.json                    # TypeScript configuration with path aliases (@base, @pages, etc.)
 ```
 
-- **base/**: `BaseAPI` abstract class. Common HTTP actions (`get`), common assertions (`assertStatus`, `assertArray`, `assertObject`, `assertEmptyArray`, `assertEmptyObject`, `assertMaxCount`, `assertSchemaEach`, `assertSchemaObject`), DB helpers (`reseed`, `clearTables`, `dbQuery`, `dbCount`). No page-specific logic. Never instantiate directly.
-- **pages/**: One file per API endpoint or page. Extends `BaseAPI`. Contains page-specific actions (fetch, get entities) and page-specific assertions (assertAllFeatured, assertRatingRange, assertRequiredKeys). All assertions use `expect` from `@playwright/test`. No inline test data — use constants.
-- **fixtures/**: `test.extend()` wrappers. Auto `reseed()` + `init()` before test, auto `dispose()` after. Specs never call `init()` or `dispose()` manually.
-- **specs/**: Test files. Zero logic. Each test calls page object methods and `BaseAPI` static assertions only. No `execSync`, `readFileSync`, `fetch`, `request`, no loops, no conditionals, no try/catch. If you need any of that, it goes in a page object.
-- **constants/**: All magic values. Single source of truth. No hardcoded strings or numbers anywhere else.
+---
 
-## 2. Naming Conventions
+## 3. STRICT LAYERING & DEPENDENCY FLOW
 
-| Artifact | Rule | Example |
-|----------|------|---------|
-| Spec file | Functionality name, kebab-case, `.spec.ts` | `featured-properties.spec.ts` |
-| Page file | Entity name, kebab-case, `-api.ts` suffix | `properties-api.ts` |
-| Base file | `api-base.ts` | — |
-| Fixture file | `api-fixtures.ts` | — |
-| Constants file | `test-constants.ts` + `index.ts` barrel | — |
-| Test title | Plain English, describes the behavior | `returns 200 with featured properties` |
-| Page class | PascalCase, entity + API suffix | `PropertiesAPI`, `SchemaAPI` |
-| Page method | camelCase, verb + noun | `fetchFeatured`, `assertAllFeatured` |
-| Base assertion | `assert` + What + `assertStatus`, `assertArray` | — |
-| Constant | UPPER_SNAKE_CASE | `SEED_COUNTS.PROPERTIES` |
-| Constant group | UPPER_SNAKE_CASE object | `API_PATHS`, `TABLES` |
-
-Spec files are named by functionality, NEVER by ticket ID. `featured-properties.spec.ts` not `kan-7.spec.ts`.
-
-## 3. Constants
-
-All magic values live in `constants/test-constants.ts`. Re-exported via `constants/index.ts`.
-
-Current constants:
-- `BASE_URL`, `DB_PATH`, `SCHEMA_PATH` — environment paths
-- `API_PATHS` — endpoint paths
-- `PROPERTY_FIELDS`, `REVIEW_FIELDS` — schema field lists
-- `REQUIRED_SETTING_KEYS` — required setting keys
-- `SEED_COUNTS` — expected seed data counts
-- `MAX_FEATURED` — max returned items per endpoint
-- `TABLES` — DB table names
-- `RATING_RANGE` — valid rating bounds
-
-Rules:
-- No hardcoded numbers in specs, pages, or base. Use constants.
-- No hardcoded strings (URLs, paths, table names) in specs, pages, or base. Use constants.
-- Adding a new endpoint or page? Add its path, fields, and counts to constants first.
-- Constants are `as const` objects. Keys are UPPER_SNAKE_CASE.
-
-## 4. Import Statements
-
-Use `@` path aliases ONLY. No `../` or `../../` in import statements.
-
-| Alias | Maps to |
-|-------|---------|
-| `@base/*` | `./base/*` |
-| `@pages/*` | `./pages/*` |
-| `@fixtures/*` | `./fixtures/*` |
-| `@constants/*` | `./constants/*` |
-| `@src/*` | `../src/*` (dev source, use sparingly) |
-
-Correct:
-```ts
-import { test, expect } from "@fixtures/api-fixtures";
-import { BaseAPI, propertySchema } from "@base/api-base";
-import { API_PATHS, SEED_COUNTS } from "@constants/index";
-import { PropertiesAPI } from "@pages/properties-api";
+```
+[ specs/ ]  ──────>  [ fixtures/ ]  ──────>  [ pages/ ]  ──────>  [ base/ ]
+  (Zero logic)       (Injects POMs)       (Encapsulates actions)   (Generic helpers)
+                                                    │
+                                                    ▼
+                                          [ locators/ & constants/ ]
+                                          (Selectors & Single Source of Truth)
 ```
 
-Wrong:
-```ts
-import { test } from "../fixtures/api-fixtures";       // NO
-import { BaseAPI } from "../../base/api-base";          // NO
-import { propertySchema } from "../../src/lib/validators"; // NO — inline in base instead
-```
+**Allowed Import Directions**:
+- `specs/` CAN import from `@fixtures/*`, `@constants/*`, `@base/*`.
+- `fixtures/` CAN import from `@pages/*`, `@playwright/test`.
+- `pages/` CAN import from `@base/*`, `@locators/*`, `@constants/*`, `@playwright/test`.
+- `base/` CAN import from `@constants/*`, `@playwright/test`.
+- `locators/` and `constants/` NEVER import from `pages/`, `specs/`, or `fixtures/`.
 
-Runtime file paths (not imports) like `../prisma/dev.db` in constants are acceptable — those are filesystem paths, not module imports.
+**FORBIDDEN Imports**:
+- Specs MUST NOT import locators directly.
+- Specs MUST NOT import raw `page` fixtures if custom fixtures (`homepage`, `propertiesPage`, `backendApi`) are available.
+- Relative imports (`../`, `../../`) are **STRICTLY PROHIBITED**. Use `@` aliases (`@base/*`, `@pages/*`, `@locators/*`, `@constants/*`, `@fixtures/*`, `@utils/*`).
 
-## 5. Spec File Scope
+---
 
-A spec file tests ONE functionality. Not one ticket, not one endpoint group — one functionality.
+## 4. DETAILED LAYER SPECIFICATION & TEMPLATES
 
-- `featured-properties.spec.ts` — all tests for the featured properties API
-- `featured-reviews.spec.ts` — all tests for the featured reviews API
-- `site-settings.spec.ts` — all tests for the site settings API
-- `security-and-seed.spec.ts` — security scan, schema validation, seed data correctness
+### A. Constants Layer (`constants/`)
+Contains all static copy text, endpoint URLs, grid column expectations, TypeScript interfaces, and Zod schemas.
 
-Each test in a spec:
-1. Calls a page object method (action or assertion)
-2. Calls a `BaseAPI` static assertion if needed
-3. Nothing else
+**Example `constants/api-constants.ts`**:
+```typescript
+import { z } from "zod";
 
-```ts
-test("returns 200 with featured properties", async ({ propertiesApi }) => {
-  const res = await propertiesApi.fetchFeatured();
-  BaseAPI.assertStatus(res, 200);
-  const props = propertiesApi.getProperties(res);
-  expect(props.length).toBe(SEED_COUNTS.FEATURED_PROPERTIES);
+export const API_PATHS = {
+  PROPERTIES_FEATURED: "/api/properties/featured",
+  REVIEWS_FEATURED: "/api/reviews/featured",
+  PROPERTIES: "/api/properties",
+  SETTINGS: "/api/settings",
+} as const;
+
+export const propertySchema = z.object({
+  id: z.number().int(),
+  slug: z.string(),
+  title: z.string(),
+  price: z.number().int(),
+  location: z.string(),
+  bedrooms: z.number().int(),
+  bathrooms: z.number().int(),
+  areaSqft: z.number().int(),
+  imageUrl: z.string(),
 });
 ```
 
-If a test needs `execSync`, `readFileSync`, `fetch`, a loop, a try/catch, or any branching logic — that logic goes in a page object method. The spec calls the method.
+---
 
-## 6. Fixtures
+### B. Locators Layer (`locators/`)
+Stores complete CSS selector strings. All keys MUST be full CSS attribute selectors using `[data-testid="..."]`.
 
-Fixtures in `fixtures/api-fixtures.ts` auto-manage page object lifecycle:
+**Example `locators/homepage-locators.ts`**:
+```typescript
+export const HOMEPAGE_LOCATORS = {
+  featuredSection: '[data-testid="featured-section"]',
+  featuredCard: '[data-testid="property-card"]',
+  reviewsGrid: '[data-testid="reviews-grid"]',
+  reviewCard: '[data-testid="review-card"]',
+} as const;
+```
 
-- `propertiesApi` — reseed + init before, dispose after
-- `reviewsApi` — reseed + init before, dispose after
-- `settingsApi` — reseed + init before, dispose after
-- `schemaApi` — init before, dispose after (no reseed — schema tests manage their own seed state)
+---
 
-Specs use fixture injection: `async ({ propertiesApi }) => { ... }`. No `beforeEach`/`afterEach` for page objects.
+### C. Base Layer (`base/`)
+- `InitializationPage`: Provides atomic UI actions (`goto`, `click`, `fill`, `selectOption`, `expectText`, `expectVisible`, `assertGridTrackCount`, `assertNoConsoleErrors`, `assertNoImage404s`, `validateCardsDataAgainstApi`).
+- `ApiHelper`: Wraps Playwright `request.newContext` pre-configured with `baseURL: BASE_URL`.
 
-Adding a new page object:
-1. Create the class in `pages/`
-2. Add it to `Fixtures` type in `fixtures/api-fixtures.ts`
-3. Add the fixture setup (reseed if needed, init, use, dispose)
-4. Use in specs via injection
+---
 
-## 7. Configuration
+### D. Pages Layer (`pages/`)
+Encapsulates user workflows and domain assertions into readable methods.
 
-Two Playwright configs, split by test type:
+**Example `pages/frontend/home-page.ts`**:
+```typescript
+import { expect, type Page } from "@playwright/test";
+import InitializationPage from "@base/ui-base";
+import { ApiHelper } from "@base/api-base";
+import { HOMEPAGE_LOCATORS } from "@locators/homepage-locators";
+import { UI_ROUTES, UI_TEXT } from "@constants/index";
 
-| Config | Workers | Parallel | Use for |
-|--------|---------|----------|---------|
-| `playwright.api.config.ts` | 1 | false | API tests (shared SQLite DB) |
-| `playwright.ui.config.ts` | default | true | UI tests (isolated browser contexts) |
+export class HomePage {
+  private initializationPage: InitializationPage;
+  private apiHelper: ApiHelper;
 
-API tests must serialize — they share a single SQLite file. UI tests run parallel — each test gets its own browser context.
+  constructor(page: Page) {
+    this.initializationPage = new InitializationPage(page);
+    this.apiHelper = new ApiHelper();
+  }
 
-## 8. Package Isolation
+  async assertPageComponents(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.featuredSection);
+  }
+}
+```
 
-This package is forever isolated from the dev environment.
+---
 
-- Own `package.json` — no shared dependencies
-- Own `tsconfig.json` — own path aliases
-- Own `node_modules/` — gitignored
-- Root `eslint.config.mjs` excludes `test-automation/**`
-- Root `tsconfig.json` excludes `test-automation`
+### E. Fixtures Layer (`fixtures/`)
+Extends Playwright `test` to inject instantiated page objects automatically.
 
-Never add `@playwright/test` to the root `package.json`. Never import from `test-automation/` in dev source code. Never import dev source code in test files (if needed, duplicate the type/schema — do not cross the boundary).
+**Example `fixtures/ui-fixtures.ts`**:
+```typescript
+import { test as base } from "@playwright/test";
+import { HomePage } from "@pages/frontend/home-page";
+import { PropertiesPage } from "@pages/frontend/properties-page";
 
-## 9. What Goes Where
+type UiFixtures = {
+  homepage: HomePage;
+  propertiesPage: PropertiesPage;
+};
 
-| Need | Location |
-|-----|----------|
-| New endpoint path | `constants/test-constants.ts` → `API_PATHS` |
-| New expected count | `constants/test-constants.ts` → `SEED_COUNTS` |
-| New DB table name | `constants/test-constants.ts` → `TABLES` |
-| Common assertion used by 2+ pages | `base/api-base.ts` as static method |
-| Page-specific assertion | That page's file in `pages/` |
-| New HTTP action (POST, PUT, DELETE) | `base/api-base.ts` as protected method |
-| New page/endpoint test | New spec file in `specs/`, named by functionality |
-| New page object | New file in `pages/`, extends `BaseAPI` |
-| Zod schema for response validation | `base/api-base.ts` (inline, not imported from dev) |
+export const test = base.extend<UiFixtures>({
+  homepage: async ({ page }, use) => {
+    const hp = new HomePage(page);
+    await use(hp);
+  },
+  propertiesPage: async ({ page }, use) => {
+    const pp = new PropertiesPage(page);
+    await use(pp);
+  },
+});
 
-## 10. Review Checklist
+export { expect } from "@playwright/test";
+```
 
-Before opening a PR, verify:
+---
 
-- [ ] Zero `../` in import statements
-- [ ] Zero hardcoded strings/numbers in specs and pages (all from constants)
-- [ ] Zero logic in spec files (no execSync, readFileSync, loops, try/catch, conditionals)
-- [ ] Spec files named by functionality, not ticket ID
-- [ ] New constants added to `constants/test-constants.ts` with UPPER_SNAKE_CASE
-- [ ] New page objects extend `BaseAPI`
-- [ ] New page objects added to fixtures if used by specs
-- [ ] `npx tsc --noEmit` passes in both dev and test-automation
-- [ ] `npm run lint` passes (root, 0 errors)
-- [ ] All tests pass
+### F. Specs Layer (`specs/`)
+Contains ONLY test declarations calling fixture methods. Zero Playwright locators, zero raw logic, zero conditionals.
+
+**Example `specs/frontend-integration-test/home-page.spec.ts`**:
+```typescript
+import { test } from "@fixtures/ui-fixtures";
+
+test.describe("Home Page Test Suite", () => {
+  test("Home Page components, responsive layout", async ({ homepage }) => {
+    await homepage.assertPageComponents();
+  });
+});
+```
+
+---
+
+## 5. THE 10 NON-NEGOTIABLE AI RULES (DOs & DON'Ts)
+
+### Rule 1: NO Multiple Spec Files for the Same Page / Domain
+- ❌ **DON'T**: Create `home-page-part1.spec.ts`, `home-page-search.spec.ts`, or `kan-58.spec.ts`.
+- ✅ **DO**: Put all UI integration tests for Home page into `specs/frontend-integration-test/home-page.spec.ts`.
+
+### Rule 2: NO Bare / Raw Locator Strings in Page Files or Specs
+- ❌ **DON'T**: Write `page.locator('.card')` or `this.initializationPage.click('submit-btn')`.
+- ✅ **DO**: Store `[data-testid="submit-btn"]` in `locators/*.ts` and pass `HOMEPAGE_LOCATORS.submitBtn`.
+
+### Rule 3: NO Relative Imports (`../` or `../../`)
+- ❌ **DON'T**: `import { HomePage } from "../../pages/frontend/home-page";`
+- ✅ **DO**: `import { HomePage } from "@pages/frontend/home-page";`
+
+### Rule 4: NO Hardcoded Text, Numbers, or Base URLs
+- ❌ **DON'T**: `await apiHelper.getRequest("https://real-estates-estatein.netlify.app/api/properties")` or `expect(text).toBe("Find Your Dream Property")`.
+- ✅ **DO**: Use `API_PATHS.PROPERTIES` and `PROPERTIES_TEXT.HEADING` from `@constants/index`.
+
+### Rule 5: NO Raw Logic or Loops in Spec Files
+- ❌ **DON'T**: Write `for (const item of data) { ... }` or `if (condition) { ... }` inside a `test(...)` block in `specs/`.
+- ✅ **DO**: Move all loops, array parsing, and assertions into Page Object methods in `pages/`.
+
+### Rule 6: ALWAYS Validate API Responses with Zod Schemas
+- ❌ **DON'T**: Check only `response.status === 200` without schema checks.
+- ✅ **DO**: Call `propertySchema.safeParse(item)` and assert `parsed.success === true`.
+
+### Rule 7: NO Try/Catch Error Swallowing or Dummy Fallbacks
+- ❌ **DON'T**: Wrap failing assertions in `try { ... } catch { return dummyData; }` to mask test failures.
+- ✅ **DO**: Let assertions fail naturally so root causes can be diagnosed and fixed cleanly.
+
+### Rule 8: ALWAYS Use Project Definitions in `playwright.config.ts`
+- ❌ **DON'T**: Create separate scattered config files like `playwright.ui.config.ts` or `playwright.api.config.ts`.
+- ✅ **DO**: Use `playwright.config.ts` with named projects (`frontend-integration-test` and `backend-test`).
+
+### Rule 9: NEVER Mutate or Import Test Files in Web App Source Code
+- ❌ **DON'T**: Import anything from `test-automation/` inside `src/app/` or `src/components/`.
+- ✅ **DO**: Keep `test-automation/` completely isolated.
+
+### Rule 10: MANDATORY Verification Before Completing Any Task
+- ❌ **DON'T**: Claim a task is complete after editing files without running verification commands.
+- ✅ **DO**: Execute and confirm 100% pass on:
+  1. `PATH=/usr/local/bin:$PATH npx tsc --noEmit`
+  2. `npm run test` (`npm run test:api` && `npm run test:ui`)
+
+---
+
+## 6. VERIFICATION & DEFINITION OF DONE
+
+Every single change to this test automation framework MUST satisfy the following Definition of Done:
+
+1. **TypeScript Compilation**: `npx tsc --noEmit` returns **0 errors**.
+2. **API Tests Pass**: `npm run test:api` passes **100% (4/4 passed)**.
+3. **UI Tests Pass**: `npm run test:ui` passes **100% (11/11 passed)**.
+4. **Full Test Suite Passes**: `npm run test` passes **100% (15/15 passed)**.
+5. **Zero Linter/Import Violations**: No relative imports (`../`), no bare locators, no inline magic strings.
