@@ -3,6 +3,123 @@ import { execSync } from "node:child_process";
 import { z } from "zod";
 import { BASE_URL, DB_PATH } from "@constants/index";
 
+export class ApiHelper {
+  async makeRequest(
+    method: string,
+    requestUrl: string,
+    headers?: any,
+    requestBody?: any,
+    queryParams?: any
+  ) {
+    const contextRequest = await request.newContext({ baseURL: BASE_URL });
+    const options: Record<string, any> = { headers };
+    // Append query parameters to the URL if provided
+    if (queryParams && Object.keys(queryParams).length > 0) {
+      const url = new URL(requestUrl, BASE_URL);
+      Object.keys(queryParams).forEach((key) => {
+        url.searchParams.append(key, queryParams[key]);
+      });
+      requestUrl = url.toString();
+      console.log(`Request Url; ${requestUrl}`);
+    }
+    if (requestBody) {
+      options.data = requestBody;
+    }
+
+    let response;
+    switch (method.toUpperCase()) {
+      case "GET":
+        response = await contextRequest.get(requestUrl, options);
+        break;
+      case "POST":
+        response = await contextRequest.post(requestUrl, options);
+        break;
+      case "PUT":
+        response = await contextRequest.put(requestUrl, options);
+        break;
+      case "PATCH":
+        response = await contextRequest.patch(requestUrl, options);
+        break;
+      case "DELETE":
+        response = await contextRequest.delete(requestUrl, options);
+        break;
+      default:
+        throw new Error(`Unsupported method: ${method}`);
+    }
+    if (!response.ok()) {
+      console.warn(`Request failed with status ${response.status()}`);
+    }
+    return await response.json();
+  }
+
+  async getRequest(requestUrl: string, headers?: any, queryParams?: any) {
+    return await this.makeRequest(
+      "GET",
+      requestUrl,
+      headers,
+      undefined,
+      queryParams
+    );
+  }
+  async postRequest(
+    requestUrl: string,
+    headers?: any,
+    requestBody?: any,
+    queryParams?: any
+  ) {
+    return await this.makeRequest(
+      "POST",
+      requestUrl,
+      headers,
+      requestBody,
+      queryParams
+    );
+  }
+
+  async putRequest(
+    requestUrl: string,
+    headers?: any,
+    requestBody?: any,
+    queryParams?: any
+  ) {
+    return await this.makeRequest(
+      "PUT",
+      requestUrl,
+      headers,
+      requestBody,
+      queryParams
+    );
+  }
+  async patchRequest(
+    requestUrl: string,
+    headers?: any,
+    requestBody?: any,
+    queryParams?: any
+  ) {
+    return await this.makeRequest(
+      "PATCH",
+      requestUrl,
+      headers,
+      requestBody,
+      queryParams
+    );
+  }
+  async deleteRequest(
+    requestUrl: string,
+    headers?: any,
+    requestBody?: any,
+    queryParams?: any
+  ) {
+    return await this.makeRequest(
+      "DELETE",
+      requestUrl,
+      headers,
+      requestBody,
+      queryParams
+    );
+  }
+}
+
 const propertySchema = z.object({
   id: z.number().int(),
   slug: z.string(),
@@ -28,6 +145,11 @@ const reviewSchema = z.object({
 });
 
 const settingsSchema = z.record(z.string(), z.string());
+
+export interface Response {
+  status: number;
+  body: unknown;
+}
 
 export abstract class BaseAPI {
   protected ctx: APIRequestContext | null = null;
@@ -120,5 +242,4 @@ export abstract class BaseAPI {
   }
 }
 
-export interface Response { status: number; body: unknown; }
 export { propertySchema, reviewSchema, settingsSchema };
