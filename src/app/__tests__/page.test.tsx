@@ -72,7 +72,7 @@ describe("Home page integration", () => {
     render(<Home />);
 
     await waitFor(() => {
-      expect(screen.getByText("Unable to load properties. Please try again later.")).toBeInTheDocument();
+      expect(screen.getByText("Unable to load content. Please try again later.")).toBeInTheDocument();
     });
   });
 });

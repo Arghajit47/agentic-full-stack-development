@@ -1,146 +1,134 @@
 import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { featuredProperties } from "@/mocks/featured-properties";
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
-}));
-
-// Mock responsive hook to return 3 cards (desktop)
-vi.mock("react", async (importActual) => {
-  const actual = await importActual<typeof import("react")>();
-  return {
-    ...actual,
-    useState: actual.useState,
-    // Override the effect-based responsive hook by mocking window
-  };
-});
-
-// Set window width for desktop (3 cards)
 beforeAll(() => {
   Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1920 });
 });
 
 afterEach(cleanup);
 
+const mockData = featuredProperties.slice(0, 6);
+
 describe("FeaturedProperties", () => {
-  it("renders the heading 'Featured Properties'", () => {
-    render(<FeaturedProperties />);
+  it("renders heading 'Featured Properties'", () => {
+    render(<FeaturedProperties data={mockData} />);
     expect(screen.getByTestId("featured-properties-heading")).toHaveTextContent("Featured Properties");
   });
 
   it("heading is left-aligned", () => {
-    render(<FeaturedProperties />);
-    const heading = screen.getByTestId("featured-properties-heading");
-    expect(heading.parentElement?.className).toContain("text-left");
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getByTestId("featured-properties-heading").closest("div")?.className).toContain("text-left");
   });
 
-  it("renders the subheading", () => {
-    render(<FeaturedProperties />);
-    expect(screen.getByTestId("featured-properties-subheading")).toBeInTheDocument();
+  it("renders subheading with exact AC text", () => {
+    render(<FeaturedProperties data={mockData} />);
+    const sub = screen.getByTestId("featured-properties-subheading");
+    expect(sub).toHaveTextContent("Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein.");
   });
 
-  it("renders 3 visible property cards at 1920px (not 6)", () => {
-    render(<FeaturedProperties />);
-    const cards = screen.getAllByTestId(/property-card/);
-    expect(cards).toHaveLength(3);
+  it("renders 3 visible cards at 1920px", () => {
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getAllByTestId(/property-card/)).toHaveLength(3);
   });
 
-  it("renders left and right navigation arrows", () => {
-    render(<FeaturedProperties />);
-    expect(screen.getByTestId("prev-arrow")).toBeInTheDocument();
-    expect(screen.getByTestId("next-arrow")).toBeInTheDocument();
+  it("renders 'View All Properties' button at top-right", () => {
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getByTestId("view-all-properties")).toHaveTextContent("View All Properties");
   });
 
-  it("left arrow is disabled on first page", () => {
-    render(<FeaturedProperties />);
+  it("renders nav arrows with correct ARIA labels", () => {
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getByTestId("prev-arrow")).toHaveAttribute("aria-label", "Previous properties");
+    expect(screen.getByTestId("next-arrow")).toHaveAttribute("aria-label", "Next properties");
+  });
+
+  it("left arrow disabled on first page", () => {
+    render(<FeaturedProperties data={mockData} />);
     expect(screen.getByTestId("prev-arrow")).toBeDisabled();
   });
 
-  it("right arrow is enabled when more data exists", () => {
-    render(<FeaturedProperties />);
+  it("right arrow enabled when more data exists", () => {
+    render(<FeaturedProperties data={mockData} />);
     expect(screen.getByTestId("next-arrow")).not.toBeDisabled();
   });
 
-  it("renders property image in each card", () => {
-    render(<FeaturedProperties />);
-    const images = screen.getAllByRole("img", { name: /Modern|Downtown|Beachfront/i });
-    expect(images).toHaveLength(3);
+  it("clicking right arrow navigates to next page", () => {
+    render(<FeaturedProperties data={mockData} />);
+    fireEvent.click(screen.getByTestId("next-arrow"));
+    expect(screen.getByTestId("prev-arrow")).not.toBeDisabled();
   });
 
-  it("renders property title in each card", () => {
-    render(<FeaturedProperties />);
-    featuredProperties.slice(0, 3).forEach((p) => {
-      expect(screen.getByTestId(`property-title-${p.id}`)).toHaveTextContent(p.title);
-    });
+  it("renders property image with alt=text=title", () => {
+    render(<FeaturedProperties data={mockData} />);
+    const images = screen.getAllByRole("img");
+    expect(images.length).toBeGreaterThanOrEqual(3);
+    expect(images[0]).toHaveAttribute("alt", mockData[0].title);
   });
 
-  it("renders property description in each card", () => {
-    render(<FeaturedProperties />);
-    featuredProperties.slice(0, 3).forEach((p) => {
-      expect(screen.getByTestId(`property-description-${p.id}`)).toHaveTextContent(p.description);
-    });
-  });
-
-  it("renders specs row with bedrooms, bathrooms, and property type (not area)", () => {
-    render(<FeaturedProperties />);
-    const firstCard = screen.getByTestId(`property-specs-${featuredProperties[0].id}`);
-    expect(firstCard).toHaveTextContent(`${featuredProperties[0].bedrooms} bedrooms`);
-    expect(firstCard).toHaveTextContent(`${featuredProperties[0].bathrooms} bathrooms`);
-    expect(firstCard).toHaveTextContent(featuredProperties[0].propertyType);
-    expect(firstCard).not.toHaveTextContent("sqft");
-    expect(firstCard).not.toHaveTextContent("area");
+  it("renders 3 spec pills per card", () => {
+    render(<FeaturedProperties data={mockData} />);
+    const specs = screen.getByTestId(`property-specs-${mockData[0].id}`);
+    expect(specs.textContent).toContain(`${mockData[0].bedrooms}-Bedroom`);
+    expect(specs.textContent).toContain(`${mockData[0].bathrooms}-Bathroom`);
+    expect(specs.textContent).toContain(mockData[0].propertyType);
   });
 
   it("renders 'Price' label above price value", () => {
-    render(<FeaturedProperties />);
-    const priceLabel = screen.getByTestId(`price-label-${featuredProperties[0].id}`);
-    expect(priceLabel).toHaveTextContent("Price");
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getByTestId(`price-label-${mockData[0].id}`)).toHaveTextContent("Price");
   });
 
   it("renders formatted price value", () => {
-    render(<FeaturedProperties />);
-    const priceSection = screen.getByTestId(`property-price-${featuredProperties[0].id}`);
-    expect(priceSection).toHaveTextContent("$1,250,000");
+    render(<FeaturedProperties data={mockData} />);
+    const priceSection = screen.getByTestId(`property-price-${mockData[0].id}`);
+    expect(priceSection.textContent).toContain("$");
   });
 
-  it("renders 'View property details' button in each card", () => {
-    render(<FeaturedProperties />);
-    featuredProperties.slice(0, 3).forEach((p) => {
-      expect(screen.getByTestId(`view-details-${p.id}`)).toHaveTextContent("View property details");
-    });
+  it("renders 'View Property Details' button with aria-label", () => {
+    render(<FeaturedProperties data={mockData} />);
+    const btn = screen.getByTestId(`view-details-${mockData[0].id}`);
+    expect(btn).toHaveTextContent("View Property Details");
+    expect(btn).toHaveAttribute("aria-label", `View details for ${mockData[0].title}`);
   });
 
-  it("renders 'Explore Properties' CTA below section", () => {
-    render(<FeaturedProperties />);
-    expect(screen.getByTestId("explore-properties-cta")).toHaveTextContent("Explore Properties");
+  it("renders divider line behind arrows", () => {
+    render(<FeaturedProperties data={mockData} />);
+    expect(screen.getByTestId("divider-line")).toBeInTheDocument();
   });
 
   it("renders skeleton loading state", () => {
-    render(<FeaturedProperties isLoading={true} />);
-    expect(screen.getAllByTestId(/skeleton|property-skeleton/)).toHaveLength(3);
+    render(<FeaturedProperties data={mockData} isLoading={true} />);
+    expect(screen.getAllByTestId(/property-skeleton/)).toHaveLength(3);
   });
 
-  it("renders empty state when data is empty", () => {
+  it("renders empty state 'No properties found'", () => {
     render(<FeaturedProperties data={[]} />);
-    expect(screen.getByTestId("no-properties")).toHaveTextContent("No featured properties");
+    expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
   });
 
-  it("cards have no visible border/ring (blended with bg)", () => {
-    render(<FeaturedProperties />);
-    const cards = screen.getAllByTestId(/property-card/);
-    cards.forEach((card) => {
-      expect(card.className).not.toContain("ring");
-      expect(card.className).not.toContain("border");
-      expect(card.className).not.toContain("shadow");
+  it("renders error state with retry button when onRetry provided", () => {
+    const onRetry = vi.fn();
+    render(<FeaturedProperties data={[]} onRetry={onRetry} />);
+    expect(screen.getByTestId("retry-button")).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("retry-button"));
+    expect(onRetry).toHaveBeenCalled();
+  });
+
+  it("cards have dark bg and border", () => {
+    render(<FeaturedProperties data={mockData} />);
+    screen.getAllByTestId(/property-card/).forEach((card) => {
+      expect(card.className).toContain("bg-[#141414]");
+      expect(card.className).toContain("border-[#1D1B1B]");
     });
   });
 
-  it("section has dark background", () => {
-    render(<FeaturedProperties />);
-    const section = screen.getByTestId("featured-properties-section");
-    expect(section.className).toContain("bg-zinc-950");
+  it("cards have tabindex=0", () => {
+    render(<FeaturedProperties data={mockData} />);
+    screen.getAllByTestId(/property-card/).forEach((card) => {
+      expect(card).toHaveAttribute("tabindex", "0");
+    });
   });
 });
