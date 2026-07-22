@@ -124,8 +124,8 @@ describe("GET /api/properties/featured", () => {
     }
     const res = await getFeaturedProperties();
     const body = (await getJsonBody(res)) as unknown[];
-    // 2 from beforeEach + 8 added above
-    expect(body.length).toBe(10);
+    // API caps featured properties at 6
+    expect(body.length).toBe(6);
   });
 
   it("parses galleryUrls and features from JSON text to arrays", async () => {
@@ -206,7 +206,6 @@ describe("GET /api/reviews/featured", () => {
   });
 
   it("returns at most 5 reviews", async () => {
-    // Add more reviews; the endpoint no longer caps at 5.
     for (let i = 4; i <= 10; i++) {
       await prisma.review.create({
         data: {
@@ -220,8 +219,8 @@ describe("GET /api/reviews/featured", () => {
     }
     const res = await getFeaturedReviews();
     const body = (await getJsonBody(res)) as unknown[];
-    // 3 from beforeEach + 7 added above
-    expect(body.length).toBe(10);
+    // API caps featured reviews at 5
+    expect(body.length).toBe(5);
   });
 
   it("returns reviews that match reviewSchema", async () => {
