@@ -1,63 +1,115 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { SearchFilterBar } from "@/components/properties/SearchFilterBar";
 import { PropertyListings } from "@/components/properties/PropertyListings";
 import { Pagination } from "@/components/properties/Pagination";
-import { propertiesListings } from "@/mocks/properties-listings";
+import { type Property } from "@/mocks/properties-listings";
 
 const ITEMS_PER_PAGE = 6;
+const DEBOUNCE_MS = 300;
+
+// API response shape from GET /api/properties (KAN-10)
+interface PropertiesApiResponse {
+  items: Record<string, unknown>[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// Map a raw API row to the Property type components expect
+function toProperty(row: Record<string, unknown>): Property {
+  return {
+    id: row.id as number,
+    slug: row.slug as string,
+    title: row.title as string,
+    description: row.description as string,
+    price: row.price as number,
+    location: row.location as string,
+    bedrooms: row.bedrooms as number,
+    bathrooms: row.bathrooms as number,
+    propertyType: row.propertyType as Property["propertyType"],
+    imageUrl: row.imageUrl as string,
+    area: `${(row.areaSqft as number).toLocaleString("en-US")} sq ft`,
+  };
+}
 
 export default function PropertiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  // Trigger loading skeleton state on mount and when query/filter changes
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ─── Fetch from real API ──────────────────────────────────────────────────
+  const fetchProperties = useCallback(
+    async (query: string, type: string, page: number) => {
+      setIsLoading(true);
+      setApiError(null);
+
+      const params = new URLSearchParams({
+        search: query,
+        type,
+        page: String(page),
+        limit: String(ITEMS_PER_PAGE),
+      });
+
+      try {
+        const res = await fetch(`/api/properties?${params.toString()}`);
+
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+        const json: PropertiesApiResponse = await res.json();
+        setProperties(json.items.map(toProperty));
+        setTotalItems(json.total);
+      } catch (err) {
+        console.error("[PropertiesPage] fetch error:", err);
+        setApiError("Unable to load properties. Please try again later.");
+        setProperties([]);
+        setTotalItems(0);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
+
+  // Initial load
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600); // 600ms simulation
-    return () => clearTimeout(timer);
-  }, [searchQuery, propertyType, currentPage]);
+    fetchProperties("", "All", 1);
+  }, [fetchProperties]);
 
-  const handleSearch = (query: string, type: string) => {
-    setSearchQuery(query);
-    setPropertyType(type);
-    setCurrentPage(1); // Reset page to 1 on filter
-    setIsLoading(true);
-  };
+  // ─── Search handler (debounced 300ms per AC) ──────────────────────────────
+  const handleSearch = useCallback(
+    (query: string, type: string) => {
+      setSearchQuery(query);
+      setPropertyType(type);
+      setCurrentPage(1);
+      setIsLoading(true);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    setIsLoading(true);
-  };
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        fetchProperties(query, type, 1);
+      }, DEBOUNCE_MS);
+    },
+    [fetchProperties],
+  );
 
-  // Filtered properties logic
-  const filteredProperties = useMemo(() => {
-    return propertiesListings.filter((property) => {
-      const matchesSearch =
-        searchQuery.trim() === "" ||
-        property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        property.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        property.location.toLowerCase().includes(searchQuery.toLowerCase());
+  // ─── Pagination handler ───────────────────────────────────────────────────
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      setIsLoading(true);
+      fetchProperties(searchQuery, propertyType, page);
+    },
+    [fetchProperties, searchQuery, propertyType],
+  );
 
-      const matchesType =
-        propertyType === "All" ||
-        property.propertyType.toLowerCase() === propertyType.toLowerCase();
-
-      return matchesSearch && matchesType;
-    });
-  }, [searchQuery, propertyType]);
-
-  // Paginated properties logic
-  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
-  
-  const paginatedProperties = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredProperties.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredProperties, currentPage]);
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
 
   const handlePropertyClick = (slug: string) => {
     console.log("Viewing property:", slug);
@@ -73,22 +125,33 @@ export default function PropertiesPage() {
         initialQuery={searchQuery}
         initialType={propertyType}
       />
-      
+
       <div className="mx-auto w-full max-w-[1920px] flex-1 px-4 pb-16 sm:px-6 lg:px-8">
-        <PropertyListings
-          properties={paginatedProperties}
-          isLoading={isLoading}
-          onPropertyClick={handlePropertyClick}
-        />
-        
-        {!isLoading && totalPages > 1 && (
-          <div className="mt-8">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+        {apiError ? (
+          <div
+            data-testid="api-error"
+            className="py-20 text-center text-zinc-400"
+          >
+            {apiError}
           </div>
+        ) : (
+          <>
+            <PropertyListings
+              properties={properties}
+              isLoading={isLoading}
+              onPropertyClick={handlePropertyClick}
+            />
+
+            {!isLoading && totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>
