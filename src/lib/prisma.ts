@@ -3,12 +3,22 @@ import path from "path";
 import fs from "fs";
 
 const databaseUrl = process.env.DATABASE_URL;
+const isDev = process.env.NODE_ENV === "development";
+const isTest = process.env.NODE_ENV === "test";
 const prismaOptions: Prisma.PrismaClientOptions = {
-  log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+  log: isDev ? ["query", "error", "warn"] : ["error"],
 };
 
-if (databaseUrl && databaseUrl.startsWith("file:") && (process.env.NODE_ENV === "production" || process.env.NETLIFY)) {
-  const relativePath = databaseUrl.replace("file:", "");
+// Serverless runtimes (Netlify Functions, AWS Lambda, Vercel) mount the package directory read-only.
+// Copy the bundled SQLite file to /tmp so Prisma can read AND write. Always do this outside dev/test
+// for file-based databases so mutation endpoints don't fail with EROFS.
+const serverlessDbUrl =
+  databaseUrl?.startsWith("file:") && !isDev && !isTest
+    ? databaseUrl
+    : null;
+
+if (serverlessDbUrl) {
+  const relativePath = serverlessDbUrl.replace("file:", "");
   const originalPath = path.isAbsolute(relativePath)
     ? relativePath
     : path.resolve(process.cwd(), relativePath);
@@ -35,6 +45,6 @@ const prisma =
   global.prisma ??
   new PrismaClient(prismaOptions);
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+if (!isDev) global.prisma = prisma;
 
 export default prisma;
