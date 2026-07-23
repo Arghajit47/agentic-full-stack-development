@@ -10,20 +10,37 @@ const prismaOptions: Prisma.PrismaClientOptions = {
 };
 
 // Serverless runtimes (Netlify Functions, AWS Lambda, Vercel) mount the package directory read-only.
-// Copy the bundled SQLite file to /tmp so Prisma can read AND write. Always do this outside dev/test
-// for file-based databases so mutation endpoints don't fail with EROFS.
+// Copy the bundled SQLite file to /tmp so Prisma can read AND write.
 const needsServerlessCopy =
   !isDev && !isTest && databaseUrl.startsWith("file:");
 
+function findBundledDb(relativePath: string): string | null {
+  const candidates = [
+    path.isAbsolute(relativePath) ? relativePath : path.resolve(process.cwd(), relativePath),
+    path.resolve(process.cwd(), relativePath),
+    path.resolve("/var/task", relativePath),
+    path.resolve("/var/task", "prisma/dev.db"),
+    path.resolve("/tmp", "prisma/dev.db"),
+    // When bundled by Next.js, __dirname is inside .next/server/chunks.
+    path.resolve(__dirname, "../../..", "prisma/dev.db"),
+    path.resolve(__dirname, "../../../../prisma/dev.db"),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  console.warn("Bundled SQLite DB not found in any candidate path:", candidates);
+  return null;
+}
+
 if (needsServerlessCopy) {
   const relativePath = databaseUrl.replace("file:", "");
-  const originalPath = path.isAbsolute(relativePath)
-    ? relativePath
-    : path.resolve(process.cwd(), relativePath);
+  const originalPath = findBundledDb(relativePath);
 
   const tempDbPath = "/tmp/dev.db";
   try {
-    if (fs.existsSync(originalPath)) {
+    if (originalPath) {
       fs.copyFileSync(originalPath, tempDbPath);
       fs.chmodSync(tempDbPath, 0o644);
       prismaOptions.datasources = {
@@ -33,7 +50,7 @@ if (needsServerlessCopy) {
       };
       console.log(`Successfully copied SQLite DB from ${originalPath} to ${tempDbPath}`);
     } else {
-      console.warn(`Original SQLite DB file not found at ${originalPath}`);
+      console.warn(`Original SQLite DB file not found for ${relativePath}`);
     }
   } catch (error) {
     console.error("Failed to copy SQLite database to /tmp:", error);
