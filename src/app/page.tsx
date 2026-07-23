@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
+import { Hero, FeatureCards } from "@/components/sections/Hero";
 import { type Property } from "@/mocks/featured-properties";
 import { type Review } from "@/mocks/testimonials";
 
@@ -80,6 +81,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 bg-zinc-950 font-sans text-zinc-100">
+      <Hero />
+      <FeatureCards />
       <FeaturedProperties
         data={properties}
         isLoading={state.isLoading}
