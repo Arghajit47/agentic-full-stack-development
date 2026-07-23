@@ -2,7 +2,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import path from "path";
 import fs from "fs";
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV === "test";
 const prismaOptions: Prisma.PrismaClientOptions = {
@@ -12,13 +12,11 @@ const prismaOptions: Prisma.PrismaClientOptions = {
 // Serverless runtimes (Netlify Functions, AWS Lambda, Vercel) mount the package directory read-only.
 // Copy the bundled SQLite file to /tmp so Prisma can read AND write. Always do this outside dev/test
 // for file-based databases so mutation endpoints don't fail with EROFS.
-const serverlessDbUrl =
-  databaseUrl?.startsWith("file:") && !isDev && !isTest
-    ? databaseUrl
-    : null;
+const needsServerlessCopy =
+  !isDev && !isTest && databaseUrl.startsWith("file:");
 
-if (serverlessDbUrl) {
-  const relativePath = serverlessDbUrl.replace("file:", "");
+if (needsServerlessCopy) {
+  const relativePath = databaseUrl.replace("file:", "");
   const originalPath = path.isAbsolute(relativePath)
     ? relativePath
     : path.resolve(process.cwd(), relativePath);
