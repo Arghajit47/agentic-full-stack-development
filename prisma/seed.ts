@@ -112,6 +112,43 @@ async function main() {
   await prisma.property.deleteMany();
   await prisma.review.deleteMany();
   await prisma.siteSetting.deleteMany();
+  await prisma.navigationLink.deleteMany();
+  await prisma.footerSection.deleteMany();
+  await prisma.newsletterSubscriber.deleteMany();
+
+  const navigationLinks = [
+    { label: "Home", href: "/", order: 1, isExternal: false },
+    { label: "About Us", href: "/about", order: 2, isExternal: false },
+    { label: "Properties", href: "/properties", order: 3, isExternal: false },
+    { label: "Services", href: "/services", order: 4, isExternal: false },
+  ];
+
+  for (const link of navigationLinks) {
+    await prisma.navigationLink.create({ data: link });
+  }
+
+  const footerSections = [
+    {
+      key: "cta",
+      title: "Start Your Real Estate Journey Today",
+      body: "Your dream property is just a click away. Whether you're looking for a new home, a strategic investment, or expert real estate advice, Estatein is here to assist you every step of the way. Take the first step towards your real estate goals and explore our available properties or get in touch with our team for personalized assistance.",
+      ctaText: "Explore Properties",
+      ctaHref: "/properties",
+    },
+    {
+      key: "newsletter",
+      placeholder: "Enter Your Email",
+    },
+    {
+      key: "bottom",
+      copyright: "©2024 Estatein. All Rights Reserved.",
+      legalText: "Terms & Conditions",
+    },
+  ];
+
+  for (const section of footerSections) {
+    await prisma.footerSection.create({ data: section });
+  }
 
   const properties = PROPERTY_TITLES.map((title, i) => ({
     slug: slugify(title),
@@ -163,13 +200,14 @@ async function main() {
     { key: "footer_contact_phone", value: "+1 (555) 123-4567" },
     { key: "footer_address", value: "123 Real Estate Ave, New York, NY 10001" },
     { key: "cta_button_text", value: "Get Started" },
+    { key: "nav_banner", value: JSON.stringify({ text: "Discover Your Dream Property with Estatein", cta: "Learn More", ctaHref: "/properties" }) },
   ];
 
   for (const s of settings) {
     await prisma.siteSetting.create({ data: s });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings`);
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections`);
 }
 
 main()
