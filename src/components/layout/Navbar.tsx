@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
 import { useNavigation, type NavigationLink } from "@/lib/api";
 
@@ -39,10 +39,17 @@ function BannerSkeleton() {
 export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const { data, error, isLoading, mutate } = useNavigation();
 
-  const links = data?.links?.length ? data.links : fallbackLinks;
+  const linksForInitialRender = mounted ? undefined : fallbackLinks;
+  const links = linksForInitialRender ?? (data?.links?.length ? data.links : fallbackLinks);
   const banner = data?.banner;
+  const showSkeleton = mounted && isLoading && !linksForInitialRender;
 
   return (
     <div className="w-full" data-testid="navbar">
@@ -84,7 +91,7 @@ export function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
-            {isLoading ? (
+            {showSkeleton ? (
               <div className="flex items-center gap-1">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <span
@@ -145,7 +152,7 @@ export function Navbar() {
             data-testid="mobile-nav"
           >
             <nav className="flex flex-col gap-2" aria-label="Mobile navigation">
-              {isLoading ? (
+              {showSkeleton ? (
                 Array.from({ length: 4 }).map((_, i) => (
                   <span key={i} className="inline-block h-10 rounded-lg bg-zinc-800" />
                 ))
