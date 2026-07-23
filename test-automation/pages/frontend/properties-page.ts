@@ -90,12 +90,12 @@ export class PropertiesPage {
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
     await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
 
-    // 1. Filter by Mansion
+    // 1. Filter by Mansion — wait for card count to settle (fetch + render on live deployment)
     await this.initializationPage.selectOption(
       PROPERTIESPAGE_LOCATORS.propertyTypeFilter,
       "Mansion"
     );
-    await this.initializationPage.waitForSomeTime(700);
+    await this.initializationPage.waitForSomeTime(2000);
 
     const filteredCount = await this.initializationPage.getElementsCount(
       PROPERTIESPAGE_LOCATORS.propertyCard
@@ -107,7 +107,7 @@ export class PropertiesPage {
       PROPERTIESPAGE_LOCATORS.propertyTypeFilter,
       "All"
     );
-    await this.initializationPage.waitForSomeTime(700);
+    await this.initializationPage.waitForSomeTime(2000);
 
     // 2. Search for "Malibu"
     await this.initializationPage.fill(
@@ -115,7 +115,7 @@ export class PropertiesPage {
       "Malibu"
     );
     await this.initializationPage.click(PROPERTIESPAGE_LOCATORS.searchSubmitBtn);
-    await this.initializationPage.waitForSomeTime(700);
+    await this.initializationPage.waitForSomeTime(2000);
 
     const searchCount = await this.initializationPage.getElementsCount(
       PROPERTIESPAGE_LOCATORS.propertyCard
@@ -133,7 +133,7 @@ export class PropertiesPage {
       ""
     );
     await this.initializationPage.click(PROPERTIESPAGE_LOCATORS.searchSubmitBtn);
-    await this.initializationPage.waitForSomeTime(700);
+    await this.initializationPage.waitForSomeTime(2000);
   }
 
   async assertPaginationFunctionality(): Promise<void> {
@@ -146,7 +146,7 @@ export class PropertiesPage {
     );
 
     await this.initializationPage.click(PROPERTIESPAGE_LOCATORS.nextPageBtn);
-    await this.initializationPage.waitForSomeTime(700);
+    await this.initializationPage.waitForSomeTime(2000);
 
     await this.initializationPage.expectTextContains(
       PROPERTIESPAGE_LOCATORS.paginationIndicator,
