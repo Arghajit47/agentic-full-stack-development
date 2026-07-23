@@ -46,3 +46,35 @@ model SiteSetting {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model NavigationLink {
+  id         Int      @id @default(autoincrement())
+  label      String
+  href       String
+  order      Int      @default(0)
+  isExternal Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model FooterSection {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  title       String?
+  body        String?
+  ctaText     String?
+  ctaHref     String?
+  placeholder String?
+  copyright   String?
+  legalText   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  ipHash    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
