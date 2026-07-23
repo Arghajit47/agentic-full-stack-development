@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { checkRateLimit, getClientIp, hashIp, resetRateLimitStore } from "@/lib/rate-limit";
+import { newsletterSchema } from "@/lib/schemas";
 
 export { resetRateLimitStore };
-
-const newsletterSchema = z.object({
-  email: z.string().email("Invalid email address"),
-});
-
-export type NewsletterInput = z.infer<typeof newsletterSchema>;
 
 const MAX_REQUESTS = 5;
 const WINDOW_MS = 60_000;
