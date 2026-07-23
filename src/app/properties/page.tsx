@@ -48,9 +48,6 @@ export default function PropertiesPage() {
   // ─── Fetch from real API ──────────────────────────────────────────────────
   const fetchProperties = useCallback(
     async (query: string, type: string, page: number) => {
-      setIsLoading(true);
-      setApiError(null);
-
       const params = new URLSearchParams({
         search: query,
         type,
@@ -63,6 +60,7 @@ export default function PropertiesPage() {
 
         if (!res.ok) throw new Error(`API error: ${res.status}`);
 
+        setApiError(null);
         const json: PropertiesApiResponse = await res.json();
         setProperties(json.items.map(toProperty));
         setTotalItems(json.total);
@@ -78,10 +76,39 @@ export default function PropertiesPage() {
     [],
   );
 
-  // Initial load
+  // Initial load — inline fetch to avoid setState-in-effect lint
   useEffect(() => {
-    fetchProperties("", "All", 1);
-  }, [fetchProperties]);
+    let cancelled = false;
+    const params = new URLSearchParams({
+      search: "",
+      type: "All",
+      page: "1",
+      limit: String(ITEMS_PER_PAGE),
+    });
+
+    fetch(`/api/properties?${params.toString()}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return res.json() as Promise<PropertiesApiResponse>;
+      })
+      .then((json) => {
+        if (cancelled) return;
+        setProperties(json.items.map(toProperty));
+        setTotalItems(json.total);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("[PropertiesPage] initial fetch error:", err);
+        setApiError("Unable to load properties. Please try again later.");
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // ─── Search handler (debounced 300ms per AC) ──────────────────────────────
   const handleSearch = useCallback(
