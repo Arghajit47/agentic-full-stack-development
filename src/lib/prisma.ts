@@ -27,6 +27,7 @@ if (serverlessDbUrl) {
   try {
     if (fs.existsSync(originalPath)) {
       fs.copyFileSync(originalPath, tempDbPath);
+      fs.chmodSync(tempDbPath, 0o644);
       prismaOptions.datasources = {
         db: {
           url: `file:${tempDbPath}`,
