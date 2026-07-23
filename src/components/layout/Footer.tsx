@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Mail, Send } from "lucide-react";
 import { useState } from "react";
+import { useFooter, newsletterSchema, subscribeNewsletter } from "@/lib/api";
 
 const socialLinks = [
   {
@@ -29,6 +30,36 @@ const socialLinks = [
 
 export function Footer() {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+  const { data, isLoading, error } = useFooter();
+
+  const cta = data?.cta;
+  const newsletter = data?.newsletter;
+  const bottom = data?.bottom;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    const parsed = newsletterSchema.safeParse({ email });
+    if (!parsed.success) {
+      setStatus("error");
+      setMessage(parsed.error.issues[0]?.message ?? "Invalid email");
+      return;
+    }
+
+    try {
+      const result = await subscribeNewsletter(parsed.data);
+      setStatus("success");
+      setMessage(result.message);
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <footer className="w-full bg-zinc-950" data-testid="footer">
@@ -36,19 +67,35 @@ export function Footer() {
       <div className="border-t border-zinc-900/60 px-4 py-12 sm:px-6 md:py-16 lg:px-8 xl:px-12">
         <div className="mx-auto flex max-w-[1920px] flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-xl">
-            <h2 className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
-              Start Your Real Estate Journey Today
-            </h2>
-            <p className="mt-3 text-sm text-zinc-400 sm:text-base">
-              Your dream property is just a click away. Whether you&apos;re looking for a new home, a strategic investment, or expert real estate advice, Estatein is here to assist you every step of the way. Take the first step towards your real estate goals and explore our available properties or get in touch with our team for personalized assistance.
-            </p>
+            {isLoading ? (
+              <div className="space-y-3">
+                <span className="inline-block h-8 w-3/4 animate-pulse rounded bg-zinc-800" />
+                <span className="inline-block h-24 w-full animate-pulse rounded bg-zinc-800" />
+              </div>
+            ) : error ? (
+              <p className="text-sm text-red-400">Failed to load footer content. Please refresh the page.</p>
+            ) : (
+              <>
+                <h2 className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
+                  {cta?.title ?? "Start Your Real Estate Journey Today"}
+                </h2>
+                <p className="mt-3 text-sm text-zinc-400 sm:text-base">
+                  {cta?.body ??
+                    "Your dream property is just a click away. Whether you're looking for a new home, a strategic investment, or expert real estate advice, Estatein is here to assist you every step of the way."}
+                </p>
+              </>
+            )}
           </div>
-          <Link
-            href="/properties"
-            className="inline-flex items-center justify-center rounded-xl bg-violet-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-violet-500"
-          >
-            Explore Properties
-          </Link>
+          {isLoading ? (
+            <span className="inline-block h-12 w-40 animate-pulse rounded-xl bg-zinc-800" />
+          ) : error ? null : (
+            <Link
+              href={cta?.ctaHref ?? "/properties"}
+              className="inline-flex items-center justify-center rounded-xl bg-violet-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-violet-500"
+            >
+              {cta?.ctaText ?? "Explore Properties"}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -56,10 +103,7 @@ export function Footer() {
       <div className="border-t border-zinc-900/60 px-4 py-8 sm:px-6 lg:px-8 xl:px-12">
         <form
           className="mx-auto flex max-w-[1920px] flex-col gap-3 sm:flex-row sm:items-center"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setEmail("");
-          }}
+          onSubmit={handleSubmit}
           aria-label="Newsletter signup"
         >
           <div className="flex flex-1 items-center gap-3 rounded-xl bg-zinc-950 px-4 py-3 ring-1 ring-zinc-800">
@@ -68,30 +112,48 @@ export function Footer() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter Your Email"
+              placeholder={newsletter?.placeholder ?? "Enter Your Email"}
               className="w-full bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none"
-              required
               aria-label="Email address"
+              disabled={status === "loading"}
             />
           </div>
           <button
             type="submit"
-            className="inline-flex items-center justify-center rounded-xl bg-zinc-900 p-3 text-white transition-colors hover:bg-zinc-800 sm:px-6"
+            className="inline-flex items-center justify-center rounded-xl bg-zinc-900 p-3 text-white transition-colors hover:bg-zinc-800 sm:px-6 disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="Subscribe"
+            disabled={status === "loading"}
           >
-            <Send className="h-5 w-5 sm:hidden" aria-hidden="true" />
-            <span className="hidden text-sm font-medium sm:inline">Subscribe</span>
+            {status === "loading" ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            ) : (
+              <>
+                <Send className="h-5 w-5 sm:hidden" aria-hidden="true" />
+                <span className="hidden text-sm font-medium sm:inline">Subscribe</span>
+              </>
+            )}
           </button>
         </form>
+        {message && (
+          <p
+            className={`mx-auto mt-2 max-w-[1920px] text-sm ${
+              status === "success" ? "text-green-400" : "text-red-400"
+            }`}
+            role={status === "error" ? "alert" : "status"}
+            data-testid="newsletter-message"
+          >
+            {message}
+          </p>
+        )}
       </div>
 
       {/* Bottom bar */}
       <div className="border-t border-zinc-900/60 px-4 py-6 sm:px-6 lg:px-8 xl:px-12">
         <div className="mx-auto flex max-w-[1920px] flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-500 sm:gap-6">
-            <span>&copy;2024 Estatein. All Rights Reserved.</span>
+            <span>{bottom?.copyright ?? "©2024 Estatein. All Rights Reserved."}</span>
             <Link href="/terms" className="transition-colors hover:text-white">
-              Terms &amp; Conditions
+              {bottom?.legalText ?? "Terms & Conditions"}
             </Link>
           </div>
           <div className="flex items-center gap-3">
