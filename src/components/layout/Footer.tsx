@@ -40,7 +40,7 @@ export function Footer() {
               Start Your Real Estate Journey Today
             </h2>
             <p className="mt-3 text-sm text-zinc-400 sm:text-base">
-              Find your dream property, connect with experts, and make your next move with confidence.
+              Your dream property is just a click away. Whether you&apos;re looking for a new home, a strategic investment, or expert real estate advice, Estatein is here to assist you every step of the way. Take the first step towards your real estate goals and explore our available properties or get in touch with our team for personalized assistance.
             </p>
           </div>
           <Link

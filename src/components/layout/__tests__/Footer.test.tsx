@@ -19,7 +19,7 @@ describe("Footer", () => {
 
   it("renders the CTA body text", () => {
     render(<Footer />);
-    expect(screen.getByText(/Find your dream property/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your dream property is just a click away/i)).toBeInTheDocument();
   });
 
   it("renders the Explore Properties button", () => {
