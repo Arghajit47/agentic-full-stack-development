@@ -82,6 +82,7 @@ export const UI_ROUTES = {
   EMPTY_REVIEWS: "/test-harness/empty-reviews",
   LOADING: "/test-harness/loading",
   PROPERTIES: "/properties",
+  SERVICES: "/services",
 } as const;
 
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.
