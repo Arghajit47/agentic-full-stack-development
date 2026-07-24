@@ -45,4 +45,30 @@ export interface NewsletterResponse {
   email: string;
 }
 
+export interface HeroCta {
+  text: string;
+  href: string;
+}
+
+export interface HeroStat {
+  value: string;
+  label: string;
+}
+
+export interface HeroFeature {
+  title: string;
+  description: string;
+}
+
+export interface HeroContentData {
+  heading: string;
+  subheading: string;
+  primaryCta: HeroCta;
+  secondaryCta: HeroCta;
+  stats: HeroStat[];
+  features: HeroFeature[];
+}
+
+export type HeroApiResponse = ApiResponse<HeroContentData>;
+
 export { newsletterSchema };

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
+import { useHero } from "@/lib/api";
 import { type Property } from "@/mocks/featured-properties";
 import { type Review } from "@/mocks/testimonials";
 
@@ -21,6 +22,8 @@ interface HomeData {
 }
 
 export default function Home() {
+  const { data: hero, isLoading: heroLoading, error: heroError, mutate: retryHero } = useHero();
+
   const [state, setState] = useState<{
     isLoading: boolean;
     error: boolean;
@@ -81,8 +84,13 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 bg-zinc-950 font-sans text-zinc-100">
-      <Hero />
-      <FeatureCards />
+      <Hero
+        hero={hero}
+        isLoading={heroLoading}
+        error={heroError}
+        retry={() => retryHero()}
+      />
+      <FeatureCards features={hero?.features} isLoading={heroLoading} />
       <FeaturedProperties
         data={properties}
         isLoading={state.isLoading}

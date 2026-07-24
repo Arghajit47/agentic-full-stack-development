@@ -1,39 +1,41 @@
 "use client";
 
 import Image from "next/image";
-import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight } from "lucide-react";
+import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
+import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop";
 
-const features = [
-  {
-    title: "Find Your Dream Home",
-    icon: Home,
-    href: "#find-home",
-  },
-  {
-    title: "Unlock Property Value",
-    icon: TrendingUp,
-    href: "#unlock-value",
-  },
-  {
-    title: "Effortless Property Management",
-    icon: Building2,
-    href: "#management",
-  },
-  {
-    title: "Smart Investments. Informed Decisions",
-    icon: Lightbulb,
-    href: "#investments",
-  },
+const DEFAULT_FEATURES: HeroFeature[] = [
+  { title: "Find Your Dream Home", description: "" },
+  { title: "Unlock Property Value", description: "" },
+  { title: "Effortless Property Management", description: "" },
+  { title: "Smart Investments. Informed Decisions", description: "" },
 ];
 
-const stats = [
+const DEFAULT_STATS: HeroStat[] = [
   { value: "200+", label: "Happy Customers" },
   { value: "10k+", label: "Properties For Clients" },
   { value: "16+", label: "Years of Experience" },
 ];
+
+const DEFAULT_DATA: HeroContentData = {
+  heading: "Discover Your Dream Property with Estatein",
+  subheading:
+    "Your journey to finding the perfect property begins here. Explore our listings to find the home that matches your dreams.",
+  primaryCta: { text: "Browse Properties", href: "/properties" },
+  secondaryCta: { text: "Learn More", href: "#learn-more" },
+  stats: DEFAULT_STATS,
+  features: DEFAULT_FEATURES,
+};
+
+const FEATURE_ICONS: Record<string, typeof Home> = {
+  "Find Your Dream Home": Home,
+  "Unlock Property Value": TrendingUp,
+  "Effortless Property Management": Building2,
+  "Smart Investments. Informed Decisions": Lightbulb,
+};
 
 function DiscoverBadge() {
   const text = "Discover Your Dream Property · ";
@@ -71,7 +73,62 @@ function DiscoverBadge() {
   );
 }
 
-export function Hero() {
+function HeroSkeleton() {
+  return (
+    <section data-testid="hero-section" className="bg-black">
+      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:gap-6 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
+        <div className="order-2 flex flex-col items-center text-center md:order-1 md:items-start md:text-left">
+          <div
+            data-testid="hero-heading-skeleton"
+            className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
+          />
+          <div
+            data-testid="hero-subheading-skeleton"
+            className="mt-4 h-16 w-full max-w-xl animate-pulse rounded-lg bg-zinc-800 md:mt-5"
+          />
+          <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row md:mt-8 md:gap-4">
+            <div
+              data-testid="hero-primary-cta-skeleton"
+              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 sm:w-40"
+            />
+            <div
+              data-testid="hero-secondary-cta-skeleton"
+              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 sm:w-40"
+            />
+          </div>
+          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:mt-10 md:grid-cols-3 lg:gap-4">
+            {DEFAULT_STATS.map((stat) => (
+              <div
+                key={stat.label}
+                data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
+                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 md:items-start md:px-5 md:py-5"
+              >
+                <div className="h-8 w-16 animate-pulse rounded bg-zinc-800 md:h-9" />
+                <div className="h-4 w-24 animate-pulse rounded bg-zinc-800" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="relative order-1 flex items-center justify-center md:order-2 md:justify-end">
+          <div className="relative aspect-[4/3] w-full max-w-xl animate-pulse rounded-2xl bg-zinc-800 md:aspect-square md:max-w-none lg:max-w-2xl" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export interface HeroProps {
+  hero?: HeroContentData | null;
+  isLoading?: boolean;
+  error?: Error | null;
+  retry?: () => void;
+}
+
+export function Hero({ hero, isLoading, error, retry }: HeroProps) {
+  if (isLoading) return <HeroSkeleton />;
+
+  const data = hero ?? DEFAULT_DATA;
+
   return (
     <section aria-labelledby="hero-heading" data-testid="hero-section" className="bg-black">
       <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:gap-6 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
@@ -82,35 +139,54 @@ export function Hero() {
             data-testid="hero-heading"
             className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl md:text-[42px] lg:text-5xl"
           >
-            Discover Your Dream Property with Estatein
+            {data.heading}
           </h1>
           <p
             data-testid="hero-subheading"
             className="mt-4 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base md:mt-5"
           >
-            Your journey to finding the perfect property begins here. Explore our listings to find
-            the home that matches your dreams.
+            {data.subheading}
           </p>
 
           <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row md:mt-8 md:gap-4">
             <a
-              href="/properties"
+              href={data.primaryCta.href}
               data-testid="hero-browse-properties"
               className="inline-flex items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-black"
             >
-              Browse Properties
+              {data.primaryCta.text}
             </a>
             <a
-              href="#learn-more"
+              href={data.secondaryCta.href}
               data-testid="hero-learn-more"
               className="inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-zinc-500 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-black"
             >
-              Learn More
+              {data.secondaryCta.text}
             </a>
           </div>
 
+          {error ? (
+            <div
+              data-testid="hero-error"
+              className="mt-6 flex w-full flex-col items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:mt-8 md:px-5 md:py-5"
+            >
+              <span className="text-sm">Unable to load hero content. Showing fallback data.</span>
+              {retry ? (
+                <button
+                  type="button"
+                  onClick={retry}
+                  data-testid="hero-retry"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
+                >
+                  <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                  Retry
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="mt-8 grid w-full grid-cols-2 gap-3 md:mt-10 md:grid-cols-3 lg:gap-4">
-            {stats.map((stat) => (
+            {data.stats.map((stat) => (
               <div
                 key={stat.label}
                 data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
@@ -145,16 +221,42 @@ export function Hero() {
   );
 }
 
-export function FeatureCards() {
+export interface FeatureCardsProps {
+  features?: HeroFeature[];
+  isLoading?: boolean;
+}
+
+export function FeatureCards({ features, isLoading }: FeatureCardsProps) {
+  if (isLoading) {
+    return (
+      <section data-testid="feature-cards-section" className="bg-zinc-950">
+        <div className="mx-auto grid max-w-[1920px] grid-cols-2 gap-3 px-4 pb-12 sm:gap-4 md:grid-cols-4 md:gap-5 md:px-6 md:pb-16 lg:px-8 lg:pb-20 xl:gap-6 xl:px-12">
+          {DEFAULT_FEATURES.map((feature) => (
+            <div
+              key={feature.title}
+              data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
+              className="flex flex-col items-center gap-3 rounded-2xl bg-[#1a1a1a] px-4 py-6 md:items-start md:px-5 md:py-7 lg:px-6 lg:py-8"
+            >
+              <div className="h-12 w-12 animate-pulse rounded-full bg-zinc-800 md:h-14 md:w-14" />
+              <div className="h-5 w-32 animate-pulse rounded bg-zinc-800" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  const displayFeatures = features ?? DEFAULT_FEATURES;
+
   return (
     <section aria-label="Feature cards" data-testid="feature-cards-section" className="bg-zinc-950">
       <div className="mx-auto grid max-w-[1920px] grid-cols-2 gap-3 px-4 pb-12 sm:gap-4 md:grid-cols-4 md:gap-5 md:px-6 md:pb-16 lg:px-8 lg:pb-20 xl:gap-6 xl:px-12">
-        {features.map((feature) => {
-          const Icon = feature.icon;
+        {displayFeatures.map((feature) => {
+          const Icon = FEATURE_ICONS[feature.title] ?? Home;
           return (
             <a
               key={feature.title}
-              href={feature.href}
+              href="#"
               data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}`}
               className="group flex flex-col items-center rounded-2xl bg-[#1a1a1a] px-4 py-6 text-center transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:items-start md:px-5 md:py-7 md:text-left lg:px-6 lg:py-8"
             >
@@ -170,3 +272,5 @@ export function FeatureCards() {
     </section>
   );
 }
+
+export { Loader2 };
