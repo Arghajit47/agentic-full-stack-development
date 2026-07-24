@@ -8,7 +8,7 @@ export const FEATURED_GRID_COLS = {
   WIDE: 3,
   DESKTOP: 3,
   LAPTOP: 2,
-  TABLET: 1,
+  TABLET: 2,
   MOBILE: 1,
 } as const;
 

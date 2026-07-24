@@ -2,16 +2,10 @@
 export * from "./homepage-constants";
 export * from "./api-constants";
 export * from "./properties-constants";
+export * from "./services-constants";
 
 // ── API ──────────────────────────────────────────────────────────
 export const BASE_URL = "https://real-estates-estatein.netlify.app";
-
-export const API_PATHS = {
-  PROPERTIES: "/api/properties",
-  PROPERTIES_FEATURED: "/api/properties/featured",
-  REVIEWS_FEATURED: "/api/reviews/featured",
-  SETTINGS: "/api/settings",
-} as const;
 
 // ── DB & schema ──────────────────────────────────────────────────
 export const DB_PATH = "../prisma/dev.db";

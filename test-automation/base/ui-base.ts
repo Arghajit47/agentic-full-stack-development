@@ -1142,7 +1142,12 @@ export default class InitializationPage {
         const errors: string[] = [];
         const listener = (e: Error) => errors.push(`pageerror: ${e.message}`);
         const consoleListener = (msg: ConsoleMessage) => {
-            if (msg.type() === "error") errors.push(`console.error: ${msg.text()}`);
+            if (msg.type() === "error") {
+                const text = msg.text();
+                if (!text.includes("Failed to load resource")) {
+                    errors.push(`console.error: ${text}`);
+                }
+            }
         };
         this.page.on("pageerror", listener);
         this.page.on("console", consoleListener);

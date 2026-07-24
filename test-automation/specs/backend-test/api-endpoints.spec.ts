@@ -16,4 +16,8 @@ test.describe("Backend API Schema & 200 Status Validation", () => {
   test("GET /api/settings returns 200 and matches settingsSchema", async ({ backendApi }) => {
     await backendApi.validateSettingsApi();
   });
+
+  test("GET /api/services returns 200 and matches servicesSchema", async ({ backendApi }) => {
+    await backendApi.validateServicesApi();
+  });
 });
