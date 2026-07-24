@@ -115,6 +115,7 @@ async function main() {
   await prisma.navigationLink.deleteMany();
   await prisma.footerSection.deleteMany();
   await prisma.newsletterSubscriber.deleteMany();
+  await prisma.heroContent.deleteMany();
 
   const navigationLinks = [
     { label: "Home", href: "/", order: 1, isExternal: false },
@@ -207,7 +208,27 @@ async function main() {
     await prisma.siteSetting.create({ data: s });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections`);
+  const heroContent = [
+    { key: "heading", value: "Discover Your Dream Property with Estatein" },
+    { key: "subheading", value: "Your journey to finding the perfect property begins here. Explore our listings to find the home that matches your dreams." },
+    { key: "primary_cta_text", value: "Browse Properties" },
+    { key: "primary_cta_href", value: "/properties" },
+    { key: "secondary_cta_text", value: "Learn More" },
+    { key: "secondary_cta_href", value: "#learn-more" },
+    { key: "stat_happy_customers", value: "200+" },
+    { key: "stat_properties", value: "10k+" },
+    { key: "stat_years", value: "16+" },
+    { key: "feature_find_home_title", value: "Find Your Dream Home" },
+    { key: "feature_property_value_title", value: "Unlock Property Value" },
+    { key: "feature_management_title", value: "Effortless Property Management" },
+    { key: "feature_investments_title", value: "Smart Investments. Informed Decisions" },
+  ];
+
+  for (const h of heroContent) {
+    await prisma.heroContent.create({ data: h });
+  }
+
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows`);
 }
 
 main()
