@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Mail, Send } from "lucide-react";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useFooter, newsletterSchema, subscribeNewsletter } from "@/lib/api";
 
 const socialLinks = [
@@ -32,11 +32,17 @@ export function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const { data, isLoading, error } = useFooter();
 
   const cta = data?.cta;
   const newsletter = data?.newsletter;
   const bottom = data?.bottom;
+  const showSkeleton = mounted && isLoading;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,7 +73,7 @@ export function Footer() {
       <div className="border-t border-zinc-900/60 px-4 py-12 sm:px-6 md:py-16 lg:px-8 xl:px-12">
         <div className="mx-auto flex max-w-[1920px] flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-xl">
-            {isLoading ? (
+            {showSkeleton ? (
               <div className="space-y-3">
                 <span className="inline-block h-8 w-3/4 animate-pulse rounded bg-zinc-800" />
                 <span className="inline-block h-24 w-full animate-pulse rounded bg-zinc-800" />
@@ -86,7 +92,7 @@ export function Footer() {
               </>
             )}
           </div>
-          {isLoading ? (
+          {showSkeleton ? (
             <span className="inline-block h-12 w-40 animate-pulse rounded-xl bg-zinc-800" />
           ) : error ? null : (
             <Link
