@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
@@ -21,8 +21,23 @@ interface HomeData {
   settings: Settings;
 }
 
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+function useMounted() {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
 export default function Home() {
+  const mounted = useMounted();
   const { data: hero, isLoading: heroLoading, error: heroError, mutate: retryHero } = useHero();
+
+  // Hydration-safe initial render: server and first client paint must match.
+  // After mount, reflect the real SWR loading/error state so the skeleton is shown.
+  const heroData = mounted ? hero : null;
+  const heroIsLoading = mounted ? heroLoading : false;
+  const heroErrorState = mounted ? heroError : null;
 
   const [state, setState] = useState<{
     isLoading: boolean;
@@ -85,12 +100,12 @@ export default function Home() {
   return (
     <div className="flex flex-col flex-1 bg-zinc-950 font-sans text-zinc-100">
       <Hero
-        hero={hero}
-        isLoading={heroLoading}
-        error={heroError}
+        hero={heroData}
+        isLoading={heroIsLoading}
+        error={heroErrorState}
         retry={() => retryHero()}
       />
-      <FeatureCards features={hero?.features} isLoading={heroLoading} />
+      <FeatureCards features={heroData?.features} isLoading={heroIsLoading} />
       <FeaturedProperties
         data={properties}
         isLoading={state.isLoading}
