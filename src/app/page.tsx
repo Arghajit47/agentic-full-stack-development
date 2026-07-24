@@ -4,7 +4,6 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
-import { Services } from "@/components/sections/Services";
 import { useHero } from "@/lib/api";
 import { type Property } from "@/mocks/featured-properties";
 import { type Review } from "@/mocks/testimonials";
@@ -107,7 +106,6 @@ export default function Home() {
         retry={() => retryHero()}
       />
       <FeatureCards features={heroData?.features} isLoading={heroIsLoading} />
-      <Services />
       <FeaturedProperties
         data={properties}
         isLoading={state.isLoading}

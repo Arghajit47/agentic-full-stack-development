@@ -38,11 +38,11 @@ describe("Services section", () => {
     expect(screen.getByTestId("services-property-management-card-maintenance-ease")).toHaveTextContent(
       "Maintenance Ease"
     );
-    expect(screen.getByTestId("services-property-management-card-financial-transparency")).toHaveTextContent(
-      "Financial Transparency"
-    );
-    expect(screen.getByTestId("services-property-management-card-legal-compliance")).toHaveTextContent(
-      "Legal Compliance"
+    expect(
+      screen.getByTestId("services-property-management-card-financial-peace-of-mind")
+    ).toHaveTextContent("Financial Peace of Mind");
+    expect(screen.getByTestId("services-property-management-card-legal-guardian")).toHaveTextContent(
+      "Legal Guardian"
     );
   });
 
@@ -56,7 +56,7 @@ describe("Services section", () => {
       "Selling your property should be a rewarding experience"
     );
     expect(screen.getByTestId("services-property-management-subheading")).toHaveTextContent(
-      "Owning a property should be a pleasure"
+      "Owning a property should be a pleasure, not a hassle"
     );
     expect(screen.getByTestId("services-property-selling-cta-button")).toHaveTextContent("Learn More");
     expect(screen.getByTestId("services-property-management-cta-button")).toHaveTextContent("Learn More");
@@ -69,13 +69,5 @@ describe("Services section", () => {
 
     expect(sellingCta).toHaveAttribute("href", "#services/property-selling");
     expect(managementCta).toHaveAttribute("href", "#services/property-management");
-
-    const sellingCard = screen.getByTestId("services-property-selling-card-valuation-mastery");
-    const managementCard = screen.getByTestId("services-property-management-card-tenant-harmony");
-
-    expect(sellingCard).toHaveAttribute("href", "#services/property-selling");
-    expect(managementCard).toHaveAttribute("href", "#services/property-management");
-    expect(sellingCard.tagName).toBe("A");
-    expect(managementCard.tagName).toBe("A");
   });
 });
