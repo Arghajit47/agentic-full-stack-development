@@ -1,6 +1,10 @@
 import {
   type ApiResponse,
   type FooterData,
+  type HeroContentData,
+  type HeroCta,
+  type HeroFeature,
+  type HeroStat,
   type NavigationData,
   type NavigationLink,
   type NewsletterInput,
@@ -11,6 +15,10 @@ import {
 export type {
   ApiResponse,
   FooterData,
+  HeroContentData,
+  HeroCta,
+  HeroFeature,
+  HeroStat,
   NavigationData,
   NavigationLink,
   NewsletterInput,
@@ -56,6 +64,12 @@ export function useNavigation() {
 
 export function useFooter() {
   return useSWR<FooterData, Error>(isBrowser ? "/api/footer" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useHero() {
+  return useSWR<HeroContentData, Error>(isBrowser ? "/api/hero" : null, fetcher, {
     revalidateOnFocus: false,
   });
 }
