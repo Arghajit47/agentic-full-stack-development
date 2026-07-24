@@ -5,6 +5,7 @@ import {
   propertySchema,
   reviewSchema,
   settingsSchema,
+  servicesSchema,
   propertiesResponseSchema,
 } from "@constants/index";
 
@@ -56,6 +57,15 @@ export class BackendApi {
     expect(
       parsed.success,
       `Settings response schema error: ${JSON.stringify(parsed.error?.format())}`
+    ).toBe(true);
+  }
+
+  async validateServicesApi(): Promise<void> {
+    const data = await this.apiHelper.getRequest(API_PATHS.SERVICES);
+    const parsed = servicesSchema.safeParse(data);
+    expect(
+      parsed.success,
+      `Services response schema error: ${JSON.stringify(parsed.error?.format())}`
     ).toBe(true);
   }
 }

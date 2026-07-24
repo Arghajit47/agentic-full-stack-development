@@ -1,149 +1,123 @@
-import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { describe, it, expect, afterEach, vi } from "vitest";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import ServicesPage from "@/app/services/page";
+import { ServicesPageContent } from "@/components/sections/Services";
 
 afterEach(() => {
   cleanup();
 });
 
-describe("/services page", () => {
-  it("renders page intro heading and subheading", () => {
-    render(<ServicesPage />);
-    expect(screen.getByTestId("services-intro-heading")).toHaveTextContent(
-      "Elevate Your Real Estate Experience"
-    );
-    expect(screen.getByTestId("services-intro-subheading")).toHaveTextContent(
-      "Welcome to Estatein"
-    );
-  });
+const mockServicesData = {
+  intro: {
+    heading: "API Services Heading",
+    subheading: "API services subheading text.",
+  },
+  quickLinks: [
+    { title: "Find Your Dream Home", href: "/properties", icon: "Home" },
+    { title: "Unlock Property Value", href: "#property-selling", icon: "KeyRound" },
+    { title: "Effortless Property Management", href: "#property-management", icon: "Building2" },
+    { title: "Smart Investments, Informed Decisions", href: "#investment-advisory", icon: "TrendingUp" },
+  ],
+  services: [
+    {
+      heading: "Unlock Property Value",
+      subheading: "Selling your property should be a rewarding experience.",
+      categories: [
+        { title: "Valuation Mastery", description: "Discover the true worth of your property.", icon: "TrendingUp" },
+        { title: "Strategic Marketing", description: "Strategic marketing approach.", icon: "Megaphone" },
+        { title: "Negotiation Wizardry", description: "Negotiating the best deal.", icon: "Handshake" },
+        { title: "Closing Success", description: "A successful sale is not complete until the closing.", icon: "CheckCircle" },
+      ],
+      ctaHeading: "Unlock the Value of Your Property Today",
+      ctaBody: "Ready to unlock the true value of your property?",
+      ctaHref: "#services/property-selling",
+      ctaText: "Learn More",
+    },
+    {
+      heading: "Effortless Property Management",
+      subheading: "Owning a property should be a pleasure, not a hassle.",
+      categories: [
+        { title: "Tenant Harmony", description: "Our Tenant Management services ensure smooth tenants.", icon: "Users" },
+        { title: "Maintenance Ease", description: "Say goodbye to property maintenance headaches.", icon: "Wrench" },
+        { title: "Financial Peace of Mind", description: "Managing property finances can be complex.", icon: "Wallet" },
+        { title: "Legal Guardian", description: "Stay compliant with property laws.", icon: "Scale" },
+      ],
+      ctaHeading: "Experience Effortless Property Management",
+      ctaBody: "Ready to experience hassle-free property management?",
+      ctaHref: "#services/property-management",
+      ctaText: "Learn More",
+    },
+    {
+      heading: "Smart Investments, Informed Decisions",
+      subheading: "Building a real estate portfolio requires a strategic approach.",
+      categories: [
+        { title: "Market Insight", description: "Stay ahead of market trends.", icon: "BarChart3" },
+        { title: "ROI Assessment", description: "Make investment decisions with confidence.", icon: "PieChart" },
+        { title: "Customized Strategies", description: "Every investor is unique.", icon: "Target" },
+        { title: "Diversification Mastery", description: "Diversify your real estate portfolio.", icon: "Globe" },
+      ],
+      ctaHeading: "Unlock Your Investment Potential",
+      ctaBody: "Explore our Investment Advisory categories.",
+      ctaHref: "#services/investment-advisory",
+      ctaText: "Learn More",
+    },
+  ],
+  bottomCta: {
+    heading: "API Bottom CTA Heading",
+    body: "API bottom CTA body text.",
+    href: "/properties",
+    buttonText: "Explore Properties",
+  },
+};
 
-  it("renders all quick-link cards with correct hrefs", () => {
-    render(<ServicesPage />);
-    expect(screen.getByTestId("services-quick-link-find-your-dream-home")).toHaveAttribute(
-      "href",
-      "/properties"
-    );
-    expect(screen.getByTestId("services-quick-link-unlock-property-value")).toHaveAttribute(
-      "href",
-      "#property-selling"
-    );
-    expect(screen.getByTestId("services-quick-link-effortless-property-management")).toHaveAttribute(
-      "href",
-      "#property-management"
-    );
-    expect(screen.getByTestId("services-quick-link-smart-investments-informed-decisions")).toHaveAttribute(
-      "href",
-      "#investment-advisory"
-    );
-  });
+describe("ServicesPageContent with data", () => {
+  it("renders intro, quick links, services and bottom CTA from API data", () => {
+    render(<ServicesPageContent data={mockServicesData} isLoading={false} error={null} />);
 
-  it("renders all three service section headings", () => {
-    render(<ServicesPage />);
-    expect(screen.getByTestId("services-property-selling-heading")).toHaveTextContent(
-      "Unlock Property Value"
-    );
-    expect(screen.getByTestId("services-property-management-heading")).toHaveTextContent(
-      "Effortless Property Management"
-    );
-    expect(screen.getByTestId("services-investment-advisory-heading")).toHaveTextContent(
-      "Smart Investments, Informed Decisions"
-    );
-  });
+    expect(screen.getByTestId("services-intro-heading")).toHaveTextContent("API Services Heading");
+    expect(screen.getByTestId("services-intro-subheading")).toHaveTextContent("API services subheading text.");
 
-  it("renders all 12 category cards with correct titles and descriptions", () => {
-    render(<ServicesPage />);
+    expect(screen.getByTestId("services-quick-link-find-your-dream-home")).toHaveAttribute("href", "/properties");
+    expect(screen.getByTestId("services-quick-link-unlock-property-value")).toHaveAttribute("href", "#property-selling");
 
-    // Property Selling
-    expect(screen.getByTestId("services-property-selling-card-valuation-mastery")).toHaveTextContent(
-      "Valuation Mastery"
-    );
-    expect(
-      screen.getByTestId("services-property-selling-card-strategic-marketing")
-    ).toHaveTextContent("Strategic Marketing");
-    expect(
-      screen.getByTestId("services-property-selling-card-negotiation-wizardry")
-    ).toHaveTextContent("Negotiation Wizardry");
-    expect(screen.getByTestId("services-property-selling-card-closing-success")).toHaveTextContent(
-      "Closing Success"
-    );
+    expect(screen.getByTestId("services-property-selling-heading")).toHaveTextContent("Unlock Property Value");
+    expect(screen.getByTestId("services-property-management-heading")).toHaveTextContent("Effortless Property Management");
+    expect(screen.getByTestId("services-investment-advisory-heading")).toHaveTextContent("Smart Investments, Informed Decisions");
 
-    // Property Management
-    expect(screen.getByTestId("services-property-management-card-tenant-harmony")).toHaveTextContent(
-      "Tenant Harmony"
-    );
-    expect(
-      screen.getByTestId("services-property-management-card-maintenance-ease")
-    ).toHaveTextContent("Maintenance Ease");
-    expect(
-      screen.getByTestId("services-property-management-card-financial-peace-of-mind")
-    ).toHaveTextContent("Financial Peace of Mind");
-    expect(screen.getByTestId("services-property-management-card-legal-guardian")).toHaveTextContent(
-      "Legal Guardian"
-    );
+    expect(screen.getByTestId("services-property-selling-card-valuation-mastery")).toHaveTextContent("Valuation Mastery");
+    expect(screen.getByTestId("services-investment-advisory-card-market-insight")).toHaveTextContent("Market Insight");
 
-    // Investment Advisory
-    expect(screen.getByTestId("services-investment-advisory-card-market-insight")).toHaveTextContent(
-      "Market Insight"
-    );
-    expect(screen.getByTestId("services-investment-advisory-card-roi-assessment")).toHaveTextContent(
-      "ROI Assessment"
-    );
-    expect(
-      screen.getByTestId("services-investment-advisory-card-customized-strategies")
-    ).toHaveTextContent("Customized Strategies");
-    expect(
-      screen.getByTestId("services-investment-advisory-card-diversification-mastery")
-    ).toHaveTextContent("Diversification Mastery");
-  });
-
-  it("renders all service CTA banners and buttons with correct text and hrefs", () => {
-    render(<ServicesPage />);
-
-    expect(screen.getByTestId("services-property-selling-cta-button")).toHaveTextContent(
-      "Learn More"
-    );
-    expect(screen.getByTestId("services-property-selling-cta-button")).toHaveAttribute(
-      "href",
-      "#services/property-selling"
-    );
-
-    expect(screen.getByTestId("services-property-management-cta-button")).toHaveTextContent(
-      "Learn More"
-    );
-    expect(screen.getByTestId("services-property-management-cta-button")).toHaveAttribute(
-      "href",
-      "#services/property-management"
-    );
-
-    expect(screen.getByTestId("services-investment-advisory-left-cta-button")).toHaveTextContent(
-      "Learn More"
-    );
-    expect(screen.getByTestId("services-investment-advisory-left-cta-button")).toHaveAttribute(
-      "href",
-      "#services/investment-advisory"
-    );
-  });
-
-  it("renders bottom page CTA with correct heading and href", () => {
-    render(<ServicesPage />);
-    expect(screen.getByTestId("services-bottom-cta-heading")).toHaveTextContent(
-      "Start Your Real Estate Journey Today"
-    );
-    expect(screen.getByTestId("services-bottom-cta-button")).toHaveTextContent(
-      "Explore Properties"
-    );
+    expect(screen.getByTestId("services-bottom-cta-heading")).toHaveTextContent("API Bottom CTA Heading");
     expect(screen.getByTestId("services-bottom-cta-button")).toHaveAttribute("href", "/properties");
   });
 
-  it("ensures category cards and CTA buttons are focusable anchor elements", () => {
-    render(<ServicesPage />);
-    const card = screen.getByTestId("services-property-selling-card-valuation-mastery");
-    const button = screen.getByTestId("services-bottom-cta-button");
+  it("renders loading skeletons when isLoading is true", () => {
+    render(<ServicesPageContent data={null} isLoading={true} error={null} />);
+    expect(screen.getAllByTestId("services-skeleton")[0]).toBeInTheDocument();
+  });
 
-    expect(card.tagName).toBe("A");
-    expect(button.tagName).toBe("A");
-    expect(card).toHaveAttribute("href");
-    expect(button).toHaveAttribute("href");
+  it("renders error state with retry button", () => {
+    const retry = vi.fn();
+    const err = new Error("network failure");
+    render(<ServicesPageContent data={null} isLoading={false} error={err} retry={retry} />);
+
+    expect(screen.getByTestId("services-error")).toHaveTextContent("network failure");
+    const retryButton = screen.getByTestId("services-error-retry");
+    expect(retryButton).toBeInTheDocument();
+    fireEvent.click(retryButton);
+    expect(retry).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders empty state when data is null", () => {
+    render(<ServicesPageContent data={null} isLoading={false} error={null} />);
+    expect(screen.getByTestId("services-empty")).toHaveTextContent("No services content available.");
+  });
+
+  it("falls back to defaults for missing partial data", () => {
+    render(<ServicesPageContent data={{ intro: mockServicesData.intro, quickLinks: [], services: [], bottomCta: mockServicesData.bottomCta }} isLoading={false} error={null} />);
+
+    expect(screen.getByTestId("services-intro-heading")).toHaveTextContent("API Services Heading");
+    expect(screen.getByTestId("services-property-selling-heading")).toHaveTextContent("Unlock Property Value");
+    expect(screen.getByTestId("services-bottom-cta-heading")).toHaveTextContent("API Bottom CTA Heading");
   });
 });

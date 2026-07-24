@@ -9,6 +9,12 @@ import {
   type NavigationLink,
   type NewsletterInput,
   type NewsletterResponse,
+  type ServicesData,
+  type ServicesIntro,
+  type ServicesQuickLink,
+  type ServicesService,
+  type ServicesCategory,
+  type ServicesBottomCta,
   newsletterSchema,
 } from "./api-types";
 
@@ -23,6 +29,12 @@ export type {
   NavigationLink,
   NewsletterInput,
   NewsletterResponse,
+  ServicesData,
+  ServicesIntro,
+  ServicesQuickLink,
+  ServicesService,
+  ServicesCategory,
+  ServicesBottomCta,
 };
 export { newsletterSchema };
 
@@ -70,6 +82,12 @@ export function useFooter() {
 
 export function useHero() {
   return useSWR<HeroContentData, Error>(isBrowser ? "/api/hero" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useServices() {
+  return useSWR<ServicesData, Error>(isBrowser ? "/api/services" : null, fetcher, {
     revalidateOnFocus: false,
   });
 }
