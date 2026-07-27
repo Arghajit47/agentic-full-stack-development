@@ -2,14 +2,26 @@ import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { OurValues } from "@/components/about-us/OurValues";
+import type { AboutUsValues } from "@/lib/schemas";
+
+const mockValues: AboutUsValues = {
+  heading: "Our Values",
+  body: "Our story is one of continuous growth and evolution.",
+  cards: [
+    { title: "Trust", description: "Trust is the cornerstone.", icon: "ShieldCheck" },
+    { title: "Excellence", description: "We set the bar high.", icon: "Award" },
+    { title: "Client-Centric", description: "Your dreams and needs are at the center.", icon: "HeartHandshake" },
+    { title: "Our Commitment", description: "We are dedicated.", icon: "BadgeCheck" },
+  ],
+};
 
 afterEach(() => {
   cleanup();
 });
 
 describe("OurValues", () => {
-  it("renders heading, body and four value cards", () => {
-    render(<OurValues />);
+  it("renders heading, body and four value cards from props", () => {
+    render(<OurValues data={mockValues} />);
 
     expect(screen.getByTestId("our-values-heading")).toHaveTextContent("Our Values");
     expect(screen.getByTestId("our-values-body")).toHaveTextContent("continuous growth and evolution");

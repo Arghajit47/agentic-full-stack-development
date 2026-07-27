@@ -17,6 +17,7 @@ import {
   type ServicesBottomCta,
   newsletterSchema,
 } from "./api-types";
+import { type AboutUsData } from "./schemas";
 
 export type {
   ApiResponse,
@@ -88,6 +89,12 @@ export function useHero() {
 
 export function useServices() {
   return useSWR<ServicesData, Error>(isBrowser ? "/api/services" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAboutUs() {
+  return useSWR<AboutUsData, Error>(isBrowser ? "/api/about-us" : null, fetcher, {
     revalidateOnFocus: false,
   });
 }
