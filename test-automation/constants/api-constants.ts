@@ -45,13 +45,15 @@ const achievementsSchema = z.object({
   cards: z.array(achievementCardSchema).min(1),
 });
 
+const aboutUsDataSchema = z.object({
+  journey: journeySchema,
+  values: valuesSchema,
+  achievements: achievementsSchema,
+});
+
 export const aboutUsSchema = z.object({
   success: z.boolean(),
-  data: z.object({
-    journey: journeySchema,
-    values: valuesSchema,
-    achievements: achievementsSchema,
-  }),
+  data: aboutUsDataSchema.nullable(),
   error: z.string().optional().nullable(),
 });
 
@@ -204,6 +206,29 @@ export interface ServicesData {
   quickLinks: ServicesQuickLink[];
   services: ServicesService[];
   bottomCta: ServicesBottomCta;
+}
+
+export interface AboutUsApiResponse {
+  success: boolean;
+  data: {
+    journey: {
+      heading: string;
+      body: string;
+      imageUrl: string;
+      stats: { value: string; label: string; icon: string }[];
+    };
+    values: {
+      heading: string;
+      body: string;
+      cards: { title: string; description: string; icon: string }[];
+    };
+    achievements: {
+      heading: string;
+      body: string;
+      cards: { title: string; description: string }[];
+    };
+  } | null;
+  error?: string | null;
 }
 
 export interface ServicesApiResponse {

@@ -2,13 +2,25 @@ export const ABOUT_US_TEXT = {
   JOURNEY_HEADING: "Our Journey",
   VALUES_HEADING: "Our Values",
   ACHIEVEMENTS_HEADING: "Our Achievements",
-  JOURNEY_BODY_SNIPPET: "continuous growth and evolution",
-  VALUES_BODY_SNIPPET: "continuous growth and evolution",
-  ACHIEVEMENTS_BODY_SNIPPET: "continuous growth and evolution",
 } as const;
 
 export const ABOUT_US_COUNTS = {
   JOURNEY_STATS: 3,
   VALUE_CARDS: 4,
   ACHIEVEMENT_CARDS: 3,
+} as const;
+
+export const ABOUT_US_GRID_COLS = {
+  JOURNEY_STATS_MOBILE: 2,
+  JOURNEY_STATS_TABLET: 3,
+  VALUES_DESKTOP: 2,
+  VALUES_MOBILE: 1,
+  ACHIEVEMENTS_DESKTOP: 3,
+  ACHIEVEMENTS_TABLET: 2,
+  ACHIEVEMENTS_MOBILE: 1,
+} as const;
+
+export const ABOUT_US_ERROR_MESSAGES = {
+  ERROR_FALLBACK: "Unable to load About Us",
+  EMPTY_FALLBACK: "No About Us content available",
 } as const;

@@ -11,9 +11,24 @@ test.describe("About Us Page Suite", () => {
     await aboutUsPage.assertSectionsVisible();
   });
 
-  test("About Us page content counts", async ({ aboutUsPage }) => {
-    await aboutUsPage.navigateToAboutUs();
-    await aboutUsPage.assertContentCounts();
+  test("About Us page live API data vs UI validation", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertHeadingsAndCountsMatchApi();
+  });
+
+  test("About Us page loading skeleton", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertLoadingSkeleton();
+  });
+
+  test("About Us page empty state", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertEmptyState();
+  });
+
+  test("About Us page error state", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertErrorState();
+  });
+
+  test("About Us page responsive card counts", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertResponsiveCardCounts();
   });
 
   test("About Us page console error and image error handling", async ({ aboutUsPage }) => {
