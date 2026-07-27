@@ -82,18 +82,17 @@ export const aboutUsDataSchema = z.object({
 
 export const aboutUsApiResponseSchema = z.object({
   success: z.boolean(),
-  data: aboutUsDataSchema,
-  error: z.string().optional(),
+  data: aboutUsDataSchema.nullable(),
+  error: z.string().optional().nullable(),
 });
 
-export type AboutUsStat = z.infer<typeof aboutJourneyStatSchema>;
+export type AboutUsApiResponse = z.infer<typeof aboutUsApiResponseSchema>;
 export type AboutUsJourney = z.infer<typeof aboutJourneySchema>;
 export type AboutUsValueCard = z.infer<typeof aboutValueCardSchema>;
 export type AboutUsValues = z.infer<typeof aboutValuesSchema>;
 export type AboutUsAchievementCard = z.infer<typeof aboutAchievementCardSchema>;
 export type AboutUsAchievements = z.infer<typeof aboutAchievementsSchema>;
 export type AboutUsData = z.infer<typeof aboutUsDataSchema>;
-export type AboutUsApiResponse = z.infer<typeof aboutUsApiResponseSchema>;
 
 export const servicesSchema = z.object({
   intro: introSchema,
