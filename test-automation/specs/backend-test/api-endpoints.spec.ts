@@ -20,4 +20,8 @@ test.describe("Backend API Schema & 200 Status Validation", () => {
   test("GET /api/services returns 200 and matches servicesSchema", async ({ backendApi }) => {
     await backendApi.validateServicesApi();
   });
+
+  test("GET /api/about-us returns 200 and matches aboutUsSchema", async ({ backendApi }) => {
+    await backendApi.validateAboutUsApi();
+  });
 });
