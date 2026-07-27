@@ -38,6 +38,63 @@ const bottomCtaSchema = z.object({
   buttonText: z.string().min(1),
 });
 
+export const aboutJourneyStatSchema = z.object({
+  value: z.string().min(1),
+  label: z.string().min(1),
+  icon: z.string().min(1),
+});
+
+export const aboutJourneySchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  imageUrl: z.string().min(1),
+  stats: z.array(aboutJourneyStatSchema).min(1),
+});
+
+export const aboutValueCardSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  icon: z.string().min(1),
+});
+
+export const aboutValuesSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  cards: z.array(aboutValueCardSchema).min(1),
+});
+
+export const aboutAchievementCardSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+});
+
+export const aboutAchievementsSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  cards: z.array(aboutAchievementCardSchema).min(1),
+});
+
+export const aboutUsDataSchema = z.object({
+  journey: aboutJourneySchema,
+  values: aboutValuesSchema,
+  achievements: aboutAchievementsSchema,
+});
+
+export const aboutUsApiResponseSchema = z.object({
+  success: z.boolean(),
+  data: aboutUsDataSchema,
+  error: z.string().optional(),
+});
+
+export type AboutUsStat = z.infer<typeof aboutJourneyStatSchema>;
+export type AboutUsJourney = z.infer<typeof aboutJourneySchema>;
+export type AboutUsValueCard = z.infer<typeof aboutValueCardSchema>;
+export type AboutUsValues = z.infer<typeof aboutValuesSchema>;
+export type AboutUsAchievementCard = z.infer<typeof aboutAchievementCardSchema>;
+export type AboutUsAchievements = z.infer<typeof aboutAchievementsSchema>;
+export type AboutUsData = z.infer<typeof aboutUsDataSchema>;
+export type AboutUsApiResponse = z.infer<typeof aboutUsApiResponseSchema>;
+
 export const servicesSchema = z.object({
   intro: introSchema,
   quickLinks: z.array(quickLinkSchema).min(1),
@@ -53,10 +110,10 @@ export const servicesApiResponseSchema = z.object({
 });
 
 export type NewsletterInput = z.infer<typeof newsletterSchema>;
-export type ServicesCategoryInput = z.infer<typeof categorySchema>;
-export type ServicesServiceInput = z.infer<typeof serviceSchema>;
-export type ServicesQuickLinkInput = z.infer<typeof quickLinkSchema>;
-export type ServicesIntroInput = z.infer<typeof introSchema>;
-export type ServicesBottomCtaInput = z.infer<typeof bottomCtaSchema>;
-export type ServicesDataInput = z.infer<typeof servicesSchema>;
-export type ServicesApiResponseInput = z.infer<typeof servicesApiResponseSchema>;
+export type ServicesCategory = z.infer<typeof categorySchema>;
+export type ServicesService = z.infer<typeof serviceSchema>;
+export type ServicesQuickLink = z.infer<typeof quickLinkSchema>;
+export type ServicesIntro = z.infer<typeof introSchema>;
+export type ServicesBottomCta = z.infer<typeof bottomCtaSchema>;
+export type ServicesData = z.infer<typeof servicesSchema>;
+export type ServicesApiResponse = z.infer<typeof servicesApiResponseSchema>;

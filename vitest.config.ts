@@ -14,6 +14,7 @@ export default defineConfig({
       "src/__tests__/**/*.test.ts",
       "src/components/**/__tests__/*.test.tsx",
       "src/app/**/__tests__/*.test.tsx",
+      "src/app/**/route.test.ts",
     ],
     environmentMatchGlobs: [
       ["src/components/**/__tests__/*.test.tsx", "happy-dom"],
