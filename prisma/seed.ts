@@ -117,6 +117,7 @@ async function main() {
   await prisma.newsletterSubscriber.deleteMany();
   await prisma.heroContent.deleteMany();
   await prisma.servicesContent.deleteMany();
+  await prisma.aboutPageContent.deleteMany();
 
   const navigationLinks = [
     { label: "Home", href: "/", order: 1, isExternal: false },
@@ -281,7 +282,33 @@ async function main() {
     await prisma.servicesContent.create({ data: s });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows`);
+  const aboutPageContent = [
+    { section: "journey", slug: "journey-heading", value: JSON.stringify("Our Journey"), order: 1 },
+    { section: "journey", slug: "journey-body", value: JSON.stringify("Our story is one of continuous growth and evolution. We started as a small team with big dreams, determined to create a real estate platform that transcended the ordinary. Over the years, we've expanded our reach, forged valuable partnerships, and gained the trust of countless clients."), order: 2 },
+    { section: "journey", slug: "journey-image-url", value: JSON.stringify("https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80\u0026w=1600\u0026auto=format\u0026fit=crop"), order: 3 },
+    { section: "journey", slug: "journey-stat-happy-customers", value: JSON.stringify({ value: "200+", label: "Happy Customers", icon: "Home" }), order: 4 },
+    { section: "journey", slug: "journey-stat-properties-for-clients", value: JSON.stringify({ value: "10k+", label: "Properties For Clients", icon: "Home" }), order: 5 },
+    { section: "journey", slug: "journey-stat-years-of-experience", value: JSON.stringify({ value: "16+", label: "Years of Experience", icon: "Home" }), order: 6 },
+
+    { section: "values", slug: "values-heading", value: JSON.stringify("Our Values"), order: 1 },
+    { section: "values", slug: "values-body", value: JSON.stringify("Our story is one of continuous growth and evolution. We started as a small team with big dreams, determined to create a real estate platform that transcended the ordinary."), order: 2 },
+    { section: "values", slug: "values-card-trust", value: JSON.stringify({ title: "Trust", description: "Trust is the cornerstone of every successful real estate transaction.", icon: "ShieldCheck" }), order: 3 },
+    { section: "values", slug: "values-card-excellence", value: JSON.stringify({ title: "Excellence", description: "We set the bar high for ourselves. From the properties we list to the services we provide.", icon: "Award" }), order: 4 },
+    { section: "values", slug: "values-card-client-centric", value: JSON.stringify({ title: "Client-Centric", description: "Your dreams and needs are at the center of our universe. We listen, understand.", icon: "HeartHandshake" }), order: 5 },
+    { section: "values", slug: "values-card-our-commitment", value: JSON.stringify({ title: "Our Commitment", description: "We are dedicated to providing you with the highest level of service, professionalism and support.", icon: "BadgeCheck" }), order: 6 },
+
+    { section: "achievements", slug: "achievements-heading", value: JSON.stringify("Our Achievements"), order: 1 },
+    { section: "achievements", slug: "achievements-body", value: JSON.stringify("Our story is one of continuous growth and evolution. We started as a small team with big dreams, determined to create a real estate platform that transcended the ordinary."), order: 2 },
+    { section: "achievements", slug: "achievements-card-3-plus-years", value: JSON.stringify({ title: "3+ Years of Excellence", description: "With over 3 years in the industry, we've amassed a wealth of knowledge and experience, becoming a go-to resource for all things real estate." }), order: 3 },
+    { section: "achievements", slug: "achievements-card-happy-clients", value: JSON.stringify({ title: "Happy Clients", description: "Our greatest achievement is the satisfaction of our clients. Their success stories fuel our passion for what we do." }), order: 4 },
+    { section: "achievements", slug: "achievements-card-industry-recognition", value: JSON.stringify({ title: "Industry Recognition", description: "We've earned the respect of our peers and industry leaders, with accolades and awards that reflect our commitment to excellence." }), order: 5 },
+  ];
+
+  for (const a of aboutPageContent) {
+    await prisma.aboutPageContent.create({ data: a });
+  }
+
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows`);
 }
 
 main()
