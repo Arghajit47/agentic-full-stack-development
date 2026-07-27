@@ -1,14 +1,28 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { OurJourney } from "@/components/about-us/OurJourney";
 import { OurValues } from "@/components/about-us/OurValues";
 import { OurAchievements } from "@/components/about-us/OurAchievements";
 import { useAboutUs } from "@/lib/api";
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
+
 export default function AboutUsPage() {
+  const isClient = useIsClient();
   const { data, error, isLoading, mutate } = useAboutUs();
 
-  if (isLoading) {
+  // Hydration guard: SSR and the first client paint share the same loading
+  // skeleton. After hydration, SWR drives the real fetch/loading/error/data states.
+  const showLoading = !isClient || isLoading;
+
+  if (showLoading) {
     return (
       <div data-testid="about-us-loading" className="flex flex-1 flex-col bg-zinc-950 font-sans text-zinc-100">
         <div className="mx-auto grid max-w-[1920px] flex-1 items-center gap-8 px-4 md:grid-cols-2 md:px-6 lg:px-8 xl:px-12">
