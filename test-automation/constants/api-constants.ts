@@ -6,7 +6,54 @@ export const API_PATHS = {
   PROPERTIES: "/api/properties",
   SETTINGS: "/api/settings",
   SERVICES: "/api/services",
+  ABOUT_US: "/api/about-us",
 } as const;
+
+const statSchema = z.object({
+  value: z.string().min(1),
+  label: z.string().min(1),
+  icon: z.string().min(1),
+});
+
+const journeySchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  imageUrl: z.string().min(1),
+  stats: z.array(statSchema).min(1),
+});
+
+const valuesCardSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  icon: z.string().min(1),
+});
+
+const valuesSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  cards: z.array(valuesCardSchema).min(1),
+});
+
+const achievementCardSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+});
+
+const achievementsSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  cards: z.array(achievementCardSchema).min(1),
+});
+
+export const aboutUsSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    journey: journeySchema,
+    values: valuesSchema,
+    achievements: achievementsSchema,
+  }),
+  error: z.string().optional().nullable(),
+});
 
 export const propertySchema = z.object({
   id: z.number().int(),

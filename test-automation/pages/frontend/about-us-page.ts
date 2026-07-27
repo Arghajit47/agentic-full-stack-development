@@ -25,9 +25,12 @@ export class AboutUsPage {
   }
 
   async assertContentCounts(): Promise<void> {
-    await this.initializationPage.validateElementsCount(ABOUT_US_LOCATORS.journeyStat, ABOUT_US_COUNTS.JOURNEY_STATS);
-    await this.initializationPage.validateElementsCount(ABOUT_US_LOCATORS.valuesCard, ABOUT_US_COUNTS.VALUE_CARDS);
-    await this.initializationPage.validateElementsCount(ABOUT_US_LOCATORS.achievementsCard, ABOUT_US_COUNTS.ACHIEVEMENT_CARDS);
+    // Wait for the real content to replace the loading skeleton, then assert counts.
+    const page = this.initializationPage.page;
+    await expect(page.locator(ABOUT_US_LOCATORS.aboutUsPage)).toBeVisible({ timeout: 10000 });
+    await expect(page.locator(ABOUT_US_LOCATORS.journeyStat)).toHaveCount(ABOUT_US_COUNTS.JOURNEY_STATS);
+    await expect(page.locator(ABOUT_US_LOCATORS.valuesCard)).toHaveCount(ABOUT_US_COUNTS.VALUE_CARDS);
+    await expect(page.locator(ABOUT_US_LOCATORS.achievementsCard)).toHaveCount(ABOUT_US_COUNTS.ACHIEVEMENT_CARDS);
   }
 
   async assertNoConsoleErrors(): Promise<void> {
