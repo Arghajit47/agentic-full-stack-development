@@ -2,6 +2,7 @@ import { test as base, type Page } from "@playwright/test";
 import { HomePage } from "@pages/frontend/home-page";
 import { PropertiesPage } from "@pages/frontend/properties-page";
 import { ServicesPage } from "@pages/frontend/services-page";
+import { AboutUsPage } from "@pages/frontend/about-us-page";
 
 /**
  * Defines the custom fixtures available in the test suite.
@@ -12,6 +13,7 @@ type MyFixtures = {
   homepage: HomePage;
   propertiesPage: PropertiesPage;
   servicesPage: ServicesPage;
+  aboutUsPage: AboutUsPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -40,6 +42,15 @@ export const test = base.extend<MyFixtures>({
    */
   servicesPage: async ({ page }: { page: Page }, use) => {
     await use(new ServicesPage(page));
+  },
+
+  /**
+   * Provides an AboutUsPage instance to tests.
+   * @param page - The Playwright Page object supplied by the test runner.
+   * @param use - Function to signal that the fixture is ready for consumption.
+   */
+  aboutUsPage: async ({ page }: { page: Page }, use) => {
+    await use(new AboutUsPage(page));
   },
 });
 

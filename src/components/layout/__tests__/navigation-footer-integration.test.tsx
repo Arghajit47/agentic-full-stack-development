@@ -15,7 +15,7 @@ const navigationData = {
   banner: { text: "Live banner text", cta: "Click me", ctaHref: "/live" },
   links: [
     { id: "a", label: "Home", href: "/", order: 0, isExternal: false },
-    { id: "b", label: "About", href: "/about", order: 1, isExternal: false },
+    { id: "b", label: "About", href: "/about-us", order: 1, isExternal: false },
     { id: "c", label: "Properties", href: "/properties", order: 2, isExternal: false },
   ],
 };

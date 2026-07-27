@@ -29,7 +29,7 @@ describe("Navigation & Footer API (KAN-13)", () => {
 
     const links = [
       { label: "Home", href: "/", order: 1, isExternal: false },
-      { label: "About Us", href: "/about", order: 2, isExternal: false },
+      { label: "About Us", href: "/about-us", order: 2, isExternal: false },
       { label: "Properties", href: "/properties", order: 3, isExternal: false },
       { label: "Services", href: "/services", order: 4, isExternal: false },
     ];
