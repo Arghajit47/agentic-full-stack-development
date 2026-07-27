@@ -71,4 +71,30 @@ describe("AboutUsPage", () => {
     expect(screen.getByTestId("our-values-heading")).toHaveTextContent("Our Values");
     expect(screen.getByTestId("our-achievements-heading")).toHaveTextContent("Our Achievements");
   });
+
+  it("renders static How It Works and Team sections with fetched data", () => {
+    renderAndHydrate({ data: mockData, error: undefined, isLoading: false, mutate: vi.fn() });
+    expect(screen.getByTestId("how-it-works-heading")).toHaveTextContent(
+      "Navigating the Estatein Experience",
+    );
+    expect(screen.getAllByTestId(/^step-card-step-/)).toHaveLength(6);
+    expect(screen.getByTestId("team-heading")).toHaveTextContent("Meet the Estatein Team");
+    expect(screen.getAllByTestId(/^team-member-(?!image|twitter)/)).toHaveLength(4);
+  });
+
+  it("keeps static sections visible in loading, error and empty states", () => {
+    renderAndHydrate({ data: undefined, error: undefined, isLoading: true, mutate: vi.fn() });
+    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
+    expect(screen.getByTestId("team-section")).toBeInTheDocument();
+    cleanup();
+
+    renderAndHydrate({ data: undefined, error: new Error("boom"), isLoading: false, mutate: vi.fn() });
+    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
+    expect(screen.getByTestId("team-section")).toBeInTheDocument();
+    cleanup();
+
+    renderAndHydrate({ data: null, error: undefined, isLoading: false, mutate: vi.fn() });
+    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
+    expect(screen.getByTestId("team-section")).toBeInTheDocument();
+  });
 });
