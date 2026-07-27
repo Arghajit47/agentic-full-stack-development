@@ -14,6 +14,10 @@ import {
   Home,
   KeyRound,
   Building2,
+  ShieldCheck,
+  Award,
+  HeartHandshake,
+  BadgeCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +37,10 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Home,
   KeyRound,
   Building2,
+  ShieldCheck,
+  Award,
+  HeartHandshake,
+  BadgeCheck,
 };
 
 export function getIcon(name: string): LucideIcon {

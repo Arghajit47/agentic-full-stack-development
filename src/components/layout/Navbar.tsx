@@ -9,7 +9,7 @@ import { useNavigation, type NavigationLink } from "@/lib/api";
 // Fallback used when API returns empty links or is unavailable.
 const fallbackLinks: NavigationLink[] = [
   { id: "fb-home", href: "/", label: "Home", order: 0, isExternal: false },
-  { id: "fb-about", href: "/about", label: "About Us", order: 1, isExternal: false },
+  { id: "fb-about", href: "/about-us", label: "About Us", order: 1, isExternal: false },
   { id: "fb-properties", href: "/properties", label: "Properties", order: 2, isExternal: false },
   { id: "fb-services", href: "/services", label: "Services", order: 3, isExternal: false },
 ];

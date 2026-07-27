@@ -32,7 +32,7 @@ const defaultData: NavigationData = {
   banner: { text: "Discover Your Dream Property with Estatein", cta: "Learn More", ctaHref: "/properties" },
   links: [
     { id: "1", label: "Home", href: "/", order: 0, isExternal: false },
-    { id: "2", label: "About Us", href: "/about", order: 1, isExternal: false },
+    { id: "2", label: "About Us", href: "/about-us", order: 1, isExternal: false },
     { id: "3", label: "Properties", href: "/properties", order: 2, isExternal: false },
     { id: "4", label: "Services", href: "/services", order: 3, isExternal: false },
   ],
