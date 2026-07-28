@@ -6,10 +6,12 @@ import { PropertyContactForm, PropertyContactFormData } from "../PropertyContact
 describe("PropertyContactForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
   });
 
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
   });
 
   describe("Rendering", () => {
@@ -189,7 +191,12 @@ describe("PropertyContactForm", () => {
       fireEvent.blur(emailInput);
       expect(screen.getByTestId("error-email")).toBeInTheDocument();
 
-      // Fix error
+      // Change to another invalid value - error should persist
+      fireEvent.change(emailInput, { target: { value: "also-invalid" } });
+      fireEvent.blur(emailInput);
+      expect(screen.getByTestId("error-email")).toBeInTheDocument();
+
+      // Fix error with valid email
       fireEvent.change(emailInput, { target: { value: "valid@example.com" } });
       expect(screen.queryByTestId("error-email")).not.toBeInTheDocument();
     });
@@ -285,7 +292,7 @@ describe("PropertyContactForm", () => {
       expect(mockOnSubmit).toHaveBeenCalledWith(expectedData);
     });
 
-    it("should log form data to console on submit", async () => {
+    it("should log submission event on submit", async () => {
       const consoleSpy = vi.spyOn(console, "log");
       render(<PropertyContactForm />);
 
@@ -295,13 +302,7 @@ describe("PropertyContactForm", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(consoleSpy).toHaveBeenCalledWith(
-          "Form submitted:",
-          expect.objectContaining({
-            firstName: "John",
-            email: "john@example.com",
-          })
-        );
+        expect(consoleSpy).toHaveBeenCalledWith("Form submission initiated");
       });
 
       consoleSpy.mockRestore();
@@ -335,6 +336,63 @@ describe("PropertyContactForm", () => {
       expect(mockOnSubmit).not.toHaveBeenCalled();
       expect(screen.queryByTestId("contact-form-success")).not.toBeInTheDocument();
     });
+
+    it("should reset the form after 3 seconds on successful submit", async () => {
+      render(<PropertyContactForm />);
+      
+      fillValidForm();
+      
+      const submitButton = screen.getByTestId("submit-button");
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("contact-form-success")).toBeInTheDocument();
+      });
+
+      // Advance timer by 3 seconds
+      vi.advanceTimersByTime(3000);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("property-contact-form")).toBeInTheDocument();
+        expect(
+          (screen.getByTestId("input-firstName") as HTMLInputElement).value
+        ).toBe("");
+      });
+    });
+
+    it("should show loading state during submission", async () => {
+      const slowSubmit = vi.fn(() => new Promise(resolve => setTimeout(resolve, 100)));
+      render(<PropertyContactForm onSubmit={slowSubmit} />);
+      
+      fillValidForm();
+      
+      const submitButton = screen.getByTestId("submit-button");
+      fireEvent.click(submitButton);
+
+      // Should show loading text
+      expect(submitButton).toHaveTextContent("Sending...");
+      expect(submitButton).toBeDisabled();
+
+      await waitFor(() => {
+        expect(screen.getByTestId("contact-form-success")).toBeInTheDocument();
+      });
+    });
+
+    it("should handle submission errors", async () => {
+      const errorSubmit = vi.fn(() => Promise.reject(new Error("Network error")));
+      render(<PropertyContactForm onSubmit={errorSubmit} />);
+      
+      fillValidForm();
+      
+      const submitButton = screen.getByTestId("submit-button");
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole("alert")).toHaveTextContent("Network error");
+      });
+
+      expect(screen.queryByTestId("contact-form-success")).not.toBeInTheDocument();
+    });
   });
 
   describe("Accessibility", () => {
@@ -357,12 +415,21 @@ describe("PropertyContactForm", () => {
       expect(screen.getByLabelText("Phone")).toBe(phoneInput);
     });
 
-    it("should have focus ring styles on inputs", () => {
+    it("should have aria-invalid and aria-describedby when field has error", () => {
       render(<PropertyContactForm />);
 
       const firstNameInput = screen.getByTestId("input-firstName");
-      expect(firstNameInput).toHaveClass("focus:border-violet-600");
-      expect(firstNameInput).toHaveClass("focus:ring-2");
+      
+      // After blur with empty value
+      fireEvent.blur(firstNameInput);
+      expect(firstNameInput).toHaveAttribute("aria-invalid", "true");
+      expect(firstNameInput).toHaveAttribute("aria-describedby", "error-firstName");
+      
+      // After fixing the error
+      fireEvent.change(firstNameInput, { target: { value: "John" } });
+      fireEvent.blur(firstNameInput);
+      expect(firstNameInput).toHaveAttribute("aria-invalid", "false");
+      expect(firstNameInput).not.toHaveAttribute("aria-describedby");
     });
 
     it("should have proper input types for semantic HTML", () => {

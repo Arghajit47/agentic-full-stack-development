@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 
 export interface PropertyContactFormData {
   firstName: string;
@@ -51,7 +51,19 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
   const [formData, setFormData] = useState<PropertyContactFormData>(initialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
+    };
+  }, []);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -129,12 +141,18 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
   const handleBlur = (fieldName: string) => {
     setTouched((prev) => ({ ...prev, [fieldName]: true }));
     const fieldErrors = validateForm();
-    if (fieldErrors[fieldName as keyof FormErrors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [fieldName]: fieldErrors[fieldName as keyof FormErrors],
-      }));
-    }
+    
+    // Always sync the blurred field's error state
+    setErrors((prev) => {
+      const next = { ...prev };
+      const fieldError = fieldErrors[fieldName as keyof FormErrors];
+      if (fieldError) {
+        next[fieldName as keyof FormErrors] = fieldError;
+      } else {
+        delete next[fieldName as keyof FormErrors];
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -142,6 +160,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
 
     const formErrors = validateForm();
     setErrors(formErrors);
+    setSubmitError(null);
 
     // Mark all fields as touched
     const allTouched = Object.keys(formData).reduce(
@@ -151,23 +170,31 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
     setTouched(allTouched);
 
     if (Object.keys(formErrors).length === 0) {
-      // Mock submit - log to console
-      console.log("Form submitted:", formData);
+      setIsSubmitting(true);
+      
+      try {
+        // Log submission event without PII
+        console.log("Form submission initiated");
 
-      // Call onSubmit prop if provided
-      if (onSubmit) {
-        await onSubmit(formData);
+        // Call onSubmit prop if provided
+        if (onSubmit) {
+          await onSubmit(formData);
+        }
+
+        setIsSubmitted(true);
+
+        // Reset form after 3 seconds
+        resetTimerRef.current = setTimeout(() => {
+          setFormData(initialFormData);
+          setErrors({});
+          setTouched({});
+          setIsSubmitted(false);
+          setIsSubmitting(false);
+        }, 3000);
+      } catch (error) {
+        setSubmitError(error instanceof Error ? error.message : "Submission failed");
+        setIsSubmitting(false);
       }
-
-      setIsSubmitted(true);
-
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setFormData(initialFormData);
-        setErrors({});
-        setTouched({});
-        setIsSubmitted(false);
-      }, 3000);
     }
   };
 
@@ -175,6 +202,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
     return (
       <section
         data-testid="contact-form-success"
+        role="status"
+        aria-live="polite"
         className="w-full bg-[#141414] px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-4xl text-center">
@@ -182,7 +211,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
             Thank You!
           </h2>
           <p className="mt-4 text-lg text-[#999999]">
-            Your inquiry has been submitted successfully. We'll get back to you soon.
+            Your inquiry has been submitted successfully. We&apos;ll get back to you soon.
           </p>
         </div>
       </section>
@@ -201,7 +230,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
             data-testid="contact-form-heading"
             className="text-3xl font-semibold text-white sm:text-4xl lg:text-[48px]"
           >
-            Let's Make it Happen
+            Let&apos;s Make it Happen
           </h2>
           <p
             data-testid="contact-form-subheading"
@@ -209,12 +238,21 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
           >
             Ready to take the first step toward your dream property? Fill out the form
             below, and our real estate wizards will work their magic to find your perfect
-            match. Don't wait; let's embark on this exciting journey together.
+            match. Don&apos;t wait; let&apos;s embark on this exciting journey together.
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} noValidate>
+          {submitError && (
+            <div 
+              role="alert"
+              className="mb-6 rounded-lg bg-red-900/20 border border-red-500 px-4 py-3 text-red-400"
+            >
+              {submitError}
+            </div>
+          )}
+          
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {/* First Name */}
             <div>
@@ -233,6 +271,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("firstName")}
                 placeholder="Enter First Name"
+                aria-invalid={touched.firstName && !!errors.firstName}
+                aria-describedby={touched.firstName && errors.firstName ? "error-firstName" : undefined}
                 className={`w-full rounded-lg border ${
                   touched.firstName && errors.firstName
                     ? "border-red-500"
@@ -241,6 +281,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
               />
               {touched.firstName && errors.firstName && (
                 <p
+                  id="error-firstName"
                   data-testid="error-firstName"
                   className="mt-1 text-sm text-red-500"
                 >
@@ -266,6 +307,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("lastName")}
                 placeholder="Enter Last Name"
+                aria-invalid={touched.lastName && !!errors.lastName}
+                aria-describedby={touched.lastName && errors.lastName ? "error-lastName" : undefined}
                 className={`w-full rounded-lg border ${
                   touched.lastName && errors.lastName
                     ? "border-red-500"
@@ -274,6 +317,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
               />
               {touched.lastName && errors.lastName && (
                 <p
+                  id="error-lastName"
                   data-testid="error-lastName"
                   className="mt-1 text-sm text-red-500"
                 >
@@ -299,12 +343,18 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("email")}
                 placeholder="Enter your Email"
+                aria-invalid={touched.email && !!errors.email}
+                aria-describedby={touched.email && errors.email ? "error-email" : undefined}
                 className={`w-full rounded-lg border ${
                   touched.email && errors.email ? "border-red-500" : "border-zinc-700"
                 } bg-zinc-900 px-4 py-3 text-white placeholder-[#666666] text-[18px] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
               />
               {touched.email && errors.email && (
-                <p data-testid="error-email" className="mt-1 text-sm text-red-500">
+                <p 
+                  id="error-email"
+                  data-testid="error-email" 
+                  className="mt-1 text-sm text-red-500"
+                >
                   {errors.email}
                 </p>
               )}
@@ -327,12 +377,18 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("phone")}
                 placeholder="Enter Phone Number"
+                aria-invalid={touched.phone && !!errors.phone}
+                aria-describedby={touched.phone && errors.phone ? "error-phone" : undefined}
                 className={`w-full rounded-lg border ${
                   touched.phone && errors.phone ? "border-red-500" : "border-zinc-700"
                 } bg-zinc-900 px-4 py-3 text-white placeholder-[#666666] text-[18px] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
               />
               {touched.phone && errors.phone && (
-                <p data-testid="error-phone" className="mt-1 text-sm text-red-500">
+                <p 
+                  id="error-phone"
+                  data-testid="error-phone" 
+                  className="mt-1 text-sm text-red-500"
+                >
                   {errors.phone}
                 </p>
               )}
@@ -353,6 +409,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 value={formData.preferredLocation}
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("preferredLocation")}
+                aria-invalid={touched.preferredLocation && !!errors.preferredLocation}
+                aria-describedby={touched.preferredLocation && errors.preferredLocation ? "error-preferredLocation" : undefined}
                 className={`property-select w-full rounded-lg border ${
                   touched.preferredLocation && errors.preferredLocation
                     ? "border-red-500"
@@ -369,6 +427,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
               </select>
               {touched.preferredLocation && errors.preferredLocation && (
                 <p
+                  id="error-preferredLocation"
                   data-testid="error-preferredLocation"
                   className="mt-1 text-sm text-red-500"
                 >
@@ -392,6 +451,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 value={formData.propertyType}
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("propertyType")}
+                aria-invalid={touched.propertyType && !!errors.propertyType}
+                aria-describedby={touched.propertyType && errors.propertyType ? "error-propertyType" : undefined}
                 className={`property-select w-full rounded-lg border ${
                   touched.propertyType && errors.propertyType
                     ? "border-red-500"
@@ -409,6 +470,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
               </select>
               {touched.propertyType && errors.propertyType && (
                 <p
+                  id="error-propertyType"
                   data-testid="error-propertyType"
                   className="mt-1 text-sm text-red-500"
                 >
@@ -432,6 +494,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 value={formData.bedrooms}
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("bedrooms")}
+                aria-invalid={touched.bedrooms && !!errors.bedrooms}
+                aria-describedby={touched.bedrooms && errors.bedrooms ? "error-bedrooms" : undefined}
                 className={`property-select w-full rounded-lg border ${
                   touched.bedrooms && errors.bedrooms
                     ? "border-red-500"
@@ -448,7 +512,11 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 <option value="5+">5+</option>
               </select>
               {touched.bedrooms && errors.bedrooms && (
-                <p data-testid="error-bedrooms" className="mt-1 text-sm text-red-500">
+                <p 
+                  id="error-bedrooms"
+                  data-testid="error-bedrooms" 
+                  className="mt-1 text-sm text-red-500"
+                >
                   {errors.bedrooms}
                 </p>
               )}
@@ -469,6 +537,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 value={formData.bathrooms}
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("bathrooms")}
+                aria-invalid={touched.bathrooms && !!errors.bathrooms}
+                aria-describedby={touched.bathrooms && errors.bathrooms ? "error-bathrooms" : undefined}
                 className={`property-select w-full rounded-lg border ${
                   touched.bathrooms && errors.bathrooms
                     ? "border-red-500"
@@ -486,6 +556,7 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
               </select>
               {touched.bathrooms && errors.bathrooms && (
                 <p
+                  id="error-bathrooms"
                   data-testid="error-bathrooms"
                   className="mt-1 text-sm text-red-500"
                 >
@@ -509,6 +580,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 value={formData.budget}
                 onChange={handleInputChange}
                 onBlur={() => handleBlur("budget")}
+                aria-invalid={touched.budget && !!errors.budget}
+                aria-describedby={touched.budget && errors.budget ? "error-budget" : undefined}
                 className={`property-select w-full rounded-lg border ${
                   touched.budget && errors.budget ? "border-red-500" : "border-zinc-700"
                 } bg-zinc-900 px-4 py-3 text-white text-[18px] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50 appearance-none cursor-pointer`}
@@ -523,7 +596,11 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 <option value="Over $5M">Over $5M</option>
               </select>
               {touched.budget && errors.budget && (
-                <p data-testid="error-budget" className="mt-1 text-sm text-red-500">
+                <p 
+                  id="error-budget"
+                  data-testid="error-budget" 
+                  className="mt-1 text-sm text-red-500"
+                >
                   {errors.budget}
                 </p>
               )}
@@ -546,6 +623,8 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 onBlur={() => handleBlur("message")}
                 placeholder="Enter your Message here.."
                 rows={5}
+                aria-invalid={touched.message && !!errors.message}
+                aria-describedby={touched.message && errors.message ? "error-message" : undefined}
                 className={`w-full rounded-lg border ${
                   touched.message && errors.message
                     ? "border-red-500"
@@ -553,7 +632,11 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
                 } bg-zinc-900 px-4 py-3 text-white placeholder-[#666666] text-[18px] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50 resize-none`}
               />
               {touched.message && errors.message && (
-                <p data-testid="error-message" className="mt-1 text-sm text-red-500">
+                <p 
+                  id="error-message"
+                  data-testid="error-message" 
+                  className="mt-1 text-sm text-red-500"
+                >
                   {errors.message}
                 </p>
               )}
@@ -582,10 +665,10 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
           <button
             type="submit"
             data-testid="submit-button"
-            disabled={!formData.agreeToTerms}
+            disabled={!formData.agreeToTerms || isSubmitting}
             className="mt-6 w-full rounded-lg bg-violet-600 py-4 text-[18px] font-semibold text-white transition-colors hover:bg-violet-500 active:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:ring-offset-[#141414]"
           >
-            Send Your Message
+            {isSubmitting ? "Sending..." : "Send Your Message"}
           </button>
         </form>
       </div>
