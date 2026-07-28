@@ -153,23 +153,35 @@ async function main() {
     await prisma.footerSection.create({ data: section });
   }
 
-  const properties = PROPERTY_TITLES.map((title, i) => ({
-    slug: slugify(title),
-    title,
-    description: `${title} — ${FEATURES[i].join(", ")}. A beautiful home waiting for the right buyer.`,
-    price: 250000 + i * 75000 + (i % 3) * 25000,
-    location: LOCATIONS[i],
-    bedrooms: 1 + (i % 6),
-    bathrooms: 1 + (i % 4),
-    areaSqft: 800 + i * 250,
-    propertyType: PROPERTY_TYPES[i],
-    imageUrl: `/images/properties/property-${(i % 6) + 1}.jpg`,
-    isFeatured: true,
-    galleryUrls: JSON.stringify([
-      `/images/properties/property-${(i % 6) + 1}.jpg`,
-    ]),
-    features: JSON.stringify(FEATURES[i]),
-  }));
+  const properties = PROPERTY_TITLES.map((title, i) => {
+    // For the first 6 properties, create a gallery with multiple images
+    // For others, just use a single image
+    const mainImageIndex = (i % 6) + 1;
+    const galleryUrls = i < 6
+      ? [
+          `/images/properties/property-${mainImageIndex}.jpg`,
+          `/images/properties/property-${((mainImageIndex) % 6) + 1}.jpg`,
+          `/images/properties/property-${((mainImageIndex + 1) % 6) + 1}.jpg`,
+          `/images/properties/property-${((mainImageIndex + 2) % 6) + 1}.jpg`,
+        ]
+      : [`/images/properties/property-${mainImageIndex}.jpg`];
+
+    return {
+      slug: slugify(title),
+      title,
+      description: `${title} — ${FEATURES[i].join(", ")}. A beautiful home waiting for the right buyer.`,
+      price: 250000 + i * 75000 + (i % 3) * 25000,
+      location: LOCATIONS[i],
+      bedrooms: 1 + (i % 6),
+      bathrooms: 1 + (i % 4),
+      areaSqft: 800 + i * 250,
+      propertyType: PROPERTY_TYPES[i],
+      imageUrl: `/images/properties/property-${mainImageIndex}.jpg`,
+      isFeatured: true,
+      galleryUrls: JSON.stringify(galleryUrls),
+      features: JSON.stringify(FEATURES[i]),
+    };
+  });
 
   for (const p of properties) {
     await prisma.property.create({ data: p });
@@ -330,7 +342,79 @@ async function main() {
     await prisma.aboutPageContent.create({ data: a });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows`);
+  // ─── Contact Submissions (KAN-30) ─────────────────────────────────────────────
+  const contactSubmissions = [
+    {
+      propertySlug: properties[0].slug,
+      name: "John Anderson",
+      email: "john.anderson@example.com",
+      phone: "+1-555-0101",
+      message: "I'm interested in scheduling a viewing for this beautiful villa. Could you provide more details about the neighborhood and nearby amenities?",
+      ipHash: "demo-hash-1",
+    },
+    {
+      propertySlug: properties[1].slug,
+      name: "Maria Garcia",
+      email: "maria.garcia@example.com",
+      phone: "+1-555-0202",
+      message: "This penthouse looks amazing! I'd like to know more about the HOA fees, parking options, and building amenities.",
+      ipHash: "demo-hash-2",
+    },
+    {
+      propertySlug: properties[2].slug,
+      name: "David Chen",
+      email: "david.chen@example.com",
+      phone: "+1-555-0303",
+      message: "Very interested in this beachfront property. Can we arrange a virtual tour this week? Also, what's the flood insurance situation?",
+      ipHash: "demo-hash-3",
+    },
+    {
+      propertySlug: null,
+      name: "Lisa Thompson",
+      email: "lisa.thompson@example.com",
+      phone: "+1-555-0404",
+      message: "I'm looking for a family home in the Austin area with at least 4 bedrooms and a good school district. Can you help me find suitable properties?",
+      ipHash: "demo-hash-4",
+    },
+    {
+      propertySlug: properties[4].slug,
+      name: "Robert Williams",
+      email: "robert.williams@example.com",
+      phone: "+1-555-0505",
+      message: "Interested in this luxury condo as an investment property. What's the rental market like in this area? Can you provide income projections?",
+      ipHash: "demo-hash-5",
+    },
+    {
+      propertySlug: null,
+      name: "Emily Johnson",
+      email: "emily.johnson@example.com",
+      phone: "+1-555-0606",
+      message: "First-time buyer here! I need guidance on the home buying process, mortgage options, and what to look for in a starter home.",
+      ipHash: "demo-hash-6",
+    },
+    {
+      propertySlug: properties[8].slug,
+      name: "Michael Brown",
+      email: "michael.brown@example.com",
+      phone: "+1-555-0707",
+      message: "Lake house looks perfect for our family! Questions: Is there a dock? What's the lake access policy? Any restrictions on boats?",
+      ipHash: "demo-hash-7",
+    },
+    {
+      propertySlug: properties[10].slug,
+      name: "Sarah Martinez",
+      email: "sarah.martinez@example.com",
+      phone: "+1-555-0808",
+      message: "I love the riverside location! Could you send me comparable sales in the area? Also interested in property tax information.",
+      ipHash: "demo-hash-8",
+    },
+  ];
+
+  for (const submission of contactSubmissions) {
+    await prisma.contactSubmission.create({ data: submission });
+  }
+
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions`);
 }
 
 main()

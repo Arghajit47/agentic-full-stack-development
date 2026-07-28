@@ -108,3 +108,17 @@ model AboutPageContent {
 
   @@index([section, order])
 }
+
+model ContactSubmission {
+  id            Int      @id @default(autoincrement())
+  propertySlug  String?
+  name          String
+  email         String
+  phone         String
+  message       String
+  ipHash        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([createdAt])
+}
