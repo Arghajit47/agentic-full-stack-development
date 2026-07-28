@@ -214,7 +214,7 @@ describe("PropertyInquiryForm", () => {
 
   it("should disable submit button while submitting", async () => {
     const slowOnSubmit = vi.fn(
-      () => new Promise((resolve) => setTimeout(resolve, 100))
+      () => new Promise<void>((resolve) => setTimeout(resolve, 100))
     );
 
     render(<PropertyInquiryForm {...mockProps} onSubmit={slowOnSubmit} />);

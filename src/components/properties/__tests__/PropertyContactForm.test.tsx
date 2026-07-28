@@ -361,7 +361,7 @@ describe("PropertyContactForm", () => {
     });
 
     it("should show loading state during submission", async () => {
-      const slowSubmit = vi.fn(() => new Promise(resolve => setTimeout(resolve, 100)));
+      const slowSubmit = vi.fn(() => new Promise<void>(resolve => setTimeout(resolve, 100)));
       render(<PropertyContactForm onSubmit={slowSubmit} />);
       
       fillValidForm();
