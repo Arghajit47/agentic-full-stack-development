@@ -4,6 +4,9 @@ import { useSyncExternalStore } from "react";
 import { OurJourney } from "@/components/about-us/OurJourney";
 import { OurValues } from "@/components/about-us/OurValues";
 import { OurAchievements } from "@/components/about-us/OurAchievements";
+import { HowItWorks } from "@/components/about-us/HowItWorks";
+import { TeamCards } from "@/components/about-us/TeamCards";
+import { howItWorksMock, teamMock } from "@/lib/mocks/about-us-mocks";
 import { useAboutUs } from "@/lib/api";
 
 function useIsClient() {
@@ -22,6 +25,15 @@ export default function AboutUsPage() {
   // skeleton. After hydration, SWR drives the real fetch/loading/error/data states.
   const showLoading = !isClient || isLoading;
 
+  // How It Works and Meet the Team are static (hardcoded mock content, no API),
+  // so they render in every state below the dynamic Our Story sections.
+  const staticSections = (
+    <>
+      <HowItWorks data={howItWorksMock} />
+      <TeamCards data={teamMock} />
+    </>
+  );
+
   if (showLoading) {
     return (
       <div data-testid="about-us-loading" className="flex flex-1 flex-col bg-zinc-950 font-sans text-zinc-100">
@@ -39,31 +51,38 @@ export default function AboutUsPage() {
             <div className="aspect-[4/3] w-full animate-pulse rounded-2xl bg-zinc-800 md:aspect-square" />
           </div>
         </div>
+        {staticSections}
       </div>
     );
   }
 
   if (error) {
     return (
-      <div data-testid="about-us-error" className="flex flex-1 flex-col items-center justify-center bg-zinc-950 px-4 text-center font-sans text-zinc-100">
-        <h2 className="text-2xl font-semibold text-white">Unable to load About Us</h2>
-        <p className="mt-2 text-zinc-400">{error.message}</p>
-        <button
-          onClick={() => void mutate()}
-          className="mt-6 rounded-lg bg-violet-500 px-4 py-2 text-sm font-medium text-white hover:bg-violet-400"
-          type="button"
-        >
-          Retry
-        </button>
+      <div data-testid="about-us-error" className="flex flex-1 flex-col bg-zinc-950 font-sans text-zinc-100">
+        <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
+          <h2 className="text-2xl font-semibold text-white">Unable to load About Us</h2>
+          <p className="mt-2 text-zinc-400">{error.message}</p>
+          <button
+            onClick={() => void mutate()}
+            className="mt-6 rounded-lg bg-violet-500 px-4 py-2 text-sm font-medium text-white hover:bg-violet-400"
+            type="button"
+          >
+            Retry
+          </button>
+        </div>
+        {staticSections}
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div data-testid="about-us-empty" className="flex flex-1 flex-col items-center justify-center bg-zinc-950 px-4 text-center font-sans text-zinc-100">
-        <h2 className="text-2xl font-semibold text-white">No About Us content available</h2>
-        <p className="mt-2 text-zinc-400">Check back later.</p>
+      <div data-testid="about-us-empty" className="flex flex-1 flex-col bg-zinc-950 font-sans text-zinc-100">
+        <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
+          <h2 className="text-2xl font-semibold text-white">No About Us content available</h2>
+          <p className="mt-2 text-zinc-400">Check back later.</p>
+        </div>
+        {staticSections}
       </div>
     );
   }
@@ -73,6 +92,7 @@ export default function AboutUsPage() {
       <OurJourney data={data.journey} />
       <OurValues data={data.values} />
       <OurAchievements data={data.achievements} />
+      {staticSections}
     </div>
   );
 }
