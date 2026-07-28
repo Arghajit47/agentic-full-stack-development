@@ -99,12 +99,28 @@ export const aboutTeamSchema = z.object({
   members: z.array(aboutTeamMemberSchema).min(1),
 });
 
+export const aboutClientSchema = z.object({
+  since: z.string().min(1),
+  company: z.string().min(1),
+  domain: z.string().min(1),
+  category: z.string().min(1),
+  quote: z.string().min(1),
+  websiteUrl: z.string().min(1),
+});
+
+export const aboutClientsSchema = z.object({
+  heading: z.string().min(1),
+  subheading: z.string().min(1),
+  testimonials: z.array(aboutClientSchema).min(1),
+});
+
 export const aboutUsDataSchema = z.object({
   journey: aboutJourneySchema,
   values: aboutValuesSchema,
   achievements: aboutAchievementsSchema,
   howItWorks: aboutHowItWorksSchema,
   team: aboutTeamSchema,
+  clients: aboutClientsSchema,
 });
 
 export const aboutUsApiResponseSchema = z.object({
@@ -123,6 +139,8 @@ export type AboutUsHowItWorksStep = z.infer<typeof aboutHowItWorksStepSchema>;
 export type AboutUsHowItWorks = z.infer<typeof aboutHowItWorksSchema>;
 export type AboutUsTeamMember = z.infer<typeof aboutTeamMemberSchema>;
 export type AboutUsTeam = z.infer<typeof aboutTeamSchema>;
+export type AboutUsClient = z.infer<typeof aboutClientSchema>;
+export type AboutUsClients = z.infer<typeof aboutClientsSchema>;
 export type AboutUsData = z.infer<typeof aboutUsDataSchema>;
 
 export const servicesSchema = z.object({

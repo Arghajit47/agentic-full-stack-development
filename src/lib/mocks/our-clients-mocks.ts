@@ -4,7 +4,7 @@ export const ourClientsMock: OurClientsContent = {
   heading: "Our Valued Clients",
   subheading:
     "At Estatein, we have had the privilege of working with a diverse range of clients across various industries. Here are some of the clients we've had the pleasure of serving",
-  clients: [
+  testimonials: [
     {
       since: "Since 2018",
       company: "GreenTech Enterprises",

@@ -10,5 +10,5 @@ export interface ClientTestimonial {
 export interface OurClientsContent {
   heading: string;
   subheading: string;
-  clients: ClientTestimonial[];
+  testimonials: ClientTestimonial[];
 }
