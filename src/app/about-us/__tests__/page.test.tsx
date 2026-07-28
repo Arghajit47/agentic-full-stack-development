@@ -42,6 +42,28 @@ const mockData = {
       { name: "Max Mitchell", role: "Founder", imageUrl: "/team/max.jpg", twitterUrl: "https://twitter.com" },
     ],
   },
+  clients: {
+    heading: "Our Valued Clients",
+    subheading: "Clients subheading",
+    testimonials: [
+      {
+        since: "Since 2018",
+        company: "GreenTech",
+        domain: "Commercial",
+        category: "Retail",
+        quote: "Great service",
+        websiteUrl: "https://example.com",
+      },
+      {
+        since: "Since 2019",
+        company: "ABC Corp",
+        domain: "Commercial",
+        category: "Office",
+        quote: "Excellent",
+        websiteUrl: "https://example.com",
+      },
+    ],
+  },
 };
 
 const mockSWR = vi.hoisted(() => vi.fn());
@@ -92,6 +114,8 @@ describe("AboutUsPage", () => {
     expect(screen.getByTestId("our-journey-heading")).toHaveTextContent("Our Journey");
     expect(screen.getByTestId("our-values-heading")).toHaveTextContent("Our Values");
     expect(screen.getByTestId("our-achievements-heading")).toHaveTextContent("Our Achievements");
+    expect(screen.getByTestId("our-clients-heading")).toHaveTextContent("Our Valued Clients");
+    expect(screen.getAllByTestId(/^client-card-/)).toHaveLength(2);
   });
 
   it("renders How It Works and Team from API data when available", () => {

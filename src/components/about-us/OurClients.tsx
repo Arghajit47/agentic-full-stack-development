@@ -33,7 +33,7 @@ export function OurClients({ data }: OurClientsProps) {
           data-testid="our-clients-grid"
           className="mt-10 grid grid-cols-1 gap-6 md:mt-12 lg:grid-cols-2 lg:gap-8 xl:gap-12"
         >
-          {data.clients.map((client) => (
+          {data.testimonials.map((client) => (
             <ClientCard key={client.company} client={client} />
           ))}
         </div>
