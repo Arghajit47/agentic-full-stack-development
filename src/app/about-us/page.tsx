@@ -6,7 +6,9 @@ import { OurValues } from "@/components/about-us/OurValues";
 import { OurAchievements } from "@/components/about-us/OurAchievements";
 import { HowItWorks } from "@/components/about-us/HowItWorks";
 import { TeamCards } from "@/components/about-us/TeamCards";
+import { OurClients } from "@/components/about-us/OurClients";
 import { useAboutUs } from "@/lib/api";
+import { ourClientsMock } from "@/lib/mocks/our-clients-mocks";
 
 function useIsClient() {
   return useSyncExternalStore(
@@ -81,6 +83,7 @@ export default function AboutUsPage() {
       <OurAchievements data={data.achievements} />
       <HowItWorks data={data.howItWorks} />
       <TeamCards data={data.team} />
+      <OurClients data={ourClientsMock} />
     </div>
   );
 }
