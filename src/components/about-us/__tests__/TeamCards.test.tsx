@@ -26,10 +26,10 @@ describe("TeamCards", () => {
     expect(cards).toHaveLength(4);
 
     const members = [
-      ["Max Mitchell", "Founder"],
       ["Sarah Johnson", "Chief Real Estate Officer"],
       ["David Brown", "Head of Property Management"],
       ["Michael Turner", "Legal Counsel"],
+      ["Max Mitchell", "Founder"],
     ];
     members.forEach(([name, role], index) => {
       expect(cards[index]).toHaveTextContent(name);

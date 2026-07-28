@@ -48,31 +48,27 @@ export const teamMock: TeamContent = {
   body: "At Estatein, our success is driven by the dedication and expertise of our team. Get to know the people behind our mission to make your real estate dreams a reality.",
   members: [
     {
-      name: "Max Mitchell",
-      role: "Founder",
-      imageUrl:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80",
-      twitterUrl: "https://twitter.com/estatein",
-    },
-    {
       name: "Sarah Johnson",
       role: "Chief Real Estate Officer",
-      imageUrl:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "/images/team/team-sarah.png",
       twitterUrl: "https://twitter.com/estatein",
     },
     {
       name: "David Brown",
       role: "Head of Property Management",
-      imageUrl:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "/images/team/team-david.jpg",
       twitterUrl: "https://twitter.com/estatein",
     },
     {
       name: "Michael Turner",
       role: "Legal Counsel",
-      imageUrl:
-        "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "/images/team/team-michael.jpg",
+      twitterUrl: "https://twitter.com/estatein",
+    },
+    {
+      name: "Max Mitchell",
+      role: "Founder",
+      imageUrl: "/images/team/team-max.jpg",
       twitterUrl: "https://twitter.com/estatein",
     },
   ],

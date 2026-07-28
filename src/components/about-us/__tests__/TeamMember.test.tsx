@@ -7,7 +7,7 @@ import type { TeamMemberData } from "@/lib/types/about-us";
 const mockMember: TeamMemberData = {
   name: "Max Mitchell",
   role: "Founder",
-  imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800",
+  imageUrl: "/images/team/team-max.jpg",
   twitterUrl: "https://twitter.com/estatein",
 };
 

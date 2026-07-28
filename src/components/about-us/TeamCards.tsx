@@ -31,7 +31,7 @@ export function TeamCards({ data }: TeamCardsProps) {
 
         <ul
           data-testid="team-grid"
-          className="mt-10 grid list-none grid-cols-1 gap-6 sm:grid-cols-2 md:mt-12 lg:grid-cols-4 lg:gap-5 xl:gap-6 2xl:gap-8"
+          className="mt-10 grid list-none grid-cols-1 gap-6 md:grid-cols-2 md:mt-12 lg:grid-cols-4 lg:gap-5 xl:gap-6 2xl:gap-8"
         >
           {data.members.map((member) => (
             <TeamMember key={member.name} member={member} />
