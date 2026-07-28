@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { SearchFilterBar } from "@/components/properties/SearchFilterBar";
 import { PropertyListings } from "@/components/properties/PropertyListings";
 import { Pagination } from "@/components/properties/Pagination";
@@ -35,6 +36,7 @@ function toProperty(row: Record<string, unknown>): Property {
 }
 
 export default function PropertiesPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -139,7 +141,7 @@ export default function PropertiesPage() {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
 
   const handlePropertyClick = (slug: string) => {
-    console.log("Viewing property:", slug);
+    router.push(`/properties/${slug}`);
   };
 
   return (
