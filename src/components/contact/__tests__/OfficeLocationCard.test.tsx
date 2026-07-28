@@ -37,7 +37,7 @@ describe("OfficeLocationCard", () => {
     render(<OfficeLocationCard office={mockOffice} />);
     const phoneLink = screen.getByTestId("office-phone");
     expect(phoneLink).toHaveTextContent("+1 (212) 555-0100");
-    expect(phoneLink).toHaveAttribute("href", "tel:+12125550100");
+    expect(phoneLink).toHaveAttribute("href", "tel:+1(212)555-0100");
   });
 
   it("renders office hours correctly", () => {
@@ -55,7 +55,7 @@ describe("OfficeLocationCard", () => {
     expect(contactButton).toHaveTextContent("Contact This Office");
     expect(contactButton).toHaveAttribute(
       "href",
-      "mailto:newyork@estatein.com?subject=Inquiry about New York Headquarters"
+      "mailto:newyork%40estatein.com?subject=Inquiry%20about%20New%20York%20Headquarters"
     );
   });
 
@@ -124,6 +124,6 @@ describe("OfficeLocationCard", () => {
     };
     render(<OfficeLocationCard office={office} />);
     const phoneLink = screen.getByTestId("office-phone");
-    expect(phoneLink).toHaveAttribute("href", "tel:+15551234567");
+    expect(phoneLink).toHaveAttribute("href", "tel:+1(555)123-4567");
   });
 });

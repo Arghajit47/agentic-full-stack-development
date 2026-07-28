@@ -3,6 +3,22 @@ import { render, screen, cleanup as cleanupReact, waitFor, fireEvent } from "@te
 import "@testing-library/jest-dom/vitest";
 import PropertiesPage from "@/app/properties/page";
 
+// Mock Next.js router
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: vi.fn(),
+  }),
+  usePathname: () => "/properties",
+}));
+
 // ─── Mock API data (matches /api/properties response shape) ───────────────────
 const MOCK_PROPERTIES = [
   { id: 1, slug: "a", title: "Royal Oak Mansion", description: "Grand", price: 3450000, location: "Greenwich, CT", bedrooms: 7, bathrooms: 8, propertyType: "Mansion", imageUrl: "/images/properties/property-1.jpg", areaSqft: 8500, isFeatured: true, galleryUrls: [], features: [] },

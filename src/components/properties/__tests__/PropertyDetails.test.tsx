@@ -1,10 +1,14 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { PropertyDetails } from "../PropertyDetails";
 import { type PropertyDetailedInfo } from "@/mocks/property-details";
 
 describe("PropertyDetails", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   const mockProperty: PropertyDetailedInfo = {
     id: 1,
     slug: "test-property",

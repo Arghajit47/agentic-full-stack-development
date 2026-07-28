@@ -140,7 +140,7 @@ describe("ContactHeader", () => {
       const phoneCards = screen.queryAllByTestId("contact-info-phone");
       expect(phoneCards.length).toBeGreaterThan(0);
       const link = phoneCards[0].querySelector('a[href^="tel:"]');
-      expect(link).toHaveAttribute("href", "tel:+15551234567");
+      expect(link).toHaveAttribute("href", "tel:+1(555)123-4567");
     });
 
     it("should create proper tel link from formatted phone number", () => {
@@ -156,7 +156,7 @@ describe("ContactHeader", () => {
       expect(phoneCards.length).toBeGreaterThan(0);
       const link = phoneCards[0].querySelector('a[href^="tel:"]');
       // Should strip out everything except numbers and +
-      expect(link).toHaveAttribute("href", "tel:+15551234567");
+      expect(link).toHaveAttribute("href", "tel:+1(555)123-4567");
     });
   });
 
