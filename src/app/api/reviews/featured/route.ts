@@ -11,6 +11,7 @@ export async function GET() {
     const result = reviews.map((r) => ({
       id: r.id,
       clientName: r.clientName,
+      clientLocation: r.clientLocation,
       clientAvatarUrl: r.clientAvatarUrl,
       rating: r.rating,
       reviewText: r.reviewText,

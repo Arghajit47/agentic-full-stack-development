@@ -84,6 +84,13 @@ const REVIEW_NAMES = [
   "Ethan Harris", "Isabella Martin", "William Thompson", "Mia Garcia", "Alexander Martinez",
 ];
 
+const REVIEW_LOCATIONS = [
+  "New York, NY", "San Francisco, CA", "Chicago, IL", "Los Angeles, CA", "Miami, FL",
+  "Boston, MA", "Seattle, WA", "Austin, TX", "Denver, CO", "Portland, OR",
+  "Atlanta, GA", "Dallas, TX", "Phoenix, AZ", "San Diego, CA", "Nashville, TN",
+  "Philadelphia, PA", "Las Vegas, NV", "Houston, TX", "Orlando, FL", "Detroit, MI",
+];
+
 const REVIEW_TEXTS = [
   "Absolutely seamless experience from start to finish. Highly recommended!",
   "Great service and a professional team. They understood exactly what we wanted.",
@@ -193,6 +200,7 @@ async function main() {
   const propertyTitles = properties.map((p) => p.title);
   const reviews = REVIEW_NAMES.map((clientName, i) => ({
     clientName,
+    clientLocation: REVIEW_LOCATIONS[i],
     clientAvatarUrl: avatarUrl(clientName),
     rating: i < 5 ? [5, 5, 4, 5, 4][i] : (i % 5) + 1,
     reviewText: REVIEW_TEXTS[i % REVIEW_TEXTS.length],
@@ -217,8 +225,7 @@ async function main() {
     { key: "footer_contact_email", value: "hello@estatehub.com" },
     { key: "footer_contact_phone", value: "+1 (555) 123-4567" },
     { key: "footer_address", value: "123 Real Estate Ave, New York, NY 10001" },
-    { key: "cta_button_text", value: "Get Started" },
-    { key: "nav_banner", value: JSON.stringify({ text: "Discover Your Dream Property with Estatein", cta: "Learn More", ctaHref: "/properties" }) },
+    { key: "featured_count", value: "20" },
   ];
 
   for (const s of settings) {
