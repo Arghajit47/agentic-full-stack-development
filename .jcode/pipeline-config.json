@@ -1,0 +1,102 @@
+{
+  "pipeline": {
+    "enabled": true,
+    "description": "Automated development pipeline for JIRA-driven development",
+    "stages": [
+      {
+        "name": "business-analysis",
+        "skill": "business-analyst-workflow",
+        "command": "/ba",
+        "trigger": "manual",
+        "autoInvokeNext": true,
+        "outputs": ["jira_tickets"]
+      },
+      {
+        "name": "development",
+        "skill": "developer-agent-ecosystem",
+        "command": "/developer",
+        "trigger": "on-ticket-created",
+        "inputs": ["jira_ticket_id"],
+        "autoInvokeNext": true,
+        "outputs": ["pr_number", "git_branch"],
+        "successCriteria": {
+          "build_passes": true,
+          "tests_pass": true,
+          "pr_created": true
+        }
+      },
+      {
+        "name": "code-review",
+        "skill": "mr-code-review",
+        "command": "/code-review",
+        "trigger": "on-pr-created",
+        "inputs": ["pr_number"],
+        "autoInvokeNext": "on-approval",
+        "outputs": ["review_status", "comments"],
+        "successCriteria": {
+          "review_status": "APPROVED",
+          "no_blocking_issues": true
+        }
+      },
+      {
+        "name": "qa-testing",
+        "skill": "quality-analyst",
+        "command": "/qa",
+        "trigger": "on-review-approved",
+        "inputs": ["jira_ticket_id", "pr_number"],
+        "autoInvokeNext": "on-pass",
+        "outputs": ["test_results", "coverage"],
+        "successCriteria": {
+          "all_acceptance_criteria_met": true,
+          "no_critical_bugs": true
+        }
+      },
+      {
+        "name": "merge-and-close",
+        "action": "merge-pr",
+        "trigger": "on-qa-pass",
+        "inputs": ["pr_number", "jira_ticket_id"],
+        "steps": [
+          {
+            "action": "merge-pr",
+            "squash": false,
+            "delete_branch": true
+          },
+          {
+            "action": "transition-jira",
+            "status": "Done"
+          },
+          {
+            "action": "comment-jira",
+            "template": "✅ Merged via PR #{pr_number}. All tests passed."
+          }
+        ]
+      }
+    ],
+    "jira": {
+      "baseUrl": "https://asughan47.atlassian.net",
+      "projectKey": "KAN",
+      "transitionOnMerge": "Done",
+      "commentOnPR": true,
+      "linkPRToTicket": true
+    },
+    "github": {
+      "owner": "Arghajit47",
+      "repo": "agentic-full-stack-development",
+      "autoMerge": true,
+      "requireReviewApproval": true,
+      "requireQAPass": true,
+      "protectedBranches": ["main"]
+    },
+    "notifications": {
+      "enabled": true,
+      "channels": ["console", "jira-comments"],
+      "events": [
+        "stage_started",
+        "stage_completed",
+        "stage_failed",
+        "pipeline_completed"
+      ]
+    }
+  }
+}
