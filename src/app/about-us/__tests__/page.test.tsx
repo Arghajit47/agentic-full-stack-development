@@ -114,6 +114,8 @@ describe("AboutUsPage", () => {
     expect(screen.getByTestId("our-journey-heading")).toHaveTextContent("Our Journey");
     expect(screen.getByTestId("our-values-heading")).toHaveTextContent("Our Values");
     expect(screen.getByTestId("our-achievements-heading")).toHaveTextContent("Our Achievements");
+    expect(screen.getByTestId("our-clients-heading")).toHaveTextContent("Our Valued Clients");
+    expect(screen.getAllByTestId(/^client-card-/)).toHaveLength(2);
   });
 
   it("renders How It Works and Team from API data when available", () => {
