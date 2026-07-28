@@ -31,7 +31,7 @@ model Property {
 model Review {
   id              Int      @id @default(autoincrement())
   clientName      String
-  clientLocation  String
+  clientLocation  String   @default("Unknown")
   clientAvatarUrl String
   rating          Int
   reviewText      String

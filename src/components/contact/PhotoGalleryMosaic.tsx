@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -61,6 +61,8 @@ export function PhotoGalleryMosaic({
 }: PhotoGalleryMosaicProps) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -69,6 +71,8 @@ export function PhotoGalleryMosaic({
 
   const closeLightbox = () => {
     setIsLightboxOpen(false);
+    // Restore focus to the triggering button
+    setTimeout(() => triggerRef.current?.focus(), 0);
   };
 
   const goToNext = () => {
@@ -78,6 +82,28 @@ export function PhotoGalleryMosaic({
   const goToPrevious = () => {
     setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
   };
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeLightbox();
+      } else if (e.key === "ArrowRight") {
+        goToNext();
+      } else if (e.key === "ArrowLeft") {
+        goToPrevious();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    
+    // Focus the close button when lightbox opens
+    setTimeout(() => closeButtonRef.current?.focus(), 0);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isLightboxOpen, images.length]);
 
   if (images.length === 0) {
     return (
@@ -113,7 +139,7 @@ export function PhotoGalleryMosaic({
               data-testid="photo-gallery-description"
               className="mt-4 text-base text-[#999999] sm:text-lg"
             >
-              Take a look at our offices, team, and the properties we've helped clients find.
+              Take a look at our offices, team, and the properties we&apos;ve helped clients find.
             </p>
           </div>
 
@@ -125,6 +151,8 @@ export function PhotoGalleryMosaic({
             {images.map((image, index) => (
               <button
                 key={image.id}
+                ref={index === lightboxIndex ? triggerRef : undefined}
+                type="button"
                 data-testid={`gallery-image-${image.id}`}
                 onClick={() => openLightbox(index)}
                 className="group relative aspect-square overflow-hidden rounded-lg bg-zinc-900 transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:ring-offset-zinc-950"
@@ -160,6 +188,8 @@ export function PhotoGalleryMosaic({
         >
           {/* Close Button */}
           <button
+            ref={closeButtonRef}
+            type="button"
             data-testid="lightbox-close-button"
             onClick={closeLightbox}
             className="absolute right-4 top-4 z-10 rounded-full bg-zinc-800/80 p-2 text-white transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
@@ -171,6 +201,7 @@ export function PhotoGalleryMosaic({
           {/* Previous Button */}
           {images.length > 1 && (
             <button
+              type="button"
               data-testid="lightbox-prev-button"
               onClick={(e) => {
                 e.stopPropagation();
@@ -186,6 +217,7 @@ export function PhotoGalleryMosaic({
           {/* Next Button */}
           {images.length > 1 && (
             <button
+              type="button"
               data-testid="lightbox-next-button"
               onClick={(e) => {
                 e.stopPropagation();
