@@ -139,6 +139,31 @@ const FALLBACK = {
       },
     ],
   },
+  clients: {
+    heading: "Our Valued Clients",
+    subheading:
+      "At Estatein, we have had the privilege of working with a diverse range of clients across various industries. Here are some of the clients we've had the pleasure of serving",
+    testimonials: [
+      {
+        since: "Since 2018",
+        company: "GreenTech Enterprises",
+        domain: "Commercial Real Estate",
+        category: "Retail Space",
+        quote:
+          "Estatein's ability to identify prime retail locations helped us expand our brand presence. Their attention to detail and market insights were invaluable.",
+        websiteUrl: "https://example.com",
+      },
+      {
+        since: "Since 2019",
+        company: "ABC Corporation",
+        domain: "Commercial Real Estate",
+        category: "Luxury Home Development",
+        quote:
+          "Estatein's expertise in finding the perfect office space for our growing team was outstanding. They understood our needs and delivered beyond expectations.",
+        websiteUrl: "https://example.com",
+      },
+    ],
+  },
 };
 
 function parseValue<T>(value: string | null | undefined, fallback: T): T {
@@ -180,6 +205,15 @@ interface TeamMember {
   role: string;
   imageUrl: string;
   twitterUrl: string;
+}
+
+interface ClientTestimonial {
+  since: string;
+  company: string;
+  domain: string;
+  category: string;
+  quote: string;
+  websiteUrl: string;
 }
 
 function buildSection(rows: AboutPageRow[], section: string) {
@@ -262,6 +296,21 @@ function buildTeam(rows: AboutPageRow[]) {
   };
 }
 
+function buildClients(rows: AboutPageRow[]) {
+  const sectionRows = buildSection(rows, "clients");
+  const map = new Map(sectionRows.map((r) => [r.slug, r.value]));
+  const testimonialRows = sectionRows.filter((r) => r.slug.startsWith("clients-testimonial-"));
+  const testimonials = testimonialRows.length > 0
+    ? testimonialRows.map((r) => parseValue<ClientTestimonial>(r.value, FALLBACK.clients.testimonials[0]))
+    : FALLBACK.clients.testimonials;
+
+  return {
+    heading: parseValue(map.get("clients-heading"), FALLBACK.clients.heading),
+    subheading: parseValue(map.get("clients-subheading"), FALLBACK.clients.subheading),
+    testimonials,
+  };
+}
+
 export async function GET() {
   try {
     const rows = await prisma.aboutPageContent.findMany({ orderBy: { order: "asc" } });
@@ -272,6 +321,7 @@ export async function GET() {
       achievements: buildAchievements(rows),
       howItWorks: buildHowItWorks(rows),
       team: buildTeam(rows),
+      clients: buildClients(rows),
     };
 
     return NextResponse.json({ success: true, data });
