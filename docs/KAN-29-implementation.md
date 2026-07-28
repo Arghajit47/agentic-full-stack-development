@@ -5,6 +5,7 @@
 Successfully implemented the Properties Page Contact Form component for KAN-29.
 
 ## Component Location
+
 `src/components/properties/PropertyContactForm.tsx`
 
 ## Test Coverage
@@ -86,17 +87,21 @@ Successfully implemented the Properties Page Contact Form component for KAN-29.
 ## How to Test
 
 ### Unit Tests
+
 ```bash
 npm test -- PropertyContactForm.test.tsx
 ```
 
 ### Browser Testing
+
 ```bash
 npm run dev
 ```
+
 Navigate to `http://localhost:3000/properties` and scroll to the bottom to see the contact form.
 
 ## Future Integration (Separate Ticket)
+
 The component is designed to accept an `onSubmit` prop that will handle the actual API call. Current implementation mocks the submission for frontend validation.
 
 ```typescript
