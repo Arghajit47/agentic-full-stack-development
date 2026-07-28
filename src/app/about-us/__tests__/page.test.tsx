@@ -20,6 +20,28 @@ const mockData = {
     body: "Achievements body",
     cards: [{ title: "Award", description: "Award desc" }],
   },
+  howItWorks: {
+    heading: "Navigating the Estatein Experience",
+    body: "How it works body",
+    steps: [
+      { stepNumber: "Step 01", title: "Discover", description: "Discover desc" },
+      { stepNumber: "Step 02", title: "Narrow Down", description: "Narrow desc" },
+      { stepNumber: "Step 03", title: "Guidance", description: "Guidance desc" },
+      { stepNumber: "Step 04", title: "See It", description: "See it desc" },
+      { stepNumber: "Step 05", title: "Decide", description: "Decide desc" },
+      { stepNumber: "Step 06", title: "Deal", description: "Deal desc" },
+    ],
+  },
+  team: {
+    heading: "Meet the Estatein Team",
+    body: "Team body",
+    members: [
+      { name: "Sarah Johnson", role: "CEO", imageUrl: "/team/sarah.png", twitterUrl: "https://twitter.com" },
+      { name: "David Brown", role: "CTO", imageUrl: "/team/david.jpg", twitterUrl: "https://twitter.com" },
+      { name: "Michael Turner", role: "Legal", imageUrl: "/team/michael.jpg", twitterUrl: "https://twitter.com" },
+      { name: "Max Mitchell", role: "Founder", imageUrl: "/team/max.jpg", twitterUrl: "https://twitter.com" },
+    ],
+  },
 };
 
 const mockSWR = vi.hoisted(() => vi.fn());
@@ -72,7 +94,7 @@ describe("AboutUsPage", () => {
     expect(screen.getByTestId("our-achievements-heading")).toHaveTextContent("Our Achievements");
   });
 
-  it("renders static How It Works and Team sections with fetched data", () => {
+  it("renders How It Works and Team from API data when available", () => {
     renderAndHydrate({ data: mockData, error: undefined, isLoading: false, mutate: vi.fn() });
     expect(screen.getByTestId("how-it-works-heading")).toHaveTextContent(
       "Navigating the Estatein Experience",
@@ -82,19 +104,24 @@ describe("AboutUsPage", () => {
     expect(screen.getAllByTestId(/^team-member-(?!image|twitter)/)).toHaveLength(4);
   });
 
-  it("keeps static sections visible in loading, error and empty states", () => {
+  it("does not render How It Works and Team in loading state", () => {
     renderAndHydrate({ data: undefined, error: undefined, isLoading: true, mutate: vi.fn() });
-    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
-    expect(screen.getByTestId("team-section")).toBeInTheDocument();
-    cleanup();
+    expect(screen.getByTestId("about-us-loading")).toBeInTheDocument();
+    expect(screen.queryByTestId("how-it-works-section")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("team-section")).not.toBeInTheDocument();
+  });
 
+  it("does not render How It Works and Team in error state", () => {
     renderAndHydrate({ data: undefined, error: new Error("boom"), isLoading: false, mutate: vi.fn() });
-    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
-    expect(screen.getByTestId("team-section")).toBeInTheDocument();
-    cleanup();
+    expect(screen.getByTestId("about-us-error")).toBeInTheDocument();
+    expect(screen.queryByTestId("how-it-works-section")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("team-section")).not.toBeInTheDocument();
+  });
 
+  it("does not render How It Works and Team in empty state", () => {
     renderAndHydrate({ data: null, error: undefined, isLoading: false, mutate: vi.fn() });
-    expect(screen.getByTestId("how-it-works-section")).toBeInTheDocument();
-    expect(screen.getByTestId("team-section")).toBeInTheDocument();
+    expect(screen.getByTestId("about-us-empty")).toBeInTheDocument();
+    expect(screen.queryByTestId("how-it-works-section")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("team-section")).not.toBeInTheDocument();
   });
 });
