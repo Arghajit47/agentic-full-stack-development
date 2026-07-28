@@ -27,6 +27,18 @@ export interface AboutUsApiData {
     body: string;
     cards: { title: string; description: string }[];
   };
+  clients: {
+    heading: string;
+    subheading: string;
+    testimonials: {
+      since: string;
+      company: string;
+      domain: string;
+      category: string;
+      quote: string;
+      websiteUrl: string;
+    }[];
+  };
 }
 
 export interface AboutUsApiResponse {
@@ -106,6 +118,47 @@ export class AboutUsPage {
     await expect(page.locator(ABOUT_US_LOCATORS.achievementsCard)).toHaveCount(
       achievements.cards.length
     );
+  }
+
+  async assertOurClientsSection(): Promise<void> {
+    await this.initializationPage.expectVisible(ABOUT_US_LOCATORS.ourClientsSection);
+    await this.initializationPage.expectText(
+      ABOUT_US_LOCATORS.ourClientsHeading,
+      ABOUT_US_TEXT.CLIENTS_HEADING
+    );
+    await this.initializationPage.expectVisible(ABOUT_US_LOCATORS.ourClientsSubheading);
+    await this.initializationPage.expectVisible(ABOUT_US_LOCATORS.ourClientsGrid);
+  }
+
+  async assertOurClientsDataMatchesApi(): Promise<void> {
+    const response = (await this.apiHelper.getRequest(API_PATHS.ABOUT_US)) as AboutUsApiResponse;
+    const data = response.data;
+    if (!data) {
+      throw new Error("About Us API returned null data");
+    }
+    const { clients } = data;
+
+    await this.navigateToAboutUs();
+
+    await this.initializationPage.expectText(
+      ABOUT_US_LOCATORS.ourClientsHeading,
+      clients.heading
+    );
+    await this.initializationPage.expectText(
+      ABOUT_US_LOCATORS.ourClientsSubheading,
+      clients.subheading
+    );
+
+    const page = this.initializationPage.page;
+    await expect(page.locator(ABOUT_US_LOCATORS.clientCard)).toHaveCount(
+      clients.testimonials.length
+    );
+
+    for (const [index, testimonial] of clients.testimonials.entries()) {
+      await expect(page.locator(ABOUT_US_LOCATORS.clientCompany).nth(index)).toHaveText(
+        testimonial.company
+      );
+    }
   }
 
   async assertLoadingSkeleton(): Promise<void> {

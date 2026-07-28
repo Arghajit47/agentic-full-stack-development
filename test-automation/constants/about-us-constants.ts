@@ -2,6 +2,7 @@ export const ABOUT_US_TEXT = {
   JOURNEY_HEADING: "Our Journey",
   VALUES_HEADING: "Our Values",
   ACHIEVEMENTS_HEADING: "Our Achievements",
+  CLIENTS_HEADING: "Our Valued Clients",
 } as const;
 
 export const ABOUT_US_COUNTS = {

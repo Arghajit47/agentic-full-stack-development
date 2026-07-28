@@ -15,6 +15,12 @@ test.describe("About Us Page Suite", () => {
     await aboutUsPage.assertHeadingsAndCountsMatchApi();
   });
 
+  test("About Us OurClients section renders with API data", async ({ aboutUsPage }) => {
+    await aboutUsPage.navigateToAboutUs();
+    await aboutUsPage.assertOurClientsSection();
+    await aboutUsPage.assertOurClientsDataMatchesApi();
+  });
+
   test("About Us page loading skeleton", async ({ aboutUsPage }) => {
     await aboutUsPage.assertLoadingSkeleton();
   });
