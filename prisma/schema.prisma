@@ -122,3 +122,58 @@ model ContactSubmission {
 
   @@index([createdAt])
 }
+
+model Office {
+  id        Int      @id @default(autoincrement())
+  title     String
+  address   String
+  email     String
+  phone     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model PropertyPricing {
+  id               Int      @id @default(autoincrement())
+  propertySlug     String   @unique
+  listingPrice     Int      // Base property listing price
+  platformFee      Int      // Platform service fee
+  processingFee    Int      // Transaction processing fee
+  inspectionCost   Int      // Property inspection cost
+  legalFee         Int      // Legal documentation fee
+  insuranceCost    Int      // Insurance cost
+  totalPrice       Int      // Total = listing + all fees + costs
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([propertySlug])
+}
+
+model GeneralInquiry {
+  id          Int      @id @default(autoincrement())
+  inquiryType String   // "general", "support", "partnership", "careers"
+  name        String
+  email       String
+  phone       String
+  message     String
+  ipHash      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([inquiryType])
+}

@@ -118,6 +118,9 @@ async function main() {
   await prisma.heroContent.deleteMany();
   await prisma.servicesContent.deleteMany();
   await prisma.aboutPageContent.deleteMany();
+  await prisma.office.deleteMany();
+  await prisma.galleryImage.deleteMany();
+  await prisma.propertyPricing.deleteMany();
 
   const navigationLinks = [
     { label: "Home", href: "/", order: 1, isExternal: false },
@@ -414,7 +417,69 @@ async function main() {
     await prisma.contactSubmission.create({ data: submission });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions`);
+  // ─── Offices (KAN-45) ─────────────────────────────────────────────────────────
+  const offices = [
+    {
+      title: "Main Office",
+      address: "123 Real Estate Avenue, New York, NY 10001",
+      email: "info@estatein.com",
+      phone: "+1 (212) 555-1234",
+      order: 1,
+    },
+    {
+      title: "Branch Office",
+      address: "456 Property Street, Los Angeles, CA 90001",
+      email: "la@estatein.com",
+      phone: "+1 (323) 555-5678",
+      order: 2,
+    },
+  ];
+
+  for (const office of offices) {
+    await prisma.office.create({ data: office });
+  }
+
+  // ─── Gallery Images (KAN-45) ──────────────────────────────────────────────────
+  const galleryImages = [
+    { imageUrl: "/images/properties/property-1.jpg", caption: "Luxury Villa Exterior", order: 1 },
+    { imageUrl: "/images/properties/property-2.jpg", caption: "Modern Living Room", order: 2 },
+    { imageUrl: "/images/properties/property-3.jpg", caption: "Spacious Kitchen", order: 3 },
+    { imageUrl: "/images/properties/property-4.jpg", caption: "Master Bedroom Suite", order: 4 },
+    { imageUrl: "/images/properties/property-5.jpg", caption: "Outdoor Entertainment Area", order: 5 },
+    { imageUrl: "/images/properties/property-6.jpg", caption: "Swimming Pool & Garden", order: 6 },
+  ];
+
+  for (const image of galleryImages) {
+    await prisma.galleryImage.create({ data: image });
+  }
+
+  // ─── Property Pricing (KAN-36) ────────────────────────────────────────────────
+  const propertyPricingData = properties.map((property) => {
+    const listingPrice = property.price;
+    const platformFee = Math.floor(listingPrice * 0.02); // 2% platform fee
+    const processingFee = Math.floor(listingPrice * 0.005); // 0.5% processing fee
+    const inspectionCost = 500; // Fixed inspection cost
+    const legalFee = 1500; // Fixed legal fee
+    const insuranceCost = Math.floor(listingPrice * 0.003); // 0.3% insurance
+    const totalPrice = listingPrice + platformFee + processingFee + inspectionCost + legalFee + insuranceCost;
+
+    return {
+      propertySlug: property.slug,
+      listingPrice,
+      platformFee,
+      processingFee,
+      inspectionCost,
+      legalFee,
+      insuranceCost,
+      totalPrice,
+    };
+  });
+
+  for (const pricingData of propertyPricingData) {
+    await prisma.propertyPricing.create({ data: pricingData });
+  }
+
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions, ${offices.length} offices, ${galleryImages.length} gallery images, ${propertyPricingData.length} property pricing records`);
 }
 
 main()
