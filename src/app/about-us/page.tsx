@@ -6,7 +6,6 @@ import { OurValues } from "@/components/about-us/OurValues";
 import { OurAchievements } from "@/components/about-us/OurAchievements";
 import { HowItWorks } from "@/components/about-us/HowItWorks";
 import { TeamCards } from "@/components/about-us/TeamCards";
-import { howItWorksMock, teamMock } from "@/lib/mocks/about-us-mocks";
 import { useAboutUs } from "@/lib/api";
 
 function useIsClient() {
@@ -25,15 +24,6 @@ export default function AboutUsPage() {
   // skeleton. After hydration, SWR drives the real fetch/loading/error/data states.
   const showLoading = !isClient || isLoading;
 
-  // How It Works and Meet the Team are static (hardcoded mock content, no API),
-  // so they render in every state below the dynamic Our Story sections.
-  const staticSections = (
-    <>
-      <HowItWorks data={howItWorksMock} />
-      <TeamCards data={teamMock} />
-    </>
-  );
-
   if (showLoading) {
     return (
       <div data-testid="about-us-loading" className="flex flex-1 flex-col bg-zinc-950 font-sans text-zinc-100">
@@ -51,7 +41,6 @@ export default function AboutUsPage() {
             <div className="aspect-[4/3] w-full animate-pulse rounded-2xl bg-zinc-800 md:aspect-square" />
           </div>
         </div>
-        {staticSections}
       </div>
     );
   }
@@ -70,7 +59,6 @@ export default function AboutUsPage() {
             Retry
           </button>
         </div>
-        {staticSections}
       </div>
     );
   }
@@ -82,7 +70,6 @@ export default function AboutUsPage() {
           <h2 className="text-2xl font-semibold text-white">No About Us content available</h2>
           <p className="mt-2 text-zinc-400">Check back later.</p>
         </div>
-        {staticSections}
       </div>
     );
   }
@@ -92,7 +79,8 @@ export default function AboutUsPage() {
       <OurJourney data={data.journey} />
       <OurValues data={data.values} />
       <OurAchievements data={data.achievements} />
-      {staticSections}
+      <HowItWorks data={data.howItWorks} />
+      <TeamCards data={data.team} />
     </div>
   );
 }
