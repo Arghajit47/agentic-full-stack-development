@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { SearchFilterBar } from "@/components/properties/SearchFilterBar";
 import { PropertyListings } from "@/components/properties/PropertyListings";
 import { Pagination } from "@/components/properties/Pagination";
+import { PropertyContactForm } from "@/components/properties/PropertyContactForm";
 import { type Property } from "@/mocks/properties-listings";
 
 const ITEMS_PER_PAGE = 6;
@@ -181,6 +182,9 @@ export default function PropertiesPage() {
           </>
         )}
       </div>
+
+      {/* Contact Form Section */}
+      <PropertyContactForm />
     </main>
   );
 }
