@@ -1,6 +1,5 @@
-"use client";
-
 import { MapPin, Phone, Clock } from "lucide-react";
+import { formatTelHref } from "@/lib/utils";
 
 export interface OfficeLocation {
   id: number;
@@ -61,7 +60,7 @@ export function OfficeLocationCard({ office }: OfficeLocationCardProps) {
         <div>
           <p className="text-sm font-medium text-zinc-400">Phone</p>
           <a
-            href={`tel:${office.phone.replace(/[^0-9+]/g, "")}`}
+            href={`tel:${formatTelHref(office.phone)}`}
             data-testid="office-phone"
             className="mt-1 block text-base text-white transition-colors hover:text-violet-600"
           >
@@ -90,7 +89,7 @@ export function OfficeLocationCard({ office }: OfficeLocationCardProps) {
 
       {/* Contact Button */}
       <a
-        href={`mailto:${office.email}?subject=Inquiry about ${office.name}`}
+        href={`mailto:${encodeURIComponent(office.email)}?subject=${encodeURIComponent(`Inquiry about ${office.name}`)}`}
         data-testid="office-contact-button"
         className="mt-6 rounded-lg bg-violet-600 px-6 py-3 text-center text-base font-medium text-white transition-colors hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:ring-offset-zinc-900"
       >

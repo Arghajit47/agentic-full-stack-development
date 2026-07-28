@@ -1,6 +1,5 @@
-"use client";
-
 import { Mail, Phone, MapPin } from "lucide-react";
+import { formatTelHref } from "@/lib/utils";
 
 export interface ContactInfo {
   email: string;
@@ -70,7 +69,7 @@ export function ContactHeader({ contactInfo = DEFAULT_CONTACT_INFO }: ContactHea
             </div>
             <h3 className="mb-2 text-lg font-semibold text-white">Phone</h3>
             <a
-              href={`tel:${contactInfo.phone.replace(/[^0-9+]/g, "")}`}
+              href={`tel:${formatTelHref(contactInfo.phone)}`}
               className="text-[#999999] transition-colors hover:text-violet-600"
             >
               {contactInfo.phone}
