@@ -2,24 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { checkRateLimit, hashIp, getClientIp } from "@/lib/rate-limit";
-
-// ─── Inquiry type enum ────────────────────────────────────────────────────────
-export const INQUIRY_TYPES = [
-  "general",
-  "support",
-  "partnership",
-  "careers",
-] as const;
-
-export type InquiryType = (typeof INQUIRY_TYPES)[number];
+import { INQUIRY_TYPES, type InquiryType } from "@/types/contact";
 
 // ─── Request body validation schema (KAN-42 AC) ──────────────────────────────
 // AC: inquiryType (enum), name, email, phone, message (all required)
 export const contactGeneralSchema = z.object({
   inquiryType: z.enum(INQUIRY_TYPES, {
-    errorMap: () => ({
-      message: `Inquiry type must be one of: ${INQUIRY_TYPES.join(", ")}`,
-    }),
+    message: `Inquiry type must be one of: ${INQUIRY_TYPES.join(", ")}`,
   }),
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
   email: z.string().email("Invalid email format").max(255, "Email too long"),

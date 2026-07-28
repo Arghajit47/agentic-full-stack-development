@@ -76,6 +76,7 @@ describe("GET /api/properties/featured", () => {
         rating: 5,
         reviewText: "Great!",
         propertyTitle: "Some Property",
+        clientLocation: "USA, California",
       },
     ];
     for (const r of reviews) {
@@ -176,6 +177,7 @@ describe("GET /api/reviews/featured", () => {
         rating: 5,
         reviewText: "Excellent service!",
         propertyTitle: "Villa Alpha",
+        clientLocation: "USA, New York",
       },
       {
         clientName: "Bob",
@@ -183,6 +185,7 @@ describe("GET /api/reviews/featured", () => {
         rating: 4,
         reviewText: "Very good experience.",
         propertyTitle: "Loft Beta",
+        clientLocation: "USA, Florida",
       },
       {
         clientName: "Charlie",
@@ -190,6 +193,7 @@ describe("GET /api/reviews/featured", () => {
         rating: 3,
         reviewText: "It was okay.",
         propertyTitle: null,
+        clientLocation: "France, Paris",
       },
     ];
 
@@ -214,6 +218,7 @@ describe("GET /api/reviews/featured", () => {
           rating: (i % 5) + 1,
           reviewText: `Review ${i}`,
           propertyTitle: `Property ${i}`,
+          clientLocation: `Country ${i}`,
         },
       });
     }

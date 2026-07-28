@@ -1,14 +1,19 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { POST, contactGeneralSchema, INQUIRY_TYPES } from "./route";
+import { POST, contactGeneralSchema } from "./route";
+import { INQUIRY_TYPES } from "@/types/contact";
 import prisma from "@/lib/prisma";
 import { resetRateLimitStore } from "@/lib/rate-limit";
+import { NextRequest } from "next/server";
 
 // ─── Mock helpers ─────────────────────────────────────────────────────────────
 function mockRequest(body: unknown, ip = "127.0.0.1") {
+  const headers = new Headers({ "x-forwarded-for": ip });
   return {
     json: vi.fn().mockResolvedValue(body),
-    headers: new Headers({ "x-forwarded-for": ip }),
-  } as unknown as Request;
+    headers,
+    nextUrl: new URL("http://localhost:3000/api/contact/general"),
+    cookies: {},
+  } as unknown as NextRequest;
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -38,7 +43,7 @@ describe("POST /api/contact/general", () => {
     });
 
     it("validates all inquiry types", () => {
-      INQUIRY_TYPES.forEach((type) => {
+      INQUIRY_TYPES.forEach((type: string) => {
         const data = {
           inquiryType: type,
           name: "Jane Smith",
@@ -407,10 +412,13 @@ describe("POST /api/contact/general", () => {
   // ─── Edge Cases ─────────────────────────────────────────────────────────────
   describe("Edge cases", () => {
     it("handles malformed JSON gracefully", async () => {
+      const headers = new Headers({ "x-forwarded-for": "127.0.0.1" });
       const req = {
         json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
-        headers: new Headers({ "x-forwarded-for": "127.0.0.1" }),
-      } as unknown as Request;
+        headers,
+        nextUrl: new URL("http://localhost:3000/api/contact/general"),
+        cookies: {},
+      } as unknown as NextRequest;
 
       const response = await POST(req);
       const json = await response.json();

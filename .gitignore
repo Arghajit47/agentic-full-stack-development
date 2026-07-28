@@ -49,3 +49,4 @@ test-results/
 # Local Netlify folder
 .netlify
 scratch/
+*.db-journal

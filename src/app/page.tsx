@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
@@ -31,7 +32,12 @@ function useMounted() {
 
 export default function Home() {
   const mounted = useMounted();
+  const router = useRouter();
   const { data: hero, isLoading: heroLoading, error: heroError, mutate: retryHero } = useHero();
+
+  const handlePropertyClick = (slug: string) => {
+    router.push(`/properties/${slug}`);
+  };
 
   // Hydration-safe initial render: server and first client paint must match.
   // After mount, reflect the real SWR loading/error state so the skeleton is shown.
@@ -111,6 +117,7 @@ export default function Home() {
         isLoading={state.isLoading}
         heading={settings.properties_heading}
         subheading={settings.properties_subheading}
+        onPropertyClick={handlePropertyClick}
       />
       <Testimonials
         data={reviews}
