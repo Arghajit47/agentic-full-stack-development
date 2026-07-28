@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
-import { INQUIRY_TYPES, type InquiryType } from "@/app/api/contact/general/route";
+import { INQUIRY_TYPES, type InquiryType } from "@/types/contact";
 
 export interface GeneralContactFormData {
   inquiryType: InquiryType | "";
