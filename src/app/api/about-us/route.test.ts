@@ -19,6 +19,15 @@ const TEAM_SARAH = {
   twitterUrl: "https://twitter.com/estatein",
 };
 
+const CLIENT_GREENTECH = {
+  since: "Since 2018",
+  company: "GreenTech Enterprises",
+  domain: "Commercial Real Estate",
+  category: "Retail Space",
+  quote: "Estatein's ability to identify prime retail locations helped us expand our brand presence.",
+  websiteUrl: "https://example.com",
+};
+
 async function getJson(res: Response) {
   return res.json();
 }
@@ -44,6 +53,15 @@ function teamRows() {
     { section: "team", slug: "team-member-david-brown", value: JSON.stringify({ name: "David Brown", role: "Head of Property Management", imageUrl: "/images/team/team-david.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 4 },
     { section: "team", slug: "team-member-michael-turner", value: JSON.stringify({ name: "Michael Turner", role: "Legal Counsel", imageUrl: "/images/team/team-michael.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 5 },
     { section: "team", slug: "team-member-max-mitchell", value: JSON.stringify({ name: "Max Mitchell", role: "Founder", imageUrl: "/images/team/team-max.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 6 },
+  ];
+}
+
+function clientsRows() {
+  return [
+    { section: "clients", slug: "clients-heading", value: JSON.stringify("Our Valued Clients"), order: 1 },
+    { section: "clients", slug: "clients-subheading", value: JSON.stringify("Subheading clients"), order: 2 },
+    { section: "clients", slug: "clients-testimonial-greentech", value: JSON.stringify(CLIENT_GREENTECH), order: 3 },
+    { section: "clients", slug: "clients-testimonial-abc", value: JSON.stringify({ since: "Since 2019", company: "ABC Corporation", domain: "Commercial Real Estate", category: "Luxury Home Development", quote: "Quote ABC", websiteUrl: "https://example.com" }), order: 4 },
   ];
 }
 
@@ -77,6 +95,7 @@ describe("GET /api/about-us", () => {
       { section: "achievements", slug: "achievements-card-industry-recognition", value: JSON.stringify({ title: "Industry Recognition", description: "desc" }), order: 5 },
       ...howItWorksRows(),
       ...teamRows(),
+      ...clientsRows(),
     ];
 
     for (const row of rows) {
@@ -104,6 +123,9 @@ describe("GET /api/about-us", () => {
     expect(body.data.team.heading).toBe("Meet the Estatein Team");
     expect(body.data.team.members).toHaveLength(4);
     expect(body.data.team.members[0]).toEqual(TEAM_SARAH);
+    expect(body.data.clients.heading).toBe("Our Valued Clients");
+    expect(body.data.clients.testimonials).toHaveLength(2);
+    expect(body.data.clients.testimonials[0]).toEqual(CLIENT_GREENTECH);
   });
 
   it("returns fallback data when DB is empty", async () => {
@@ -119,6 +141,7 @@ describe("GET /api/about-us", () => {
     expect(body.data.achievements.cards).toHaveLength(3);
     expect(body.data.howItWorks.steps).toHaveLength(6);
     expect(body.data.team.members).toHaveLength(4);
+    expect(body.data.clients.testimonials).toHaveLength(2);
     const parsed = aboutUsApiResponseSchema.safeParse(body);
     expect(parsed.success).toBe(true);
   });
