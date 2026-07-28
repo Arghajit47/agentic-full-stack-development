@@ -479,7 +479,95 @@ async function main() {
     await prisma.propertyPricing.create({ data: pricingData });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions, ${offices.length} offices, ${galleryImages.length} gallery images, ${propertyPricingData.length} property pricing records`);
+  // ─── General Inquiries (KAN-42) ───────────────────────────────────────────────
+  const generalInquiries = [
+    {
+      inquiryType: "general",
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      phone: "+1-555-1111",
+      message: "I'd like to learn more about your real estate services. Do you offer virtual tours for out-of-state buyers?",
+      ipHash: "demo-hash-gen-1",
+    },
+    {
+      inquiryType: "support",
+      name: "Bob Williams",
+      email: "bob.williams@example.com",
+      phone: "+1-555-2222",
+      message: "I'm having trouble accessing my account dashboard. Can someone from support help me reset my password?",
+      ipHash: "demo-hash-gen-2",
+    },
+    {
+      inquiryType: "partnership",
+      name: "Carol Davis",
+      email: "carol.davis@realtycorp.com",
+      phone: "+1-555-3333",
+      message: "Our company is interested in partnering with Estatein for commercial property listings. Please contact me to discuss opportunities.",
+      ipHash: "demo-hash-gen-3",
+    },
+    {
+      inquiryType: "careers",
+      name: "David Brown",
+      email: "david.brown@jobmail.com",
+      phone: "+1-555-4444",
+      message: "I'm a licensed real estate agent with 5 years of experience. Are there any openings for sales agents in your New York office?",
+      ipHash: "demo-hash-gen-4",
+    },
+    {
+      inquiryType: "general",
+      name: "Emma Wilson",
+      email: "emma.wilson@example.com",
+      phone: "+1-555-5555",
+      message: "What are your commission rates for selling a property? I have a 4-bedroom home in Austin that I'd like to list.",
+      ipHash: "demo-hash-gen-5",
+    },
+    {
+      inquiryType: "support",
+      name: "Frank Miller",
+      email: "frank.miller@example.com",
+      phone: "+1-555-6666",
+      message: "The property search filter isn't working correctly on mobile. It's not showing results when I select 'waterfront' properties.",
+      ipHash: "demo-hash-gen-6",
+    },
+    {
+      inquiryType: "partnership",
+      name: "Grace Lee",
+      email: "grace.lee@mortgagepro.com",
+      phone: "+1-555-7777",
+      message: "We're a mortgage company looking to establish a referral partnership. We can offer competitive rates for your clients.",
+      ipHash: "demo-hash-gen-7",
+    },
+    {
+      inquiryType: "careers",
+      name: "Henry Taylor",
+      email: "henry.taylor@careermail.com",
+      phone: "+1-555-8888",
+      message: "I'm a property photographer and videographer. Do you have freelance opportunities for listing photography?",
+      ipHash: "demo-hash-gen-8",
+    },
+    {
+      inquiryType: "general",
+      name: "Iris Martinez",
+      email: "iris.martinez@example.com",
+      phone: "+1-555-9999",
+      message: "Do you provide property management services? I own several rental properties and need professional management.",
+      ipHash: "demo-hash-gen-9",
+    },
+    {
+      inquiryType: "support",
+      name: "Jack Anderson",
+      email: "jack.anderson@example.com",
+      phone: "+1-555-0000",
+      message: "I submitted a contact form 3 days ago but haven't received a response. My inquiry ID is #12345. Can you follow up?",
+      ipHash: "demo-hash-gen-10",
+    },
+  ];
+
+  for (const inquiry of generalInquiries) {
+    await prisma.generalInquiry.create({ data: inquiry });
+  }
+
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions, ${offices.length} offices, ${galleryImages.length} gallery images, ${propertyPricingData.length} property pricing records, ${generalInquiries.length} general inquiries`);
 }
 
 main()
