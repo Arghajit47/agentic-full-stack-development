@@ -5,8 +5,46 @@ import prisma from "@/lib/prisma";
 
 const JOURNEY_IMAGE =
   "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1600&auto=format&fit=crop";
+
+const HOW_IT_WORKS_STEP_01 = {
+  stepNumber: "Step 01",
+  title: "Discover a World of Possibilities",
+  description: "Your journey begins with exploring our carefully curated property listings. Use our intuitive search tools to filter properties based on your preferences, including location, type, size, and budget.",
+};
+
+const TEAM_SARAH = {
+  name: "Sarah Johnson",
+  role: "Chief Real Estate Officer",
+  imageUrl: "/images/team/team-sarah.png",
+  twitterUrl: "https://twitter.com/estatein",
+};
+
 async function getJson(res: Response) {
   return res.json();
+}
+
+function howItWorksRows() {
+  return [
+    { section: "howItWorks", slug: "howItWorks-heading", value: JSON.stringify("Navigating the Estatein Experience"), order: 1 },
+    { section: "howItWorks", slug: "howItWorks-body", value: JSON.stringify("Body how it works"), order: 2 },
+    { section: "howItWorks", slug: "howItWorks-step-01", value: JSON.stringify(HOW_IT_WORKS_STEP_01), order: 3 },
+    { section: "howItWorks", slug: "howItWorks-step-02", value: JSON.stringify({ stepNumber: "Step 02", title: "T2", description: "D2" }), order: 4 },
+    { section: "howItWorks", slug: "howItWorks-step-03", value: JSON.stringify({ stepNumber: "Step 03", title: "T3", description: "D3" }), order: 5 },
+    { section: "howItWorks", slug: "howItWorks-step-04", value: JSON.stringify({ stepNumber: "Step 04", title: "T4", description: "D4" }), order: 6 },
+    { section: "howItWorks", slug: "howItWorks-step-05", value: JSON.stringify({ stepNumber: "Step 05", title: "T5", description: "D5" }), order: 7 },
+    { section: "howItWorks", slug: "howItWorks-step-06", value: JSON.stringify({ stepNumber: "Step 06", title: "T6", description: "D6" }), order: 8 },
+  ];
+}
+
+function teamRows() {
+  return [
+    { section: "team", slug: "team-heading", value: JSON.stringify("Meet the Estatein Team"), order: 1 },
+    { section: "team", slug: "team-body", value: JSON.stringify("Body team"), order: 2 },
+    { section: "team", slug: "team-member-sarah-johnson", value: JSON.stringify(TEAM_SARAH), order: 3 },
+    { section: "team", slug: "team-member-david-brown", value: JSON.stringify({ name: "David Brown", role: "Head of Property Management", imageUrl: "/images/team/team-david.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 4 },
+    { section: "team", slug: "team-member-michael-turner", value: JSON.stringify({ name: "Michael Turner", role: "Legal Counsel", imageUrl: "/images/team/team-michael.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 5 },
+    { section: "team", slug: "team-member-max-mitchell", value: JSON.stringify({ name: "Max Mitchell", role: "Founder", imageUrl: "/images/team/team-max.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 6 },
+  ];
 }
 
 describe("GET /api/about-us", () => {
@@ -37,6 +75,8 @@ describe("GET /api/about-us", () => {
       { section: "achievements", slug: "achievements-card-3-plus-years", value: JSON.stringify({ title: "3+ Years of Excellence", description: "desc" }), order: 3 },
       { section: "achievements", slug: "achievements-card-happy-clients", value: JSON.stringify({ title: "Happy Clients", description: "desc" }), order: 4 },
       { section: "achievements", slug: "achievements-card-industry-recognition", value: JSON.stringify({ title: "Industry Recognition", description: "desc" }), order: 5 },
+      ...howItWorksRows(),
+      ...teamRows(),
     ];
 
     for (const row of rows) {
@@ -58,6 +98,12 @@ describe("GET /api/about-us", () => {
     expect(body.data.values.cards[0].icon).toBe("ShieldCheck");
     expect(body.data.achievements.cards).toHaveLength(3);
     expect(body.data.achievements.cards[1].title).toBe("Happy Clients");
+    expect(body.data.howItWorks.heading).toBe("Navigating the Estatein Experience");
+    expect(body.data.howItWorks.steps).toHaveLength(6);
+    expect(body.data.howItWorks.steps[0]).toEqual(HOW_IT_WORKS_STEP_01);
+    expect(body.data.team.heading).toBe("Meet the Estatein Team");
+    expect(body.data.team.members).toHaveLength(4);
+    expect(body.data.team.members[0]).toEqual(TEAM_SARAH);
   });
 
   it("returns fallback data when DB is empty", async () => {
@@ -71,5 +117,9 @@ describe("GET /api/about-us", () => {
     expect(body.data.journey.stats).toHaveLength(3);
     expect(body.data.values.cards).toHaveLength(4);
     expect(body.data.achievements.cards).toHaveLength(3);
+    expect(body.data.howItWorks.steps).toHaveLength(6);
+    expect(body.data.team.members).toHaveLength(4);
+    const parsed = aboutUsApiResponseSchema.safeParse(body);
+    expect(parsed.success).toBe(true);
   });
 });

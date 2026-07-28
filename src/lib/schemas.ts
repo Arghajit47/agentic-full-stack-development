@@ -74,10 +74,37 @@ export const aboutAchievementsSchema = z.object({
   cards: z.array(aboutAchievementCardSchema).min(1),
 });
 
+export const aboutHowItWorksStepSchema = z.object({
+  stepNumber: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+});
+
+export const aboutHowItWorksSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  steps: z.array(aboutHowItWorksStepSchema).min(1),
+});
+
+export const aboutTeamMemberSchema = z.object({
+  name: z.string().min(1),
+  role: z.string().min(1),
+  imageUrl: z.string().min(1),
+  twitterUrl: z.string().min(1),
+});
+
+export const aboutTeamSchema = z.object({
+  heading: z.string().min(1),
+  body: z.string().min(1),
+  members: z.array(aboutTeamMemberSchema).min(1),
+});
+
 export const aboutUsDataSchema = z.object({
   journey: aboutJourneySchema,
   values: aboutValuesSchema,
   achievements: aboutAchievementsSchema,
+  howItWorks: aboutHowItWorksSchema,
+  team: aboutTeamSchema,
 });
 
 export const aboutUsApiResponseSchema = z.object({
@@ -92,6 +119,10 @@ export type AboutUsValueCard = z.infer<typeof aboutValueCardSchema>;
 export type AboutUsValues = z.infer<typeof aboutValuesSchema>;
 export type AboutUsAchievementCard = z.infer<typeof aboutAchievementCardSchema>;
 export type AboutUsAchievements = z.infer<typeof aboutAchievementsSchema>;
+export type AboutUsHowItWorksStep = z.infer<typeof aboutHowItWorksStepSchema>;
+export type AboutUsHowItWorks = z.infer<typeof aboutHowItWorksSchema>;
+export type AboutUsTeamMember = z.infer<typeof aboutTeamMemberSchema>;
+export type AboutUsTeam = z.infer<typeof aboutTeamSchema>;
 export type AboutUsData = z.infer<typeof aboutUsDataSchema>;
 
 export const servicesSchema = z.object({
