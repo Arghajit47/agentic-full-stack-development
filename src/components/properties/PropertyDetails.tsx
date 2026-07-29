@@ -13,7 +13,7 @@ import {
   Phone,
   Mail
 } from "lucide-react";
-import { type PropertyDetailedInfo } from "@/mocks/property-details";
+import { type PropertyDetailedInfo } from "@/lib/schemas";
 
 interface PropertyDetailsProps {
   property: PropertyDetailedInfo;

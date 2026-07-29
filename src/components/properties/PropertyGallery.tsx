@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { type PropertyImage } from "@/mocks/property-details";
+import { type PropertyImage } from "@/lib/schemas";
 
 interface PropertyGalleryProps {
   images: PropertyImage[];
   title: string;
 }
 
-export function PropertyGallery({ images, title }: PropertyGalleryProps) {
+export function PropertyGallery({ images }: PropertyGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);

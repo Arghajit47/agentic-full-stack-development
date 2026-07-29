@@ -1,0 +1,153 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
+import userEvent from "@testing-library/user-event";
+import { SWRConfig } from "swr";
+import PropertyDetailsPage from "../page";
+
+// ─── Mocks ──────────────────────────────────────────────────────────────────
+
+vi.mock("next/navigation", () => ({
+  useParams: () => ({ slug: "modern-villa-sunset-hills" }),
+  notFound: () => {
+    throw Object.assign(new Error("NEXT_NOT_FOUND"), { digest: "NEXT_NOT_FOUND" });
+  },
+}));
+
+vi.mock("@/lib/api", () => ({
+  fetcher: vi.fn(),
+}));
+
+import { fetcher } from "@/lib/api";
+
+const mockFetcher = vi.mocked(fetcher);
+
+const MOCK_PROPERTY = {
+  id: 1,
+  slug: "modern-villa-sunset-hills",
+  title: "Modern Villa in Sunset Hills",
+  description: "Beautiful modern villa with pool and garden.",
+  longDescription: "This is the long description.",
+  price: 1500000,
+  location: "Sunset Hills, CA",
+  address: "Modern Villa in Sunset Hills, Sunset Hills, CA",
+  bedrooms: 4,
+  bathrooms: 3,
+  propertyType: "Villa",
+  area: "3,500 sq ft",
+  lotSize: "5,250 sq ft",
+  yearBuilt: 2020,
+  status: "For Sale",
+  images: [
+    { id: 1, url: "/images/properties/property-1.jpg", alt: "Image 1", caption: "Main" },
+    { id: 2, url: "/images/properties/property-2.jpg", alt: "Image 2" },
+  ],
+  features: [
+    { id: 1, name: "Bedrooms", icon: "Bed", value: "4" },
+    { id: 2, name: "Bathrooms", icon: "Bath", value: "3" },
+    { id: 3, name: "Area", icon: "Ruler", value: "3,500 sq ft" },
+  ],
+  amenities: [
+    { id: 1, category: "Interior", items: ["Smart Home"] },
+    { id: 2, category: "Exterior", items: ["Swimming Pool"] },
+  ],
+  agentName: "Sarah Johnson",
+  agentPhone: "+1 (310) 555-0123",
+  agentEmail: "sarah.johnson@realestate.com",
+};
+
+function renderPage() {
+  return render(
+    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
+      <PropertyDetailsPage />
+    </SWRConfig>
+  );
+}
+
+function mockFetchSuccess(data = MOCK_PROPERTY) {
+  mockFetcher.mockResolvedValue(data);
+}
+
+function mockFetchError(message = "Network error") {
+  mockFetcher.mockRejectedValue(new Error(message));
+}
+
+// ─── Tests ──────────────────────────────────────────────────────────────────
+
+describe("Property Details Page integration", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("renders loading skeleton while fetching", async () => {
+    mockFetchSuccess();
+    renderPage();
+
+    expect(screen.getByTestId("property-title-skeleton")).toBeInTheDocument();
+    expect(screen.getByTestId("property-gallery-skeleton")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("property-title-skeleton")).not.toBeInTheDocument();
+    });
+  });
+
+  it("renders property title, price, gallery, and details after fetch", async () => {
+    mockFetchSuccess();
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-gallery")).toBeInTheDocument();
+    });
+
+    // Page header + PropertyDetails both render the title; use the header test id
+    expect(screen.getByTestId("property-page-title")).toHaveTextContent("Modern Villa in Sunset Hills");
+    expect(screen.getByTestId("property-header-price")).toHaveTextContent("$1,500,000");
+    expect(screen.getByTestId("property-details")).toBeInTheDocument();
+    expect(screen.getByTestId("property-inquiry-form")).toBeInTheDocument();
+  });
+
+  it("shows error state with retry button when fetch fails", async () => {
+    mockFetchError("Failed to fetch property");
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-error-state")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Failed to fetch property")).toBeInTheDocument();
+
+    // Retry behavior
+    mockFetchSuccess();
+    const retryButton = screen.getByTestId("property-retry-button");
+    const user = userEvent.setup();
+    await user.click(retryButton);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("property-error-state")).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-gallery")).toBeInTheDocument();
+    });
+  });
+
+  it("calls mutate when retry button is clicked", async () => {
+    mockFetchError("Failed to fetch property");
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-retry-button")).toBeInTheDocument();
+    });
+
+    mockFetchSuccess();
+    fireEvent.click(screen.getByTestId("property-retry-button"));
+
+    await waitFor(() => {
+      expect(mockFetcher).toHaveBeenCalled();
+    });
+  });
+});
