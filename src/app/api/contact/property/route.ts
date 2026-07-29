@@ -1,26 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { checkRateLimit, hashIp, getClientIp } from "@/lib/rate-limit";
+import { propertyContactSubmissionSchema } from "@/lib/schemas";
 
-// ─── Request body validation schema (KAN-30 AC) ───────────────────────────────
-// AC: propertySlug (optional), name, email, phone, message (all required except slug)
-export const contactPropertySchema = z.object({
-  propertySlug: z.string().optional(),
-  name: z.string().min(1, "Name is required").max(100, "Name too long"),
-  email: z.string().email("Invalid email format").max(255, "Email too long"),
-  phone: z
-    .string()
-    .min(10, "Phone must be at least 10 digits")
-    .max(20, "Phone too long")
-    .regex(/^[0-9+\-() ]+$/, "Phone contains invalid characters"),
-  message: z
-    .string()
-    .min(10, "Message must be at least 10 characters")
-    .max(1000, "Message too long"),
-});
-
-export type ContactPropertyRequest = z.infer<typeof contactPropertySchema>;
+export { propertyContactSubmissionSchema };
+export type ContactPropertyRequest = import("@/lib/schemas").PropertyContactSubmissionInput;
 
 // ─── POST /api/contact/property ───────────────────────────────────────────────
 // AC: Rate limit 5 requests per minute per IP (KAN-30)
@@ -51,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // ─── Parse and validate request body ───────────────────────────────────
     const body = await request.json();
-    const parsed = contactPropertySchema.safeParse(body);
+    const parsed = propertyContactSubmissionSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -63,7 +47,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { propertySlug, name, email, phone, message } = parsed.data;
+    const data = parsed.data;
+    const propertySlug = data.propertySlug;
+    const name = "name" in data ? data.name : `${data.firstName} ${data.lastName}`;
 
     // ─── Verify propertySlug exists if provided ────────────────────────────
     if (propertySlug) {
@@ -85,9 +71,17 @@ export async function POST(request: NextRequest) {
       data: {
         propertySlug,
         name,
-        email,
-        phone,
-        message,
+        firstName: "firstName" in data ? data.firstName : null,
+        lastName: "lastName" in data ? data.lastName : null,
+        email: data.email,
+        phone: data.phone,
+        preferredLocation: "preferredLocation" in data ? data.preferredLocation : null,
+        propertyType: "propertyType" in data ? data.propertyType : null,
+        bedrooms: "bedrooms" in data ? data.bedrooms : null,
+        bathrooms: "bathrooms" in data ? data.bathrooms : null,
+        budget: "budget" in data ? data.budget : null,
+        message: data.message,
+        agreeToTerms: "agreeToTerms" in data ? data.agreeToTerms : false,
         ipHash: ipKey,
       },
     });

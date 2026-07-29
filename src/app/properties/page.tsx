@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SearchFilterBar } from "@/components/properties/SearchFilterBar";
 import { PropertyListings } from "@/components/properties/PropertyListings";
 import { Pagination } from "@/components/properties/Pagination";
+import { PropertyContactForm } from "@/components/properties/PropertyContactForm";
 import { type Property } from "@/mocks/properties-listings";
 
 const ITEMS_PER_PAGE = 6;
@@ -144,6 +145,20 @@ export default function PropertiesPage() {
     router.push(`/properties/${slug}`);
   };
 
+  const handleContactSubmit = async (formData: import("@/components/properties/PropertyContactForm").PropertyContactFormData) => {
+    const res = await fetch("/api/contact/property", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json.message || json.error || "Submission failed");
+    }
+  };
+
   return (
     <main
       data-testid="properties-page-main"
@@ -183,6 +198,8 @@ export default function PropertiesPage() {
           </>
         )}
       </div>
+
+      <PropertyContactForm onSubmit={handleContactSubmit} />
     </main>
   );
 }

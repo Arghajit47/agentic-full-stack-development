@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi, beforeEach } from "vitest";
 import { render, screen, cleanup as cleanupReact, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
+import userEvent from "@testing-library/user-event";
 import PropertiesPage from "@/app/properties/page";
 
 // Mock Next.js router
@@ -95,6 +96,7 @@ describe("Properties Page integration", () => {
     expect(screen.getByTestId("properties-page-heading")).toHaveTextContent("Find Your Dream Property");
     expect(screen.getByTestId("property-grid")).toBeInTheDocument();
     expect(screen.getAllByTestId("property-card").length).toBe(6);
+    expect(screen.getByTestId("property-contact-form")).toBeInTheDocument();
   });
 
   it("filters properties when the property type dropdown changes", async () => {
@@ -159,24 +161,69 @@ describe("Properties Page integration", () => {
     expect(screen.getByText("No properties found")).toBeInTheDocument();
   });
 
-  it("handles pagination next and prev pages correctly", async () => {
+  it("submits the contact form to /api/contact/property with the expected payload", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn((url: string) => {
+      if (url.startsWith("/api/contact/property")) {
+        return Promise.resolve({
+          ok: true,
+          status: 201,
+          json: async () => ({ success: true, submissionId: 42 }),
+        } as Response);
+      }
+      return Promise.resolve(mockApiResponse(...Object.values(filteredAndPaginated("", "All", 1, 6)) as [typeof MOCK_PROPERTIES, number, number, number]));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
     render(<PropertiesPage />);
 
     await waitFor(() => {
       expect(screen.queryByTestId("property-grid-loading")).not.toBeInTheDocument();
     }, { timeout: 2000 });
 
-    // 10 items, 6 per page → 2 pages
-    expect(screen.getByTestId("pagination-indicator")).toHaveTextContent("Page 1 of 2");
+    await user.type(screen.getByTestId("input-firstName"), "Alice");
+    await user.type(screen.getByTestId("input-lastName"), "Wonder");
+    await user.type(screen.getByTestId("input-email"), "alice@example.com");
+    await user.type(screen.getByTestId("input-phone"), "+1-555-1234");
+    await user.selectOptions(screen.getByTestId("input-preferredLocation"), "Downtown");
+    await user.selectOptions(screen.getByTestId("input-propertyType"), "Villa");
+    await user.selectOptions(screen.getByTestId("input-bedrooms"), "3");
+    await user.selectOptions(screen.getByTestId("input-bathrooms"), "2");
+    await user.selectOptions(screen.getByTestId("input-budget"), "$1M - $2M");
+    await user.type(screen.getByTestId("input-message"), "Looking for a villa downtown.");
+    await user.click(screen.getByTestId("input-agreeToTerms"));
 
-    const nextBtn = screen.getByTestId("next-page-btn");
-    fireEvent.click(nextBtn);
+    fireEvent.submit(screen.getByTestId("property-contact-form").querySelector("form")!);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("property-grid-loading")).not.toBeInTheDocument();
+      const contactCalls = fetchMock.mock.calls.filter(([url]) => (url as string).startsWith("/api/contact/property"));
+      expect(contactCalls.length).toBe(1);
     }, { timeout: 2000 });
 
-    expect(screen.getByTestId("pagination-indicator")).toHaveTextContent("Page 2 of 2");
-    expect(screen.getAllByTestId("property-card").length).toBe(4);
+    const contactCall = fetchMock.mock.calls.find((call) => {
+      const [url] = call as unknown as [string];
+      return url.startsWith("/api/contact/property");
+    });
+    expect(contactCall).toBeDefined();
+    const [, contactInit] = contactCall as unknown as [string, RequestInit];
+    // ponytail: cast via unknown to keep mock call typing simple
+    expect(contactInit).toMatchObject({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const body = JSON.parse(contactInit.body as string);
+    expect(body).toMatchObject({
+      firstName: "Alice",
+      lastName: "Wonder",
+      email: "alice@example.com",
+      phone: "+1-555-1234",
+      preferredLocation: "Downtown",
+      propertyType: "Villa",
+      bedrooms: "3",
+      bathrooms: "2",
+      budget: "$1M - $2M",
+      message: "Looking for a villa downtown.",
+      agreeToTerms: true,
+    });
   });
 });

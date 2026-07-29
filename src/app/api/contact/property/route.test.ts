@@ -1,32 +1,47 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { POST, contactPropertySchema } from "./route";
+import { NextRequest } from "next/server";
+import { POST, propertyContactSubmissionSchema } from "./route";
 import prisma from "@/lib/prisma";
 import { resetRateLimitStore } from "@/lib/rate-limit";
 
+const fullRequestBody = {
+  firstName: "John",
+  lastName: "Doe",
+  email: "john.doe@example.com",
+  phone: "+1-555-1234",
+  preferredLocation: "Test City",
+  propertyType: "Villa",
+  bedrooms: "3",
+  bathrooms: "2",
+  budget: "$500,000",
+  message: "I'm interested in this property and would like more information.",
+  agreeToTerms: true,
+};
+
+const legacyRequestBody = {
+  name: "John Doe",
+  email: "john.doe@example.com",
+  phone: "+1-555-1234",
+  message: "I'm interested in this property and would like more information.",
+};
+
+function makeRequest(body: object, headers?: Record<string, string>): NextRequest {
+  return new Request("http://localhost:3000/api/contact/property", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...headers },
+    body: JSON.stringify(body),
+  }) as unknown as NextRequest;
+}
+
 describe("POST /api/contact/property", () => {
   beforeEach(async () => {
-    // Clean up contact submissions before each test
     await prisma.contactSubmission.deleteMany();
-    // Reset rate limit store before each test
     resetRateLimitStore();
   });
 
   // ─── Valid request tests ─────────────────────────────────────────────────────
-  it("should create a contact submission with valid data", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+1-555-1234",
-      message: "I'm interested in this property and would like more information.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+  it("should create a contact submission with full data", async () => {
+    const response = await POST(makeRequest(fullRequestBody));
     const data = await response.json();
 
     expect(response.status).toBe(201);
@@ -34,21 +49,44 @@ describe("POST /api/contact/property", () => {
     expect(data.message).toBe("Contact submission received successfully");
     expect(data.submissionId).toBeDefined();
 
-    // Verify in database
     const submission = await prisma.contactSubmission.findUnique({
       where: { id: data.submissionId },
     });
 
     expect(submission).toBeDefined();
-    expect(submission?.name).toBe(requestBody.name);
-    expect(submission?.email).toBe(requestBody.email);
-    expect(submission?.phone).toBe(requestBody.phone);
-    expect(submission?.message).toBe(requestBody.message);
+    expect(submission?.firstName).toBe(fullRequestBody.firstName);
+    expect(submission?.lastName).toBe(fullRequestBody.lastName);
+    expect(submission?.name).toBe(`${fullRequestBody.firstName} ${fullRequestBody.lastName}`);
+    expect(submission?.email).toBe(fullRequestBody.email);
+    expect(submission?.phone).toBe(fullRequestBody.phone);
+    expect(submission?.preferredLocation).toBe(fullRequestBody.preferredLocation);
+    expect(submission?.propertyType).toBe(fullRequestBody.propertyType);
+    expect(submission?.bedrooms).toBe(fullRequestBody.bedrooms);
+    expect(submission?.bathrooms).toBe(fullRequestBody.bathrooms);
+    expect(submission?.budget).toBe(fullRequestBody.budget);
+    expect(submission?.message).toBe(fullRequestBody.message);
+    expect(submission?.agreeToTerms).toBe(true);
     expect(submission?.propertySlug).toBeNull();
   });
 
-  it("should create a contact submission with propertySlug", async () => {
-    // Create a property first
+  it("should create a contact submission with legacy data and null firstName", async () => {
+    const response = await POST(makeRequest(legacyRequestBody));
+    const data = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(data.success).toBe(true);
+
+    const submission = await prisma.contactSubmission.findUnique({
+      where: { id: data.submissionId },
+    });
+
+    expect(submission?.name).toBe(legacyRequestBody.name);
+    expect(submission?.firstName).toBeNull();
+    expect(submission?.lastName).toBeNull();
+    expect(submission?.agreeToTerms).toBe(false);
+  });
+
+  it("should create a contact submission with propertySlug using legacy shape", async () => {
     const property = await prisma.property.create({
       data: {
         slug: "test-villa",
@@ -66,27 +104,14 @@ describe("POST /api/contact/property", () => {
       },
     });
 
-    const requestBody = {
-      propertySlug: property.slug,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      phone: "+1-555-5678",
-      message: "I would like to schedule a viewing for this villa.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, propertySlug: property.slug })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(201);
     expect(data.success).toBe(true);
 
-    // Verify in database
     const submission = await prisma.contactSubmission.findUnique({
       where: { id: data.submissionId },
     });
@@ -96,18 +121,7 @@ describe("POST /api/contact/property", () => {
 
   // ─── Validation tests ────────────────────────────────────────────────────────
   it("should return 400 for missing required fields", async () => {
-    const requestBody = {
-      name: "John Doe",
-      // missing email, phone, message
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(makeRequest({ name: "John Doe" }));
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -116,20 +130,9 @@ describe("POST /api/contact/property", () => {
   });
 
   it("should return 400 for invalid email format", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "not-an-email",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, email: "not-an-email" })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -138,20 +141,9 @@ describe("POST /api/contact/property", () => {
   });
 
   it("should return 400 for phone number that's too short", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "123",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, phone: "123" })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -159,20 +151,9 @@ describe("POST /api/contact/property", () => {
   });
 
   it("should return 400 for phone number with invalid characters", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-ABCD",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, phone: "+1-555-ABCD" })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -180,20 +161,9 @@ describe("POST /api/contact/property", () => {
   });
 
   it("should return 400 for message that's too short", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "Too short",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, message: "Too short" })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -201,43 +171,46 @@ describe("POST /api/contact/property", () => {
   });
 
   it("should return 400 for name that's too long", async () => {
-    const requestBody = {
-      name: "A".repeat(101), // 101 characters
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({ ...legacyRequestBody, name: "A".repeat(101) })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
     expect(data.details.name).toBeDefined();
   });
 
+  it("should return 400 for missing agreeToTerms in full shape", async () => {
+    const bodyWithoutAgree = { ...fullRequestBody };
+    delete (bodyWithoutAgree as { agreeToTerms?: boolean }).agreeToTerms;
+    const response = await POST(makeRequest(bodyWithoutAgree));
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("Invalid request data");
+    expect(data.details).toEqual(expect.any(Object));
+  });
+
+  it("should return 400 for missing firstName in full shape", async () => {
+    const body = { ...fullRequestBody, agreeToTerms: true };
+    delete (body as { firstName?: string }).firstName;
+    const response = await POST(makeRequest(body));
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("Invalid request data");
+    expect(data.details).toEqual(expect.any(Object));
+  });
+
   // ─── Property validation tests ───────────────────────────────────────────────
   it("should return 404 for non-existent propertySlug", async () => {
-    const requestBody = {
-      propertySlug: "non-existent-slug",
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(
+      makeRequest({
+        propertySlug: "non-existent-slug",
+        ...legacyRequestBody,
+        message: "This is a test message with more than ten characters.",
+      })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -247,39 +220,18 @@ describe("POST /api/contact/property", () => {
 
   // ─── Rate limiting tests ─────────────────────────────────────────────────────
   it("should enforce rate limit of 5 requests per minute", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
+    const requestBody = legacyRequestBody;
 
-    // Make 5 requests (should all succeed)
     for (let i = 0; i < 5; i++) {
-      const request = new Request("http://localhost:3000/api/contact/property", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-forwarded-for": "192.168.1.1",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      const response = await POST(request as any);
+      const response = await POST(
+        makeRequest(requestBody, { "x-forwarded-for": "192.168.1.1" })
+      );
       expect(response.status).toBe(201);
     }
 
-    // 6th request should be rate limited
-    const sixthRequest = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-forwarded-for": "192.168.1.1",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(sixthRequest as any);
+    const response = await POST(
+      makeRequest(requestBody, { "x-forwarded-for": "192.168.1.1" })
+    );
     const data = await response.json();
 
     expect(response.status).toBe(429);
@@ -287,63 +239,27 @@ describe("POST /api/contact/property", () => {
     expect(data.message).toContain("Too many contact submissions");
     expect(data.resetAt).toBeDefined();
 
-    // Check rate limit headers
     expect(response.headers.get("X-RateLimit-Limit")).toBe("5");
     expect(response.headers.get("X-RateLimit-Remaining")).toBe("0");
     expect(response.headers.get("X-RateLimit-Reset")).toBeDefined();
   });
 
   it("should track rate limits per IP address", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
+    const requestBody = legacyRequestBody;
 
-    // Make 5 requests from IP 1
     for (let i = 0; i < 5; i++) {
-      const request = new Request("http://localhost:3000/api/contact/property", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-forwarded-for": "192.168.1.1",
-        },
-        body: JSON.stringify(requestBody),
-      });
-      await POST(request as any);
+      await POST(makeRequest(requestBody, { "x-forwarded-for": "192.168.1.1" }));
     }
 
-    // Request from IP 2 should succeed (different IP)
-    const requestFromIp2 = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-forwarded-for": "192.168.1.2",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(requestFromIp2 as any);
+    const response = await POST(
+      makeRequest(requestBody, { "x-forwarded-for": "192.168.1.2" })
+    );
     expect(response.status).toBe(201);
   });
 
   // ─── Rate limit headers test ─────────────────────────────────────────────────
   it("should include rate limit headers in successful responses", async () => {
-    const requestBody = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a test message with more than ten characters.",
-    };
-
-    const request = new Request("http://localhost:3000/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request as any);
+    const response = await POST(makeRequest(legacyRequestBody));
 
     expect(response.status).toBe(201);
     expect(response.headers.get("X-RateLimit-Limit")).toBe("5");
@@ -353,30 +269,38 @@ describe("POST /api/contact/property", () => {
 });
 
 // ─── Schema validation tests (unit tests for Zod schema) ─────────────────────
-describe("contactPropertySchema", () => {
-  it("should validate a complete valid request", () => {
-    const validData = {
-      propertySlug: "test-property",
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a valid message with sufficient length.",
-    };
+describe("propertyContactSubmissionSchema", () => {
+  it("should validate a complete full request", () => {
+    const result = propertyContactSubmissionSchema.safeParse(fullRequestBody);
+    expect(result.success).toBe(true);
+  });
 
-    const result = contactPropertySchema.safeParse(validData);
+  it("should validate a complete legacy request", () => {
+    const result = propertyContactSubmissionSchema.safeParse({
+      ...legacyRequestBody,
+      propertySlug: "test-property",
+    });
     expect(result.success).toBe(true);
   });
 
   it("should validate request without propertySlug", () => {
-    const validData = {
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+1-555-1234",
-      message: "This is a valid message with sufficient length.",
-    };
-
-    const result = contactPropertySchema.safeParse(validData);
+    const result = propertyContactSubmissionSchema.safeParse(legacyRequestBody);
     expect(result.success).toBe(true);
+  });
+
+  it("should reject missing agreeToTerms in full shape", () => {
+    const bodyWithoutAgree = { ...fullRequestBody };
+    delete (bodyWithoutAgree as { agreeToTerms?: boolean }).agreeToTerms;
+    const result = propertyContactSubmissionSchema.safeParse(bodyWithoutAgree);
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject agreeToTerms false in full shape", () => {
+    const result = propertyContactSubmissionSchema.safeParse({
+      ...fullRequestBody,
+      agreeToTerms: false,
+    });
+    expect(result.success).toBe(false);
   });
 
   it("should accept various phone number formats", () => {
@@ -389,14 +313,10 @@ describe("contactPropertySchema", () => {
     ];
 
     phoneFormats.forEach((phone) => {
-      const data = {
-        name: "John Doe",
-        email: "john@example.com",
+      const result = propertyContactSubmissionSchema.safeParse({
+        ...legacyRequestBody,
         phone,
-        message: "This is a valid message with sufficient length.",
-      };
-
-      const result = contactPropertySchema.safeParse(data);
+      });
       expect(result.success).toBe(true);
     });
   });
@@ -405,14 +325,10 @@ describe("contactPropertySchema", () => {
     const invalidPhones = ["phone", "123-ABC-4567", "test@example.com"];
 
     invalidPhones.forEach((phone) => {
-      const data = {
-        name: "John Doe",
-        email: "john@example.com",
+      const result = propertyContactSubmissionSchema.safeParse({
+        ...legacyRequestBody,
         phone,
-        message: "This is a valid message with sufficient length.",
-      };
-
-      const result = contactPropertySchema.safeParse(data);
+      });
       expect(result.success).toBe(false);
     });
   });
