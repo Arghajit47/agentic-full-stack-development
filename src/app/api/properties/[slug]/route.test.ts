@@ -81,42 +81,36 @@ describe("GET /api/properties/[slug]", () => {
 
     expect(response.status).toBe(200);
     expect(data).toMatchObject({
-      slug: "modern-villa-sunset-hills",
-      title: "Modern Villa in Sunset Hills",
-      description: "Beautiful modern villa with pool and garden",
-      price: 1500000,
-      location: "Sunset Hills, CA",
-      bedrooms: 4,
-      bathrooms: 3,
-      areaSqft: 3500,
-      propertyType: "Villa",
-      imageUrl: "/images/properties/property-1.jpg",
-      isFeatured: true,
+      success: true,
+      data: {
+        slug: "modern-villa-sunset-hills",
+        title: "Modern Villa in Sunset Hills",
+        description: "Beautiful modern villa with pool and garden",
+        price: 1500000,
+        location: "Sunset Hills, CA",
+        bedrooms: 4,
+        bathrooms: 3,
+        propertyType: "Villa",
+        status: "For Sale",
+      },
     });
 
-    // Verify galleryUrls is an array
-    expect(Array.isArray(data.galleryUrls)).toBe(true);
-    expect(data.galleryUrls).toHaveLength(4);
-    expect(data.galleryUrls).toEqual([
+    expect(data.data.images).toHaveLength(4);
+    expect(data.data.images.map((img: { url: string }) => img.url)).toEqual([
       "/images/properties/property-1.jpg",
       "/images/properties/property-2.jpg",
       "/images/properties/property-3.jpg",
       "/images/properties/property-4.jpg",
     ]);
 
-    // Verify features is an array
-    expect(Array.isArray(data.features)).toBe(true);
-    expect(data.features).toHaveLength(4);
-    expect(data.features).toEqual([
-      "Swimming Pool",
-      "Smart Home",
-      "Solar Panels",
-      "Garden",
-    ]);
-
-    // Verify timestamps exist
-    expect(data).toHaveProperty("createdAt");
-    expect(data).toHaveProperty("updatedAt");
+    expect(data.data.features.length).toBeGreaterThanOrEqual(4);
+    const featureNames = data.data.features.map((f: { name: string }) => f.name);
+    expect(featureNames).toContain("Swimming Pool");
+    expect(featureNames).toContain("Smart Home");
+    expect(featureNames).toContain("Solar Panels");
+    expect(featureNames).toContain("Garden");
+    expect(data.data).toHaveProperty("id");
+    expect(typeof data.data.id).toBe("number");
   });
 
   it("should return 404 for non-existent slug", async () => {
@@ -129,7 +123,7 @@ describe("GET /api/properties/[slug]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(404);
-    expect(data).toEqual({ error: "Property not found" });
+    expect(data).toEqual({ success: false, data: null, error: "Property not found" });
   });
 
   it("should handle property with single gallery image", async () => {
@@ -142,10 +136,10 @@ describe("GET /api/properties/[slug]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.slug).toBe("downtown-loft");
-    expect(Array.isArray(data.galleryUrls)).toBe(true);
-    expect(data.galleryUrls).toHaveLength(1);
-    expect(data.galleryUrls).toEqual(["/images/properties/property-2.jpg"]);
+    expect(data.success).toBe(true);
+    expect(data.data.slug).toBe("downtown-loft");
+    expect(data.data.images).toHaveLength(1);
+    expect(data.data.images[0].url).toBe("/images/properties/property-2.jpg");
   });
 
   it("should return all property fields including id", async () => {
@@ -158,8 +152,9 @@ describe("GET /api/properties/[slug]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data).toHaveProperty("id");
-    expect(typeof data.id).toBe("number");
+    expect(data.success).toBe(true);
+    expect(data.data).toHaveProperty("id");
+    expect(typeof data.data.id).toBe("number");
   });
 
   it("should handle slugs with special characters correctly", async () => {
@@ -191,8 +186,9 @@ describe("GET /api/properties/[slug]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.slug).toBe("luxury-beach-front-villa-2024");
-    expect(data.title).toBe("Luxury Beach Front Villa 2024");
+    expect(data.success).toBe(true);
+    expect(data.data.slug).toBe("luxury-beach-front-villa-2024");
+    expect(data.data.title).toBe("Luxury Beach Front Villa 2024");
 
     // Cleanup
     await prisma.property.delete({

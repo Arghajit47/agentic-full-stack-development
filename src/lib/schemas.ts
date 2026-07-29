@@ -207,3 +207,65 @@ export type ServicesIntro = z.infer<typeof introSchema>;
 export type ServicesBottomCta = z.infer<typeof bottomCtaSchema>;
 export type ServicesData = z.infer<typeof servicesSchema>;
 export type ServicesApiResponse = z.infer<typeof servicesApiResponseSchema>;
+
+// ─── Property Details Schemas (KAN-34) ──────────────────────────────────────
+
+export const propertyImageSchema = z.object({
+  id: z.number(),
+  url: z.string().min(1),
+  alt: z.string().min(1),
+  caption: z.string().optional(),
+});
+
+export const propertyFeatureSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
+  icon: z.string().min(1),
+  value: z.string().min(1),
+});
+
+export const propertyAmenitySchema = z.object({
+  id: z.number(),
+  category: z.string().min(1),
+  items: z.array(z.string().min(1)).min(1),
+});
+
+export const propertyStatusSchema = z.enum(["For Sale", "For Rent", "Sold", "Pending"]);
+
+export const propertyTypeSchema = z.enum(["Villa", "Mansion", "Cottage", "Estate", "House"]);
+
+export const propertyDetailedInfoSchema = z.object({
+  id: z.number(),
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  longDescription: z.string().min(1),
+  price: z.number().int().nonnegative(),
+  location: z.string().min(1),
+  address: z.string().min(1),
+  bedrooms: z.number().int().nonnegative(),
+  bathrooms: z.number().nonnegative(),
+  propertyType: z.string().min(1), // ponytail: allow DB enum values; UI narrows via iconMap
+  area: z.string().min(1),
+  lotSize: z.string().optional(),
+  yearBuilt: z.number().int().optional(),
+  status: propertyStatusSchema,
+  images: z.array(propertyImageSchema),
+  features: z.array(propertyFeatureSchema),
+  amenities: z.array(propertyAmenitySchema),
+  agentName: z.string().optional(),
+  agentPhone: z.string().optional(),
+  agentEmail: z.string().email().optional(),
+});
+
+export const propertyDetailApiResponseSchema = z.object({
+  success: z.boolean(),
+  data: propertyDetailedInfoSchema.nullable(),
+  error: z.string().optional().nullable(),
+});
+
+export type PropertyImage = z.infer<typeof propertyImageSchema>;
+export type PropertyFeature = z.infer<typeof propertyFeatureSchema>;
+export type PropertyAmenity = z.infer<typeof propertyAmenitySchema>;
+export type PropertyDetailedInfo = z.infer<typeof propertyDetailedInfoSchema>;
+export type PropertyDetailApiResponse = z.infer<typeof propertyDetailApiResponseSchema>;

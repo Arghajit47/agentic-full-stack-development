@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { PropertyDetails } from "../PropertyDetails";
-import { type PropertyDetailedInfo } from "@/mocks/property-details";
+import { type PropertyDetailedInfo } from "@/lib/schemas";
 
 describe("PropertyDetails", () => {
   afterEach(() => {
