@@ -5,10 +5,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/api";
 import { PropertyGallery } from "@/components/properties/PropertyGallery";
 import { PropertyDetails } from "@/components/properties/PropertyDetails";
-import {
-  PropertyInquiryForm,
-  type PropertyInquiryFormData,
-} from "@/components/properties/PropertyInquiryForm";
+import { PropertyInquiryForm } from "@/components/properties/PropertyInquiryForm";
 import { type PropertyDetailedInfo } from "@/lib/schemas";
 
 function PropertyDetailsSkeleton() {
@@ -67,18 +64,6 @@ export default function PropertyDetailsPage() {
     revalidateOnFocus: false,
   });
 
-  const handleInquirySubmit = async (formData: PropertyInquiryFormData & { propertySlug: string }) => {
-    const res = await fetch("/api/contact/property", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    const json = await res.json();
-    if (!res.ok) {
-      throw new Error(json.message || json.error || "Submission failed");
-    }
-  };
-
   if (!slug) {
     notFound();
   }
@@ -124,7 +109,6 @@ export default function PropertyDetailsPage() {
           <PropertyInquiryForm
             propertySlug={data.slug}
             propertyTitle={data.title}
-            onSubmit={handleInquirySubmit}
           />
         </div>
       </div>
