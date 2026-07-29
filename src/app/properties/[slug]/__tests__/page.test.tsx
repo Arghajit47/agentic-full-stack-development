@@ -150,4 +150,65 @@ describe("Property Details Page integration", () => {
       expect(mockFetcher).toHaveBeenCalled();
     });
   });
+
+  it("submits inquiry form to /api/contact/property", async () => {
+    mockFetchSuccess();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, data: { id: 1 }, message: "Submitted" }),
+    });
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-inquiry-form")).toBeInTheDocument();
+    });
+
+    await userEvent.type(screen.getByTestId("input-name"), "QA Automation");
+    await userEvent.type(screen.getByTestId("input-email"), "qa+test@example.com");
+    await userEvent.type(screen.getByTestId("input-phone"), "+1 555 123 4567");
+    await userEvent.type(screen.getByTestId("input-message"), "I am interested in scheduling a viewing for this property.");
+
+    fireEvent.click(screen.getByTestId("submit-button"));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/contact/property",
+        expect.objectContaining({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: expect.stringContaining("\"propertySlug\":\"modern-villa-sunset-hills\""),
+        })
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("inquiry-form-success")).toBeInTheDocument();
+    });
+  });
+
+  it("displays submission error when inquiry API fails", async () => {
+    mockFetchSuccess();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ success: false, error: "Server error" }),
+    });
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("property-inquiry-form")).toBeInTheDocument();
+    });
+
+    await userEvent.type(screen.getByTestId("input-name"), "QA Automation");
+    await userEvent.type(screen.getByTestId("input-email"), "qa+test@example.com");
+    await userEvent.type(screen.getByTestId("input-phone"), "+1 555 123 4567");
+    await userEvent.type(screen.getByTestId("input-message"), "I am interested in scheduling a viewing for this property.");
+
+    fireEvent.click(screen.getByTestId("submit-button"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Server error")).toBeInTheDocument();
+    });
+  });
 });
