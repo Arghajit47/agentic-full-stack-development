@@ -111,15 +111,23 @@ model AboutPageContent {
 }
 
 model ContactSubmission {
-  id            Int      @id @default(autoincrement())
-  propertySlug  String?
-  name          String
-  email         String
-  phone         String
-  message       String
-  ipHash        String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  propertySlug      String?
+  name              String
+  firstName         String?
+  lastName          String?
+  email             String
+  phone             String
+  preferredLocation String?
+  propertyType      String?
+  bedrooms          String?
+  bathrooms         String?
+  budget            String?
+  message           String
+  agreeToTerms      Boolean  @default(false)
+  ipHash            String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([createdAt])
 }

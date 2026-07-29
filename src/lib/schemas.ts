@@ -157,6 +157,48 @@ export const servicesApiResponseSchema = z.object({
   message: z.string().optional(),
 });
 
+export const propertyContactSubmissionSchema = z.union([
+  // legacy shape used by PropertyInquiryForm on /properties/[slug]
+  z.object({
+    propertySlug: z.string().optional(),
+    name: z.string().min(1, "Name is required").max(100, "Name too long"),
+    email: z.string().email("Invalid email format").max(255, "Email too long"),
+    phone: z
+      .string()
+      .min(10, "Phone must be at least 10 digits")
+      .max(20, "Phone too long")
+      .regex(/^[0-9+\-() ]+$/, "Phone contains invalid characters"),
+    message: z
+      .string()
+      .min(10, "Message must be at least 10 characters")
+      .max(1000, "Message too long"),
+  }),
+  // full shape emitted by PropertyContactForm on /properties
+  z.object({
+    propertySlug: z.string().optional(),
+    firstName: z.string().min(1, "First name is required").max(100, "First name too long"),
+    lastName: z.string().min(1, "Last name is required").max(100, "Last name too long"),
+    email: z.string().email("Invalid email format").max(255, "Email too long"),
+    phone: z
+      .string()
+      .min(10, "Phone must be at least 10 digits")
+      .max(20, "Phone too long")
+      .regex(/^[0-9+\-() ]+$/, "Phone contains invalid characters"),
+    preferredLocation: z.string().min(1, "Preferred location is required").max(100),
+    propertyType: z.string().min(1, "Property type is required").max(100),
+    bedrooms: z.string().min(1, "Bedrooms is required").max(10),
+    bathrooms: z.string().min(1, "Bathrooms is required").max(10),
+    budget: z.string().min(1, "Budget is required").max(100),
+    message: z
+      .string()
+      .min(10, "Message must be at least 10 characters")
+      .max(1000, "Message too long"),
+    agreeToTerms: z.boolean().refine((v) => v === true, "You must agree to the terms"),
+  }),
+]);
+
+export type PropertyContactSubmissionInput = z.infer<typeof propertyContactSubmissionSchema>;
+
 export type NewsletterInput = z.infer<typeof newsletterSchema>;
 export type ServicesCategory = z.infer<typeof categorySchema>;
 export type ServicesService = z.infer<typeof serviceSchema>;
