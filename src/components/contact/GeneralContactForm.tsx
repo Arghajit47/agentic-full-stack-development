@@ -1,225 +1,212 @@
 "use client";
 
-import React, { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
-import { INQUIRY_TYPES, type InquiryType } from "@/types/contact";
+import { useState, useCallback, FormEvent, ChangeEvent } from "react";
+import { INQUIRY_TYPES, HEAR_ABOUT_TYPES, type InquiryType, type HearAboutType } from "@/types/contact";
 
 export interface GeneralContactFormData {
-  inquiryType: InquiryType | "";
+  inquiryType: InquiryType;
   name: string;
   email: string;
   phone: string;
   message: string;
 }
 
-export interface GeneralContactFormProps {
-  onSubmit?: (data: Omit<GeneralContactFormData, "inquiryType"> & { inquiryType: InquiryType }) => void | Promise<void>;
+interface GeneralContactFormProps {
+  onSubmit?: (data: GeneralContactFormData) => void;
 }
+
+interface FormState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  inquiryType: InquiryType | "";
+  hearAbout: HearAboutType | "";
+  message: string;
+  termsAccepted: boolean;
+}
+
+type FieldName = keyof FormState;
 
 interface FormErrors {
-  inquiryType?: string;
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
+  inquiryType?: string;
+  hearAbout?: string;
   message?: string;
+  termsAccepted?: string;
 }
 
-const initialFormData: GeneralContactFormData = {
-  inquiryType: "",
-  name: "",
+const initialState: FormState = {
+  firstName: "",
+  lastName: "",
   email: "",
   phone: "",
+  inquiryType: "",
+  hearAbout: "",
   message: "",
+  termsAccepted: false,
 };
 
-export function GeneralContactForm({ onSubmit }: GeneralContactFormProps) {
-  const [formData, setFormData] = useState<GeneralContactFormData>(initialFormData);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (resetTimerRef.current) {
-        clearTimeout(resetTimerRef.current);
+function validateField(name: FieldName, value: string | boolean): string | undefined {
+  switch (name) {
+    case "firstName":
+      if (!value || (typeof value === "string" && value.trim() === "")) return "First name is required";
+      if (typeof value === "string" && value.trim().length > 50) return "First name must be 50 characters or less";
+      break;
+    case "lastName":
+      if (!value || (typeof value === "string" && value.trim() === "")) return "Last name is required";
+      if (typeof value === "string" && value.trim().length > 50) return "Last name must be 50 characters or less";
+      break;
+    case "email":
+      if (!value || (typeof value === "string" && value.trim() === "")) return "Email is required";
+      if (typeof value === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+        return "Please enter a valid email address";
       }
-    };
+      if (typeof value === "string" && value.trim().length > 255) return "Email must be 255 characters or less";
+      break;
+    case "phone":
+      if (!value || (typeof value === "string" && value.trim() === "")) return "Phone number is required";
+      if (typeof value === "string" && value.trim().length > 20) return "Phone must be 20 characters or less";
+      if (typeof value === "string" && value.replace(/[\s\-\(\)\+]/g, "").length < 10) {
+        return "Phone must be at least 10 digits and contain only valid characters";
+      }
+      break;
+    case "inquiryType":
+      if (!value) return "Please select an inquiry type";
+      break;
+    case "hearAbout":
+      if (!value) return "Please select how you heard about us";
+      break;
+    case "message":
+      if (!value || (typeof value === "string" && value.trim() === "")) return "Message is required";
+      if (typeof value === "string" && value.trim().length < 10) return "Message must be at least 10 characters";
+      if (typeof value === "string" && value.trim().length > 1000) return "Message must be 1000 characters or less";
+      break;
+    case "termsAccepted":
+      if (value !== true) return "You must agree to the Terms of Use and Privacy Policy";
+      break;
+  }
+  return undefined;
+}
+
+function inputClasses(error?: string) {
+  return [
+    "w-full rounded-xl border bg-zinc-900 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition",
+    "focus:border-violet-500 focus:ring-1 focus:ring-violet-500",
+    error ? "border-red-500" : "border-zinc-800 hover:border-zinc-700",
+  ].join(" ");
+}
+
+export function GeneralContactForm({ onSubmit }: GeneralContactFormProps) {
+  const [form, setForm] = useState<FormState>(initialState);
+  const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const validate = useCallback((next: FormState): FormErrors => {
+    const nextErrors: FormErrors = {};
+    (Object.keys(next) as FieldName[]).forEach((key) => {
+      const err = validateField(key, next[key]);
+      if (err) nextErrors[key] = err;
+    });
+    return nextErrors;
   }, []);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePhone = (phone: string): boolean => {
-    // Must be at least 10 characters and contain only valid phone characters
-    if (phone.length < 10) return false;
-    const phoneRegex = /^[0-9+\-() ]+$/;
-    return phoneRegex.test(phone);
-  };
-
-  const validateForm = (): FormErrors => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.inquiryType) {
-      newErrors.inquiryType = "Please select an inquiry type";
-    }
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.length > 100) {
-      newErrors.name = "Name must be 100 characters or less";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    } else if (formData.email.length > 255) {
-      newErrors.email = "Email must be 255 characters or less";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!validatePhone(formData.phone)) {
-      newErrors.phone = "Phone must be at least 10 digits and contain only valid characters";
-    } else if (formData.phone.length > 20) {
-      newErrors.phone = "Phone must be 20 characters or less";
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = "Message is required";
-    } else if (formData.message.length < 10) {
-      newErrors.message = "Message must be at least 10 characters";
-    } else if (formData.message.length > 1000) {
-      newErrors.message = "Message must be 1000 characters or less";
-    }
-
-    return newErrors;
-  };
-
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error for this field if touched
-    if (touched[name] && errors[name as keyof FormErrors]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name as keyof FormErrors];
-        return newErrors;
+  const updateField = useCallback(
+    (name: FieldName, value: string | boolean) => {
+      setForm((prev) => {
+        const next = { ...prev, [name]: value };
+        const nextErrors = validate(next);
+        setErrors((prevErr) => ({
+          ...prevErr,
+          [name]: nextErrors[name],
+        }));
+        return next;
       });
+    },
+    [validate]
+  );
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      updateField(name as FieldName, checked);
+    } else {
+      updateField(name as FieldName, value);
     }
   };
 
-  const handleBlur = (fieldName: string) => {
-    setTouched((prev) => ({ ...prev, [fieldName]: true }));
-    const fieldErrors = validateForm();
-
-    // Always sync the blurred field's error state
-    setErrors((prev) => {
-      const next = { ...prev };
-      const fieldError = fieldErrors[fieldName as keyof FormErrors];
-      if (fieldError) {
-        next[fieldName as keyof FormErrors] = fieldError;
-      } else {
-        delete next[fieldName as keyof FormErrors];
-      }
-      return next;
-    });
+  const handleBlur = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    const nextErrors = validate(form);
+    setErrors((prev) => ({ ...prev, [name]: nextErrors[name as FieldName] }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const nextErrors = validate(form);
+    setTouched({
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+      inquiryType: true,
+      hearAbout: true,
+      message: true,
+      termsAccepted: true,
+    } as Record<FieldName, boolean>);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
 
-    const formErrors = validateForm();
-    setErrors(formErrors);
+    setStatus("submitting");
     setSubmitError(null);
 
-    // Mark all fields as touched
-    const allTouched = Object.keys(formData).reduce(
-      (acc, key) => ({ ...acc, [key]: true }),
-      {}
-    );
-    setTouched(allTouched);
+    const payload = {
+      inquiryType: form.inquiryType as InquiryType,
+      name: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      message: form.message.trim(),
+    };
 
-    if (Object.keys(formErrors).length === 0 && formData.inquiryType) {
-      setIsSubmitting(true);
-
-      try {
-        // Submit to API endpoint
-        const response = await fetch("/api/contact/general", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inquiryType: formData.inquiryType,
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            message: formData.message,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 429) {
-            throw new Error(result.message || "Too many submissions. Please try again later.");
-          }
-          throw new Error(result.error || "Submission failed");
-        }
-
-        // Call onSubmit prop if provided
-        if (onSubmit) {
-          await onSubmit({
-            inquiryType: formData.inquiryType as InquiryType,
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            message: formData.message,
-          });
-        }
-
-        setIsSubmitted(true);
-
-        // Reset form after 3 seconds
-        resetTimerRef.current = setTimeout(() => {
-          setFormData(initialFormData);
-          setErrors({});
-          setTouched({});
-          setIsSubmitted(false);
-          setIsSubmitting(false);
-        }, 3000);
-      } catch (error) {
-        setSubmitError(error instanceof Error ? error.message : "Submission failed");
-        setIsSubmitting(false);
+    try {
+      onSubmit?.(payload);
+      const res = await fetch("/api/contact/general", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message ?? data?.error ?? "Submission failed. Please try again.");
       }
+      setStatus("success");
+      setTimeout(() => {
+        setForm(initialState);
+        setTouched({});
+        setErrors({});
+        setStatus("idle");
+      }, 3000);
+    } catch (err) {
+      setStatus("error");
+      setSubmitError(err instanceof Error ? err.message : "Submission failed. Please try again.");
     }
   };
 
-  if (isSubmitted) {
+  if (status === "success") {
     return (
       <section
         data-testid="general-contact-form-success"
-        role="status"
-        aria-live="polite"
-        className="w-full bg-[#141414] px-4 py-16 sm:px-6 lg:px-8"
+        className="bg-[#141414] px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8"
       >
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-semibold text-white sm:text-4xl lg:text-[48px]">
-            Thank You!
-          </h2>
-          <p className="mt-4 text-lg text-[#999999]">
-            Your inquiry has been submitted successfully. We&apos;ll get back to you soon.
-          </p>
-        </div>
+        <h2 className="text-2xl font-semibold text-white sm:text-3xl">Thank You!</h2>
+        <p className="mt-3 text-zinc-400">Your message has been sent. We&apos;ll get back to you soon.</p>
       </section>
     );
   }
@@ -227,215 +214,203 @@ export function GeneralContactForm({ onSubmit }: GeneralContactFormProps) {
   return (
     <section
       data-testid="general-contact-form"
-      className="w-full bg-zinc-950 px-4 py-16 sm:px-6 lg:px-8"
+      className="bg-[#141414] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
     >
-      <div className="mx-auto max-w-4xl">
-        {/* Heading */}
-        <div className="mb-8 text-center">
-          <h2
-            data-testid="general-contact-form-heading"
-            className="text-3xl font-semibold text-white sm:text-4xl lg:text-[48px]"
-          >
-            Send Us a Message
-          </h2>
-          <p
-            data-testid="general-contact-form-subheading"
-            className="mt-4 text-base text-[#999999] sm:text-lg lg:text-[18px]"
-          >
-            Fill out the form below and we&apos;ll get back to you as soon as possible.
-          </p>
-        </div>
+      <div className="mx-auto max-w-7xl">
+        <h2
+          data-testid="general-contact-form-heading"
+          className="font-sans text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl"
+        >
+          Let&apos;s Connect
+        </h2>
+        <p
+          data-testid="general-contact-form-subheading"
+          className="mt-4 max-w-3xl text-base leading-relaxed text-zinc-400 sm:text-lg lg:text-xl"
+        >
+          We&apos;re excited to connect with you and learn more about your real estate goals. Use
+          the form below to get in touch with Estatein. Whether you&apos;re a prospective client,
+          partner, or simply curious about our services, we&apos;re here to answer your questions
+          and provide the assistance you need.
+        </p>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} noValidate>
-          {submitError && (
-            <div
-              role="alert"
-              data-testid="submit-error"
-              className="mb-6 rounded-lg border border-red-500 bg-red-900/20 px-4 py-3 text-red-400"
-            >
-              {submitError}
+        <form onSubmit={handleSubmit} className="mt-10 sm:mt-12" noValidate>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            {/* First Name */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="firstName" className="text-sm font-medium text-white">First Name</label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={form.firstName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter First Name"
+                data-testid="input-firstName"
+                className={inputClasses(touched.firstName ? errors.firstName : undefined)}
+              />
+              {touched.firstName && errors.firstName && (
+                <span data-testid="error-firstName" className="text-xs text-red-500">{errors.firstName}</span>
+              )}
             </div>
-          )}
 
-          <div className="grid grid-cols-1 gap-6">
+            {/* Last Name */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="lastName" className="text-sm font-medium text-white">Last Name</label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={form.lastName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Last Name"
+                data-testid="input-lastName"
+                className={inputClasses(touched.lastName ? errors.lastName : undefined)}
+              />
+              {touched.lastName && errors.lastName && (
+                <span data-testid="error-lastName" className="text-xs text-red-500">{errors.lastName}</span>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-sm font-medium text-white">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter your Email"
+                data-testid="input-email"
+                className={inputClasses(touched.email ? errors.email : undefined)}
+              />
+              {touched.email && errors.email && (
+                <span data-testid="error-email" className="text-xs text-red-500">{errors.email}</span>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="phone" className="text-sm font-medium text-white">Phone</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter Phone Number"
+                data-testid="input-phone"
+                className={inputClasses(touched.phone ? errors.phone : undefined)}
+              />
+              {touched.phone && errors.phone && (
+                <span data-testid="error-phone" className="text-xs text-red-500">{errors.phone}</span>
+              )}
+            </div>
+
             {/* Inquiry Type */}
-            <div>
-              <label
-                htmlFor="inquiryType"
-                className="mb-2 block text-[20px] font-medium text-white"
-              >
-                Inquiry Type
-              </label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="inquiryType" className="text-sm font-medium text-white">Inquiry Type</label>
               <select
                 id="inquiryType"
                 name="inquiryType"
+                value={form.inquiryType}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 data-testid="input-inquiryType"
-                value={formData.inquiryType}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur("inquiryType")}
-                aria-invalid={touched.inquiryType && !!errors.inquiryType}
-                aria-describedby={
-                  touched.inquiryType && errors.inquiryType ? "error-inquiryType" : undefined
-                }
-                className={`w-full appearance-none cursor-pointer rounded-lg border ${
-                  touched.inquiryType && errors.inquiryType
-                    ? "border-red-500"
-                    : "border-zinc-700"
-                } bg-zinc-900 px-4 py-3 text-[18px] text-white outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
+                className={inputClasses(touched.inquiryType ? errors.inquiryType : undefined)}
               >
-                <option value="" className="text-[#666666]">
-                  Select Inquiry Type
-                </option>
+                <option value="" disabled>Select Inquiry Type</option>
                 {INQUIRY_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
+                  <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
                 ))}
               </select>
               {touched.inquiryType && errors.inquiryType && (
-                <p
-                  id="error-inquiryType"
-                  data-testid="error-inquiryType"
-                  className="mt-1 text-sm text-red-500"
-                >
-                  {errors.inquiryType}
-                </p>
+                <span data-testid="error-inquiryType" className="text-xs text-red-500">{errors.inquiryType}</span>
               )}
             </div>
 
-            {/* Name */}
-            <div>
-              <label htmlFor="name" className="mb-2 block text-[20px] font-medium text-white">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                data-testid="input-name"
-                value={formData.name}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur("name")}
-                placeholder="Enter your full name"
-                aria-invalid={touched.name && !!errors.name}
-                aria-describedby={touched.name && errors.name ? "error-name" : undefined}
-                className={`w-full rounded-lg border ${
-                  touched.name && errors.name ? "border-red-500" : "border-zinc-700"
-                } bg-zinc-900 px-4 py-3 text-[18px] text-white placeholder-[#666666] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
-              />
-              {touched.name && errors.name && (
-                <p id="error-name" data-testid="error-name" className="mt-1 text-sm text-red-500">
-                  {errors.name}
-                </p>
+            {/* How did you hear about us */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="hearAbout" className="text-sm font-medium text-white">How Did You Hear About Us?</label>
+              <select
+                id="hearAbout"
+                name="hearAbout"
+                value={form.hearAbout}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                data-testid="input-hearAbout"
+                className={inputClasses(touched.hearAbout ? errors.hearAbout : undefined)}
+              >
+                <option value="" disabled>Select</option>
+                {HEAR_ABOUT_TYPES.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              {touched.hearAbout && errors.hearAbout && (
+                <span data-testid="error-hearAbout" className="text-xs text-red-500">{errors.hearAbout}</span>
               )}
             </div>
 
-            {/* Email and Phone (side by side on larger screens) */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {/* Email */}
-              <div>
-                <label htmlFor="email" className="mb-2 block text-[20px] font-medium text-white">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  data-testid="input-email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  onBlur={() => handleBlur("email")}
-                  placeholder="Enter your email"
-                  aria-invalid={touched.email && !!errors.email}
-                  aria-describedby={touched.email && errors.email ? "error-email" : undefined}
-                  className={`w-full rounded-lg border ${
-                    touched.email && errors.email ? "border-red-500" : "border-zinc-700"
-                  } bg-zinc-900 px-4 py-3 text-[18px] text-white placeholder-[#666666] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
-                />
-                {touched.email && errors.email && (
-                  <p
-                    id="error-email"
-                    data-testid="error-email"
-                    className="mt-1 text-sm text-red-500"
-                  >
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label htmlFor="phone" className="mb-2 block text-[20px] font-medium text-white">
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  data-testid="input-phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  onBlur={() => handleBlur("phone")}
-                  placeholder="Enter phone number"
-                  aria-invalid={touched.phone && !!errors.phone}
-                  aria-describedby={touched.phone && errors.phone ? "error-phone" : undefined}
-                  className={`w-full rounded-lg border ${
-                    touched.phone && errors.phone ? "border-red-500" : "border-zinc-700"
-                  } bg-zinc-900 px-4 py-3 text-[18px] text-white placeholder-[#666666] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
-                />
-                {touched.phone && errors.phone && (
-                  <p
-                    id="error-phone"
-                    data-testid="error-phone"
-                    className="mt-1 text-sm text-red-500"
-                  >
-                    {errors.phone}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Message */}
-            <div>
-              <label htmlFor="message" className="mb-2 block text-[20px] font-medium text-white">
-                Message
-              </label>
+            {/* Message - full width on larger screens */}
+            <div className="flex flex-col gap-2 sm:col-span-2 lg:col-span-3">
+              <label htmlFor="message" className="text-sm font-medium text-white">Message</label>
               <textarea
                 id="message"
                 name="message"
-                data-testid="input-message"
-                value={formData.message}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur("message")}
-                placeholder="Enter your message here..."
+                value={form.message}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter your Message here.."
                 rows={5}
-                aria-invalid={touched.message && !!errors.message}
-                aria-describedby={touched.message && errors.message ? "error-message" : undefined}
-                className={`w-full resize-none rounded-lg border ${
-                  touched.message && errors.message ? "border-red-500" : "border-zinc-700"
-                } bg-zinc-900 px-4 py-3 text-[18px] text-white placeholder-[#666666] outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`}
+                data-testid="input-message"
+                className={inputClasses(touched.message ? errors.message : undefined)}
               />
               {touched.message && errors.message && (
-                <p
-                  id="error-message"
-                  data-testid="error-message"
-                  className="mt-1 text-sm text-red-500"
-                >
-                  {errors.message}
-                </p>
+                <span data-testid="error-message" className="text-xs text-red-500">{errors.message}</span>
               )}
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Terms checkbox */}
+          <div className="mt-6 flex items-start gap-3">
+            <input
+              id="termsAccepted"
+              name="termsAccepted"
+              type="checkbox"
+              checked={form.termsAccepted}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              data-testid="input-termsAccepted"
+              className="mt-0.5 h-5 w-5 rounded border-zinc-700 bg-zinc-900 text-violet-600 accent-violet-600 focus:ring-violet-500"
+            />
+            <label htmlFor="termsAccepted" className="text-sm leading-relaxed text-zinc-400">
+              I agree to the{" "}
+              <a href="/terms" className="text-violet-400 hover:underline">Terms of Use</a>{" "}
+              and{" "}
+              <a href="/privacy" className="text-violet-400 hover:underline">Privacy Policy</a>
+            </label>
+          </div>
+          {touched.termsAccepted && errors.termsAccepted && (
+            <span data-testid="error-termsAccepted" className="mt-1 block text-xs text-red-500">
+              {errors.termsAccepted}
+            </span>
+          )}
+
+          {submitError && (
+            <div data-testid="submit-error" className="mt-4 text-sm text-red-500">{submitError}</div>
+          )}
+
           <button
             type="submit"
             data-testid="submit-button"
-            disabled={isSubmitting}
-            className="mt-6 w-full rounded-lg bg-violet-600 py-4 text-[18px] font-semibold text-white transition-colors hover:bg-violet-500 active:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:ring-offset-zinc-950"
+            disabled={status === "submitting"}
+            className="mt-8 w-full rounded-xl bg-violet-600 px-6 py-4 text-base font-medium text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:bg-zinc-700 sm:text-lg"
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
+            {status === "submitting" ? "Sending..." : "Send Your Message"}
           </button>
         </form>
       </div>

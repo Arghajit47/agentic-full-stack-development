@@ -15,6 +15,8 @@ import {
   type ServicesService,
   type ServicesCategory,
   type ServicesBottomCta,
+  type Office,
+  type GalleryImage,
   newsletterSchema,
 } from "./api-types";
 import { type AboutUsData } from "./schemas";
@@ -36,6 +38,7 @@ export type {
   ServicesService,
   ServicesCategory,
   ServicesBottomCta,
+  AboutUsData,
   Office,
   GalleryImage,
 };

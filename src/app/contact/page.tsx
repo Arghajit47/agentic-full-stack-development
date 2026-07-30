@@ -5,6 +5,7 @@ import { ContactHeader } from "@/components/contact/ContactHeader";
 import { GeneralContactForm } from "@/components/contact/GeneralContactForm";
 import { OfficeLocations } from "@/components/contact/OfficeLocations";
 import { PhotoGalleryMosaic } from "@/components/contact/PhotoGalleryMosaic";
+import { type OfficeLocation } from "@/components/contact/OfficeLocationCard";
 import { useContactOffices, useContactGallery } from "@/lib/api";
 
 const subscribe = () => () => {};
@@ -77,10 +78,22 @@ export default function ContactPage() {
     );
   }
 
+  const officeLocations: OfficeLocation[] = (offices ?? []).map((office) => ({
+    id: office.id,
+    name: office.title,
+    address: office.address,
+    city: "",
+    state: "",
+    zipCode: "",
+    phone: office.phone,
+    email: office.email,
+    hours: { weekdays: "9:00 AM - 6:00 PM", weekends: "Closed" },
+  }));
+
   return (
     <main data-testid="contact-page" className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
       <ContactHeader />
-      <OfficeLocations offices={offices} />
+      <OfficeLocations offices={officeLocations} />
       <PhotoGalleryMosaic images={gallery?.map((img) => ({ id: img.id, url: img.imageUrl, alt: img.caption ?? "", caption: img.caption }))} />
       <GeneralContactForm />
     </main>
