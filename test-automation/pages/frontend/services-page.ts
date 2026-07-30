@@ -30,12 +30,12 @@ export class ServicesPage {
     await this.initializationPage.expectVisible(SERVICES_LOCATORS.propertySellingSection);
     await this.initializationPage.expectVisible(SERVICES_LOCATORS.propertyManagementSection);
     await this.initializationPage.expectVisible(SERVICES_LOCATORS.investmentAdvisorySection);
-    await this.initializationPage.expectVisible(SERVICES_LOCATORS.bottomCtaSection);
+    // Bottom CTA section removed - now provided by Footer component
   }
 
   async assertHeadingsMatchApi(): Promise<void> {
     const response = (await this.apiHelper.getRequest(API_PATHS.SERVICES)) as ServicesApiResponse;
-    const { intro, services, bottomCta } = response.data;
+    const { intro, services } = response.data;
 
     await this.initializationPage.expectText(SERVICES_LOCATORS.introHeading, intro.heading);
     await this.initializationPage.expectText(SERVICES_LOCATORS.introSubheading, intro.subheading);
@@ -54,8 +54,7 @@ export class ServicesPage {
       expectedHeadings[2] ?? SERVICES_TEXT.DEFAULT_INVESTMENT_ADVISORY_HEADING
     );
 
-    await this.initializationPage.expectText(SERVICES_LOCATORS.bottomCtaHeading, bottomCta.heading);
-    await this.initializationPage.expectText(SERVICES_LOCATORS.bottomCtaButton, bottomCta.buttonText);
+    // Bottom CTA validation removed - Footer CTA is tested separately via footer tests
 
     await this.initializationPage.validateElementsCount(
       SERVICES_LOCATORS.quickLink,

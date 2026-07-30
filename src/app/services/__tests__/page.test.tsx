@@ -71,7 +71,7 @@ const mockServicesData = {
 };
 
 describe("ServicesPageContent with data", () => {
-  it("renders intro, quick links, services and bottom CTA from API data", () => {
+  it("renders intro, quick links, and services from API data", () => {
     render(<ServicesPageContent data={mockServicesData} isLoading={false} error={null} />);
 
     expect(screen.getByTestId("services-intro-heading")).toHaveTextContent("API Services Heading");
@@ -87,8 +87,7 @@ describe("ServicesPageContent with data", () => {
     expect(screen.getByTestId("services-property-selling-card-valuation-mastery")).toHaveTextContent("Valuation Mastery");
     expect(screen.getByTestId("services-investment-advisory-card-market-insight")).toHaveTextContent("Market Insight");
 
-    expect(screen.getByTestId("services-bottom-cta-heading")).toHaveTextContent("API Bottom CTA Heading");
-    expect(screen.getByTestId("services-bottom-cta-button")).toHaveAttribute("href", "/properties");
+    // Bottom CTA removed - now provided by Footer component
   });
 
   it("renders loading skeletons when isLoading is true", () => {
@@ -118,6 +117,6 @@ describe("ServicesPageContent with data", () => {
 
     expect(screen.getByTestId("services-intro-heading")).toHaveTextContent("API Services Heading");
     expect(screen.getByTestId("services-property-selling-heading")).toHaveTextContent("Unlock Property Value");
-    expect(screen.getByTestId("services-bottom-cta-heading")).toHaveTextContent("API Bottom CTA Heading");
+    // Bottom CTA removed - now provided by Footer component
   });
 });

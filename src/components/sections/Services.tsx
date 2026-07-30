@@ -490,7 +490,7 @@ export function ServicesPageContent({ data, isLoading, error, retry }: ServicesP
         <ServiceSection key={service.testId} service={service} />
       ))}
       <InvestmentAdvisorySection service={services[2]} />
-      <ServicesBottomCta bottomCta={bottomCta} />
+      {/* Bottom CTA removed - Footer provides the "Start Your Real Estate Journey Today" section */}
     </>
   );
 }

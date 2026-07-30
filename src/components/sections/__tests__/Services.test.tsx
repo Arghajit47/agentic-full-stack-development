@@ -148,6 +148,6 @@ describe("Services section", () => {
       "href",
       "/properties"
     );
-    expect(screen.getByTestId("services-bottom-cta-button")).toHaveTextContent("Explore Properties");
+    // Bottom CTA removed - now provided by Footer component
   });
 });
