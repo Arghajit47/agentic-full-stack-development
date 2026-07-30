@@ -14,11 +14,3 @@ export const PROPERTIES_GRID_COLS = {
   DESKTOP: 3,
   WIDE: 3,
 } as const;
-
-export const PROPERTY_DETAILS = {
-  SLUG: "modern-villa-in-sunset-hills",
-  INQUIRY_NAME: "Automation SDET",
-  INQUIRY_EMAIL: "sdet+automation@example.com",
-  INQUIRY_PHONE: "+1 555 000 1234",
-  INQUIRY_MESSAGE: "Interested in this property for automated regression testing.",
-} as const;

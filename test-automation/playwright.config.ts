@@ -7,7 +7,7 @@ export default defineConfig({
   workers: undefined,
   reporter: [["html"], ["list"]],
   use: {
-    baseURL: process.env.BASE_URL || BASE_URL,
+    baseURL: BASE_URL,
     screenshot: "only-on-failure",
   },
   projects: [
