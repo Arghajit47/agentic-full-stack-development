@@ -4,6 +4,7 @@ export const API_PATHS = {
   PROPERTIES_FEATURED: "/api/properties/featured",
   REVIEWS_FEATURED: "/api/reviews/featured",
   PROPERTIES: "/api/properties",
+  PROPERTY_PRICING: (slug: string) => `/api/properties/${encodeURIComponent(slug)}/pricing`,
   SETTINGS: "/api/settings",
   SERVICES: "/api/services",
   ABOUT_US: "/api/about-us",
@@ -127,6 +128,28 @@ export const servicesSchema = z.object({
   }),
   error: z.string().optional(),
   message: z.string().optional(),
+});
+
+const pricingBreakdownItemSchema = z.object({
+  amount: z.number().int(),
+  label: z.string().min(1),
+});
+
+export const propertyPricingSchema = z.object({
+  propertySlug: z.string().min(1),
+  breakdown: z.object({
+    listing: pricingBreakdownItemSchema,
+    fees: z.object({
+      platformFee: pricingBreakdownItemSchema,
+      processingFee: pricingBreakdownItemSchema,
+    }),
+    costs: z.object({
+      inspectionCost: pricingBreakdownItemSchema,
+      legalFee: pricingBreakdownItemSchema,
+      insuranceCost: pricingBreakdownItemSchema,
+    }),
+  }),
+  totalPrice: z.number().int(),
 });
 
 export const propertiesResponseSchema = z.object({

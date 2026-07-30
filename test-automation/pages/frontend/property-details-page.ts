@@ -7,6 +7,7 @@ import {
   VIEWPORTS,
   API_PATHS,
   PROPERTY_DETAILS,
+  propertyPricingSchema,
 } from "@constants/index";
 
 type ViewportKey = keyof typeof VIEWPORTS;
@@ -37,6 +38,52 @@ export class PropertyDetailsPage {
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyGallery);
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyDetails);
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyInquiryForm);
+  }
+
+  async assertPricingBreakdownFromApi(): Promise<void> {
+    const pricingData = await this.apiHelper.getRequest(API_PATHS.PROPERTY_PRICING(PROPERTY_DETAILS.SLUG));
+    const parsed = propertyPricingSchema.safeParse(pricingData);
+    expect(parsed.success).toBe(true);
+
+    const data = parsed.data!;
+    const formatCurrency = (n: number) =>
+      new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+
+    await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(PROPERTY_DETAILS.SLUG));
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingBreakdown);
+
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingListing,
+      data.breakdown.listing.label
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingListing,
+      formatCurrency(data.breakdown.listing.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingPlatformFee,
+      formatCurrency(data.breakdown.fees.platformFee.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingProcessingFee,
+      formatCurrency(data.breakdown.fees.processingFee.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingInspectionCost,
+      formatCurrency(data.breakdown.costs.inspectionCost.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingLegalFee,
+      formatCurrency(data.breakdown.costs.legalFee.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingInsuranceCost,
+      formatCurrency(data.breakdown.costs.insuranceCost.amount)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingTotal,
+      formatCurrency(data.totalPrice)
+    );
   }
 
   async assertInquiryFormSubmission(): Promise<void> {
