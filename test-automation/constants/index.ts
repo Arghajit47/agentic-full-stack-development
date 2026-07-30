@@ -84,6 +84,14 @@ export const UI_ROUTES = {
 
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.
 // Test cases use 375/768/1024/1440/1920.
+export const VIEWPORT_ORDER = [
+  "WIDE",
+  "DESKTOP",
+  "LAPTOP",
+  "TABLET",
+  "MOBILE",
+] as const;
+
 export const VIEWPORTS = {
   MOBILE: { width: 375, height: 667 },
   TABLET: { width: 768, height: 1024 },

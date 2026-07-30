@@ -1,8 +1,19 @@
 import { ApiHelper } from "@base/api-base";
-import { API_PATHS, SERVICES_TEXT, SERVICES_COUNTS, UI_ROUTES, type ServicesApiResponse } from "@constants/index";
+import {
+  API_PATHS,
+  SERVICES_TEXT,
+  SERVICES_COUNTS,
+  SERVICES_GRID_COLS,
+  UI_ROUTES,
+  VIEWPORTS,
+  VIEWPORT_ORDER,
+  type ServicesApiResponse,
+} from "@constants/index";
 import { SERVICES_LOCATORS } from "@locators/services-locators";
 import { expect, type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
+
+type ViewportKey = (typeof VIEWPORT_ORDER)[number];
 
 export class ServicesPage {
   private initializationPage: InitializationPage;
@@ -60,6 +71,56 @@ export class ServicesPage {
       SERVICES_LOCATORS.quickLink,
       SERVICES_COUNTS.QUICK_LINKS
     );
+  }
+
+  async assertLoadingSkeletonVisible(): Promise<void> {
+    await this.initializationPage.mockDelayRoute(API_PATHS.SERVICES, 3000);
+    await this.navigateToServices();
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.skeleton);
+    await this.initializationPage.validateElementsCount(SERVICES_LOCATORS.skeleton, 2);
+    await this.initializationPage.expectHidden(SERVICES_LOCATORS.skeleton);
+    await this.initializationPage.clearNetworkLogs();
+  }
+
+  async assertEmptyState(): Promise<void> {
+    await this.initializationPage.mockJsonResponse(API_PATHS.SERVICES, {
+      success: true,
+      data: { intro: null, quickLinks: [], services: [], bottomCta: null },
+      error: null,
+    });
+    await this.navigateToServices();
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.empty);
+    await this.initializationPage.expectTextContains(SERVICES_LOCATORS.empty, SERVICES_TEXT.EMPTY_MESSAGE);
+    await this.initializationPage.clearNetworkLogs();
+  }
+
+  async assertErrorState(): Promise<void> {
+    await this.initializationPage.mockAbortRoute(API_PATHS.SERVICES, "failed");
+    await this.navigateToServices();
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.error);
+    await this.initializationPage.expectTextContains(SERVICES_LOCATORS.error, SERVICES_TEXT.ERROR_MESSAGE);
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.errorRetry);
+    await this.initializationPage.clearNetworkLogs();
+    await this.initializationPage.click(SERVICES_LOCATORS.errorRetry);
+    await this.initializationPage.expectHidden(SERVICES_LOCATORS.error);
+  }
+
+  async assertResponsiveLayout(): Promise<void> {
+    for (const key of VIEWPORT_ORDER as unknown as ViewportKey[]) {
+      await this.initializationPage.setViewport(VIEWPORTS[key]);
+      await this.navigateToServices();
+      await this.initializationPage.expectVisible(SERVICES_LOCATORS.introSection);
+      await this.initializationPage.assertGridTrackCount(
+        SERVICES_LOCATORS.propertySellingGrid,
+        SERVICES_GRID_COLS[key],
+        `property-selling grid at ${key}`
+      );
+      await this.initializationPage.assertGridTrackCount(
+        SERVICES_LOCATORS.propertyManagementGrid,
+        SERVICES_GRID_COLS[key],
+        `property-management grid at ${key}`
+      );
+    }
   }
 
   async assertNoConsoleErrors(): Promise<void> {

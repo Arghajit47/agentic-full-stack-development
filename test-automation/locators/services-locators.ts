@@ -11,6 +11,8 @@ export const SERVICES_LOCATORS = {
   propertyManagementHeading: '[data-testid="services-property-management-heading"]',
   investmentAdvisorySection: '[data-testid="services-investment-advisory-section"]',
   investmentAdvisoryHeading: '[data-testid="services-investment-advisory-heading"]',
+  propertySellingGrid: '[data-testid="services-property-selling-section"] div[class*="grid"]',
+  propertyManagementGrid: '[data-testid="services-property-management-section"] div[class*="grid"]',
   bottomCtaSection: '[data-testid="services-bottom-cta-section"]',
   bottomCtaHeading: '[data-testid="services-bottom-cta-heading"]',
   bottomCtaButton: '[data-testid="services-bottom-cta-button"]',
