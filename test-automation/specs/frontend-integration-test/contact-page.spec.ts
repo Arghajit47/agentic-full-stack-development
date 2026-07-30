@@ -14,4 +14,8 @@ test.describe("Contact Page Suite", () => {
     await contactPage.assertNoConsoleErrors();
     await contactPage.assertNoImage404s();
   });
+
+  test("Contact page general contact form submits successfully", async ({ contactPage }) => {
+    await contactPage.submitGeneralContactForm();
+  });
 });

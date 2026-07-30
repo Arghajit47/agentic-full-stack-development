@@ -1,8 +1,11 @@
-import { ApiHelper } from "@base/api-base";
+import {
+  ApiHelper,
+} from "@base/api-base";
 import {
   API_PATHS,
   CONTACT_TEXT,
   CONTACT_ERROR_MESSAGES,
+  CONTACT_FORM_TEST_DATA,
   UI_ROUTES,
 } from "@constants/index";
 import { CONTACT_LOCATORS } from "@locators/contact-locators";
@@ -86,5 +89,22 @@ export class ContactPage {
 
   async assertNoImage404s(): Promise<void> {
     await this.initializationPage.assertNoImage404s(UI_ROUTES.CONTACT);
+  }
+
+  async submitGeneralContactForm(): Promise<void> {
+    const data = CONTACT_FORM_TEST_DATA;
+    await this.navigateToContact();
+
+    await this.initializationPage.fill(CONTACT_LOCATORS.firstNameInput, data.firstName);
+    await this.initializationPage.fill(CONTACT_LOCATORS.lastNameInput, data.lastName);
+    await this.initializationPage.fill(CONTACT_LOCATORS.emailInput, data.email);
+    await this.initializationPage.fill(CONTACT_LOCATORS.phoneInput, data.phone);
+    await this.initializationPage.fill(CONTACT_LOCATORS.messageTextarea, data.message);
+    await this.initializationPage.selectOption(CONTACT_LOCATORS.inquiryTypeSelect, data.inquiryType);
+    await this.initializationPage.selectOption(CONTACT_LOCATORS.hearAboutSelect, data.hearAbout);
+    await this.initializationPage.checkCheckbox(CONTACT_LOCATORS.termsCheckbox);
+
+    await this.initializationPage.clickOnElement(CONTACT_LOCATORS.submitButton);
+    await this.initializationPage.expectVisible(CONTACT_LOCATORS.formSuccess, 0);
   }
 }

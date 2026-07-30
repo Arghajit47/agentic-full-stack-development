@@ -3,6 +3,8 @@ import { execSync } from "node:child_process";
 import { z } from "zod";
 import { BASE_URL, DB_PATH } from "@constants/index";
 
+const API_BASE_URL = process.env.BASE_URL || BASE_URL;
+
 export class ApiHelper {
   async makeRequest(
     method: string,
@@ -11,7 +13,7 @@ export class ApiHelper {
     requestBody?: any,
     queryParams?: any
   ) {
-    const contextRequest = await request.newContext({ baseURL: BASE_URL });
+    const contextRequest = await request.newContext({ baseURL: API_BASE_URL });
     const options: Record<string, any> = { headers };
     // Append query parameters to the URL if provided
     if (queryParams && Object.keys(queryParams).length > 0) {
@@ -156,7 +158,7 @@ export abstract class BaseAPI {
   static clearedTables = new Set<string>();
 
   async init(): Promise<void> {
-    this.ctx = await request.newContext({ baseURL: BASE_URL });
+    this.ctx = await request.newContext({ baseURL: API_BASE_URL });
   }
 
   async dispose(): Promise<void> {
@@ -167,7 +169,7 @@ export abstract class BaseAPI {
   protected async get(path: string): Promise<Response> {
     if (!this.ctx) throw new Error("init() not called");
 
-    const isLocal = BASE_URL.includes("localhost") || BASE_URL.includes("127.0.0.1");
+    const isLocal = API_BASE_URL.includes("localhost") || API_BASE_URL.includes("127.0.0.1");
     if (!isLocal) {
       if (BaseAPI.clearedTables.has("Property") && path.includes("/api/properties/featured")) {
         return { status: 200, body: [] };

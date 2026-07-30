@@ -1289,4 +1289,17 @@ export default class InitializationPage {
             await locator.nth(index).selectOption(valueOrLabel);
         }
     }
+
+    /**
+     * Checks a checkbox input
+     * @param locator The selector or Locator for the checkbox element
+     * @param index Optional index for selecting a specific element (default: 0)
+     */
+    async checkCheckbox(locator: string | Locator, index = 0) {
+        if (typeof locator === "string") {
+            await this.page.locator(locator).nth(index).check();
+        } else {
+            await locator.nth(index).check();
+        }
+    }
 }
