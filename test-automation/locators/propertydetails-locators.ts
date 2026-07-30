@@ -1,0 +1,16 @@
+export const PROPERTY_DETAILS_LOCATORS = {
+  propertyPageTitle: '[data-testid="property-page-title"]',
+  propertyHeaderPrice: '[data-testid="property-header-price"]',
+  propertyGallery: '[data-testid="property-gallery"]',
+  propertyDetails: '[data-testid="property-details"]',
+  propertyInquiryForm: '[data-testid="property-inquiry-form"]',
+  inputName: '[data-testid="input-name"]',
+  inputEmail: '[data-testid="input-email"]',
+  inputPhone: '[data-testid="input-phone"]',
+  inputMessage: '[data-testid="input-message"]',
+  submitButton: '[data-testid="submit-button"]',
+  inquiryFormSuccess: '[data-testid="inquiry-form-success"]',
+  propertyErrorState: '[data-testid="property-error-state"]',
+  propertyRetryButton: '[data-testid="property-retry-button"]',
+  propertyTitleSkeleton: '[data-testid="property-title-skeleton"]',
+} as const;

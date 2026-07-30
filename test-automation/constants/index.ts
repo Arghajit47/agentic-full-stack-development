@@ -77,6 +77,7 @@ export const UI_ROUTES = {
   EMPTY_REVIEWS: "/test-harness/empty-reviews",
   LOADING: "/test-harness/loading",
   PROPERTIES: "/properties",
+  PROPERTY_DETAILS: (slug: string) => `/properties/${slug}`,
   SERVICES: "/services",
   ABOUT_US: "/about-us",
 } as const;

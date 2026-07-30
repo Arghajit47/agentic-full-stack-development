@@ -3,6 +3,7 @@ import { HomePage } from "@pages/frontend/home-page";
 import { PropertiesPage } from "@pages/frontend/properties-page";
 import { ServicesPage } from "@pages/frontend/services-page";
 import { AboutUsPage } from "@pages/frontend/about-us-page";
+import { PropertyDetailsPage } from "@pages/frontend/property-details-page";
 
 /**
  * Defines the custom fixtures available in the test suite.
@@ -14,6 +15,7 @@ type MyFixtures = {
   propertiesPage: PropertiesPage;
   servicesPage: ServicesPage;
   aboutUsPage: AboutUsPage;
+  propertyDetailsPage: PropertyDetailsPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -51,6 +53,13 @@ export const test = base.extend<MyFixtures>({
    */
   aboutUsPage: async ({ page }: { page: Page }, use) => {
     await use(new AboutUsPage(page));
+  },
+
+  /**
+   * Provides a PropertyDetailsPage instance to tests.
+   */
+  propertyDetailsPage: async ({ page }: { page: Page }, use) => {
+    await use(new PropertyDetailsPage(page));
   },
 });
 
