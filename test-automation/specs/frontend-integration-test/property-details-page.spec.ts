@@ -4,6 +4,10 @@ test("Property details page renders live API data", async ({ propertyDetailsPage
   await propertyDetailsPage.assertLiveApiDataValidation();
 });
 
+test("Property details pricing breakdown loads from API", async ({ propertyDetailsPage }) => {
+  await propertyDetailsPage.assertPricingBreakdownFromApi();
+});
+
 test("Property details inquiry form submits", async ({ propertyDetailsPage }) => {
   await propertyDetailsPage.assertInquiryFormSubmission();
 });
