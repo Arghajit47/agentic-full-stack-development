@@ -6,10 +6,35 @@ import { fetcher } from "@/lib/api";
 import { PropertyGallery } from "@/components/properties/PropertyGallery";
 import { PropertyDetails } from "@/components/properties/PropertyDetails";
 import {
+  PricingBreakdown,
+  type PricingBreakdownData,
+} from "@/components/properties/PricingBreakdown";
+import {
   PropertyInquiryForm,
   type PropertyInquiryFormData,
 } from "@/components/properties/PropertyInquiryForm";
 import { type PropertyDetailedInfo } from "@/lib/schemas";
+
+// ponytail: pricing endpoint returns raw JSON (no {success,data} wrapper),
+// so it cannot reuse the global fetcher. Keep the dedicated fetcher inline.
+class PricingFetchError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+    this.name = "PricingFetchError";
+  }
+}
+
+async function pricingFetcher<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const payload = await res.json().catch(() => ({}));
+    throw new PricingFetchError(
+      payload.error || `Failed to fetch ${url}`,
+      res.status,
+    );
+  }
+  return res.json();
+}
 
 function PropertyDetailsSkeleton() {
   return (
@@ -31,6 +56,7 @@ function PropertyDetailsSkeleton() {
             <div className="h-40 animate-pulse rounded-xl bg-zinc-800" />
           </div>
         </div>
+        <div className="mt-12 h-80 animate-pulse rounded-lg bg-zinc-800" data-testid="pricing-breakdown-skeleton" />
         <div className="mt-12 h-80 animate-pulse rounded-lg bg-zinc-800" data-testid="property-inquiry-skeleton" />
       </div>
     </div>
@@ -56,6 +82,69 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
       </div>
     </div>
   );
+}
+
+function PricingErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="rounded-xl border border-red-900/30 bg-red-900/10 p-6" data-testid="pricing-error-state">
+      <h3 className="mb-2 text-lg font-semibold text-white">Pricing unavailable</h3>
+      <p className="mb-4 text-zinc-400">{message}</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        data-testid="pricing-retry-button"
+        className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500"
+      >
+        Retry
+      </button>
+    </div>
+  );
+}
+
+function PricingEmptyState() {
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6" data-testid="pricing-empty-state">
+      <p className="text-zinc-400">Pricing breakdown is not available for this property.</p>
+    </div>
+  );
+}
+
+function PricingSection({
+  slug,
+}: {
+  slug: string;
+}) {
+  const pricingUrl = `/api/properties/${encodeURIComponent(slug)}/pricing`;
+  const {
+    data: pricingData,
+    error: pricingError,
+    isLoading: pricingLoading,
+    mutate: mutatePricing,
+  } = useSWR<PricingBreakdownData, PricingFetchError>(pricingUrl, pricingFetcher, {
+    revalidateOnFocus: false,
+  });
+
+  if (pricingLoading) {
+    return <div className="mt-12 h-80 animate-pulse rounded-lg bg-zinc-800" data-testid="pricing-breakdown-skeleton" />;
+  }
+
+  if (pricingError) {
+    if (pricingError.status === 404) {
+      return <PricingEmptyState />;
+    }
+    return (
+      <PricingErrorState
+        message={pricingError.message || "Failed to load pricing breakdown."}
+        onRetry={() => mutatePricing()}
+      />
+    );
+  }
+
+  if (!pricingData) {
+    return <PricingEmptyState />;
+  }
+
+  return <PricingBreakdown data={pricingData} />;
 }
 
 export default function PropertyDetailsPage() {
@@ -117,6 +206,11 @@ export default function PropertyDetailsPage() {
         {/* Property Details */}
         <div className="mt-12">
           <PropertyDetails property={data} />
+        </div>
+
+        {/* Pricing Breakdown */}
+        <div className="mt-12">
+          <PricingSection slug={slug} />
         </div>
 
         {/* Inquiry Form */}

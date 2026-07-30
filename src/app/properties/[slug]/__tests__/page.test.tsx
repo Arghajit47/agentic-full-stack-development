@@ -56,6 +56,23 @@ const MOCK_PROPERTY = {
   agentEmail: "sarah.johnson@realestate.com",
 };
 
+const MOCK_PRICING = {
+  propertySlug: "modern-villa-sunset-hills",
+  breakdown: {
+    listing: { amount: 1500000, label: "Listing Price" },
+    fees: {
+      platformFee: { amount: 15000, label: "Platform Service Fee" },
+      processingFee: { amount: 450, label: "Transaction Processing Fee" },
+    },
+    costs: {
+      inspectionCost: { amount: 500, label: "Property Inspection" },
+      legalFee: { amount: 1200, label: "Legal Documentation" },
+      insuranceCost: { amount: 2500, label: "Insurance Cost" },
+    },
+  },
+  totalPrice: 1520650,
+};
+
 function renderPage() {
   return render(
     <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
@@ -77,10 +94,24 @@ function mockFetchError(message = "Network error") {
 describe("Property Details Page integration", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    global.fetch = vi.fn().mockImplementation((url: string | URL | Request) => {
+      const urlString = typeof url === "string" ? url : url instanceof URL ? url.toString() : url.url;
+      if (urlString.includes("/api/contact/property")) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({ success: true, data: { id: 1 }, message: "Submitted" }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => MOCK_PRICING,
+      });
+    });
   });
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it("renders loading skeleton while fetching", async () => {
@@ -153,10 +184,6 @@ describe("Property Details Page integration", () => {
 
   it("submits inquiry form to /api/contact/property", async () => {
     mockFetchSuccess();
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ success: true, data: { id: 1 }, message: "Submitted" }),
-    });
 
     renderPage();
 
@@ -189,9 +216,19 @@ describe("Property Details Page integration", () => {
 
   it("displays submission error when inquiry API fails", async () => {
     mockFetchSuccess();
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      json: async () => ({ success: false, error: "Server error" }),
+    const mockedFetch = global.fetch as ReturnType<typeof vi.fn>;
+    mockedFetch.mockImplementation((url: string | URL | Request) => {
+      const urlString = typeof url === "string" ? url : url instanceof URL ? url.toString() : url.url;
+      if (urlString.includes("/api/contact/property")) {
+        return Promise.resolve({
+          ok: false,
+          json: async () => ({ success: false, error: "Server error" }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => MOCK_PRICING,
+      });
     });
 
     renderPage();
