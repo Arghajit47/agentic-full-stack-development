@@ -8,6 +8,8 @@ export const API_PATHS = {
   SETTINGS: "/api/settings",
   SERVICES: "/api/services",
   ABOUT_US: "/api/about-us",
+  CONTACT_OFFICES: "/api/offices",
+  CONTACT_GALLERY: "/api/gallery",
 } as const;
 
 const statSchema = z.object({
