@@ -15,6 +15,8 @@ import {
   type ServicesService,
   type ServicesCategory,
   type ServicesBottomCta,
+  type Office,
+  type GalleryImage,
   newsletterSchema,
 } from "./api-types";
 import { type AboutUsData } from "./schemas";
@@ -36,6 +38,9 @@ export type {
   ServicesService,
   ServicesCategory,
   ServicesBottomCta,
+  AboutUsData,
+  Office,
+  GalleryImage,
 };
 export { newsletterSchema };
 
@@ -95,6 +100,18 @@ export function useServices() {
 
 export function useAboutUs() {
   return useSWR<AboutUsData, Error>(isBrowser ? "/api/about-us" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useContactOffices() {
+  return useSWR<Office[], Error>(isBrowser ? "/api/offices" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useContactGallery() {
+  return useSWR<GalleryImage[], Error>(isBrowser ? "/api/gallery" : null, fetcher, {
     revalidateOnFocus: false,
   });
 }

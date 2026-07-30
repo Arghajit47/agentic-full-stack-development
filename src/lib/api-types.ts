@@ -128,3 +128,19 @@ export interface HeroContentData {
 }
 
 export type HeroApiResponse = ApiResponse<HeroContentData>;
+
+export interface Office {
+  id: number;
+  title: string;
+  address: string;
+  email: string;
+  phone: string;
+  order: number;
+}
+
+export interface GalleryImage {
+  id: number;
+  imageUrl: string;
+  caption?: string;
+  order: number;
+}

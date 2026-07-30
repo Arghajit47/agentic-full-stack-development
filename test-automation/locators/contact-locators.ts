@@ -1,0 +1,17 @@
+export const CONTACT_LOCATORS = {
+  contactPage: '[data-testid="contact-page"]',
+  contactPageLoading: '[data-testid="contact-page-loading"]',
+  contactPageError: '[data-testid="contact-page-error"]',
+  contactPageEmpty: '[data-testid="contact-page-empty"]',
+  contactHeader: '[data-testid="contact-header"]',
+  contactHeaderTitle: '[data-testid="contact-header-title"]',
+  contactHeaderDescription: '[data-testid="contact-header-description"]',
+  officeLocations: '[data-testid="office-locations"]',
+  officeLocationsTitle: '[data-testid="office-locations-title"]',
+  officeLocationsEmpty: '[data-testid="office-locations-empty"]',
+  officeCard: '[data-testid^="office-card-"]',
+  photoGalleryMosaic: '[data-testid="photo-gallery-mosaic"]',
+  photoGalleryEmpty: '[data-testid="photo-gallery-empty"]',
+  galleryImage: '[data-testid^="gallery-image-"]',
+  generalContactForm: '[data-testid="general-contact-form"]',
+} as const;

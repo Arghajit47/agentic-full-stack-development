@@ -4,6 +4,7 @@ export * from "./api-constants";
 export * from "./properties-constants";
 export * from "./services-constants";
 export * from "./about-us-constants";
+export * from "./contact-constants";
 
 // ── API ──────────────────────────────────────────────────────────
 export const BASE_URL = "https://real-estates-estatein.netlify.app";
@@ -80,6 +81,7 @@ export const UI_ROUTES = {
   PROPERTY_DETAILS: (slug: string) => `/properties/${slug}`,
   SERVICES: "/services",
   ABOUT_US: "/about-us",
+  CONTACT: "/contact",
 } as const;
 
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.

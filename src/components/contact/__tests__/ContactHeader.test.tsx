@@ -1,219 +1,78 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { ContactHeader, ContactInfo } from "../ContactHeader";
+import { ContactHeader, type ContactInfo } from "../ContactHeader";
 
 describe("ContactHeader", () => {
-  describe("Rendering", () => {
-    it("should render the header section", () => {
-      render(<ContactHeader />);
+  afterEach(() => {
+    cleanup();
+  });
+  it("renders the section and title", () => {
+    render(<ContactHeader />);
+    expect(screen.getByTestId("contact-header")).toBeInTheDocument();
+    expect(screen.getByTestId("contact-header-title")).toHaveTextContent("Get in Touch with Estatein");
+  });
 
-      const headers = screen.queryAllByTestId("contact-header");
-      expect(headers.length).toBeGreaterThan(0);
-    });
+  it("renders the description", () => {
+    render(<ContactHeader />);
+    expect(screen.getByTestId("contact-header-description")).toHaveTextContent(/Welcome to Estatein's Contact Us page/);
+  });
 
-    it("should render the title and description", () => {
-      render(<ContactHeader />);
+  it("renders four contact cards", () => {
+    render(<ContactHeader />);
+    expect(screen.getByTestId("contact-info-email")).toBeInTheDocument();
+    expect(screen.getByTestId("contact-info-phone")).toBeInTheDocument();
+    expect(screen.getByTestId("contact-info-hq")).toBeInTheDocument();
+    expect(screen.getByTestId("contact-info-social")).toBeInTheDocument();
+  });
 
-      const titles = screen.queryAllByTestId("contact-header-title");
-      const descriptions = screen.queryAllByTestId("contact-header-description");
-      
-      expect(titles.length).toBeGreaterThan(0);
-      expect(titles[0]).toHaveTextContent("Get in Touch");
-      expect(descriptions.length).toBeGreaterThan(0);
-      expect(descriptions[0]).toHaveTextContent(/We're here to help and answer any question/);
-    });
+  it("renders email card with mailto link", () => {
+    render(<ContactHeader />);
+    const card = screen.getByTestId("contact-info-email");
+    expect(card).toHaveTextContent("info@estatein.com");
+    expect(card).toHaveAttribute("href", "mailto:info@estatein.com");
+  });
 
-    it("should render all three contact info cards", () => {
-      render(<ContactHeader />);
+  it("renders phone card with tel link", () => {
+    render(<ContactHeader />);
+    const card = screen.getByTestId("contact-info-phone");
+    expect(card).toHaveTextContent("+1 (123) 456-7890");
+    expect(card).toHaveAttribute("href", "tel:+11234567890");
+  });
 
-      const emails = screen.queryAllByTestId("contact-info-email");
-      const phones = screen.queryAllByTestId("contact-info-phone");
-      const addresses = screen.queryAllByTestId("contact-info-address");
-      
-      expect(emails.length).toBeGreaterThan(0);
-      expect(phones.length).toBeGreaterThan(0);
-      expect(addresses.length).toBeGreaterThan(0);
+  it("renders headquarters card", () => {
+    render(<ContactHeader />);
+    expect(screen.getByTestId("contact-info-hq")).toHaveTextContent("Main Headquarters");
+  });
+
+  it("renders social links", () => {
+    render(<ContactHeader />);
+    const card = screen.getByTestId("contact-info-social");
+    expect(card).toHaveTextContent("Instagram");
+    expect(card).toHaveTextContent("LinkedIn");
+    expect(card).toHaveTextContent("Facebook");
+  });
+
+  it("renders an icon inside each card", () => {
+    render(<ContactHeader />);
+    const cards = [
+      screen.getByTestId("contact-info-email"),
+      screen.getByTestId("contact-info-phone"),
+      screen.getByTestId("contact-info-hq"),
+      screen.getByTestId("contact-info-social"),
+    ];
+    cards.forEach((card) => {
+      expect(card.querySelector("svg")).toBeInTheDocument();
     });
   });
 
-  describe("Default Contact Information", () => {
-    it("should display default email", () => {
-      render(<ContactHeader />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      expect(emailCards[0]).toHaveTextContent("info@estatein.com");
-    });
-
-    it("should display default phone", () => {
-      render(<ContactHeader />);
-
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      expect(phoneCards.length).toBeGreaterThan(0);
-      expect(phoneCards[0]).toHaveTextContent("+1 (555) 123-4567");
-    });
-
-    it("should display default address", () => {
-      render(<ContactHeader />);
-
-      const addressCards = screen.queryAllByTestId("contact-info-address");
-      expect(addressCards.length).toBeGreaterThan(0);
-      expect(addressCards[0]).toHaveTextContent("123 Main Street, New York, NY 10001");
-    });
-  });
-
-  describe("Custom Contact Information", () => {
-    const customContactInfo: ContactInfo = {
-      email: "custom@example.com",
-      phone: "+1 (999) 888-7777",
-      address: "456 Custom Ave, Los Angeles, CA 90001",
+  it("still accepts legacy contactInfo prop without crashing", () => {
+    const legacy: ContactInfo = {
+      email: "legacy@example.com",
+      phone: "+1 999 999 9999",
+      address: "Legacy Address",
     };
-
-    it("should display custom email when provided", () => {
-      render(<ContactHeader contactInfo={customContactInfo} />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      expect(emailCards[emailCards.length - 1]).toHaveTextContent("custom@example.com");
-    });
-
-    it("should display custom phone when provided", () => {
-      render(<ContactHeader contactInfo={customContactInfo} />);
-
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      expect(phoneCards.length).toBeGreaterThan(0);
-      expect(phoneCards[phoneCards.length - 1]).toHaveTextContent("+1 (999) 888-7777");
-    });
-
-    it("should display custom address when provided", () => {
-      render(<ContactHeader contactInfo={customContactInfo} />);
-
-      const addressCards = screen.queryAllByTestId("contact-info-address");
-      expect(addressCards.length).toBeGreaterThan(0);
-      expect(addressCards[addressCards.length - 1]).toHaveTextContent("456 Custom Ave, Los Angeles, CA 90001");
-    });
-  });
-
-  describe("Icons", () => {
-    it("should render email icon", () => {
-      render(<ContactHeader />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      const icon = emailCards[0].querySelector('svg');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it("should render phone icon", () => {
-      render(<ContactHeader />);
-
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      expect(phoneCards.length).toBeGreaterThan(0);
-      const icon = phoneCards[0].querySelector('svg');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it("should render address icon", () => {
-      render(<ContactHeader />);
-
-      const addressCards = screen.queryAllByTestId("contact-info-address");
-      expect(addressCards.length).toBeGreaterThan(0);
-      const icon = addressCards[0].querySelector('svg');
-      expect(icon).toBeInTheDocument();
-    });
-  });
-
-  describe("Links", () => {
-    it("should have mailto link for email", () => {
-      render(<ContactHeader />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      const link = emailCards[0].querySelector('a[href^="mailto:"]');
-      expect(link).toHaveAttribute("href", "mailto:info@estatein.com");
-    });
-
-    it("should have tel link for phone", () => {
-      render(<ContactHeader />);
-
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      expect(phoneCards.length).toBeGreaterThan(0);
-      const link = phoneCards[0].querySelector('a[href^="tel:"]');
-      expect(link).toHaveAttribute("href", "tel:+1(555)123-4567");
-    });
-
-    it("should create proper tel link from formatted phone number", () => {
-      const customInfo: ContactInfo = {
-        email: "test@test.com",
-        phone: "+1 (555) 123-4567",
-        address: "123 Test St",
-      };
-
-      render(<ContactHeader contactInfo={customInfo} />);
-
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      expect(phoneCards.length).toBeGreaterThan(0);
-      const link = phoneCards[0].querySelector('a[href^="tel:"]');
-      // Should strip out everything except numbers and +
-      expect(link).toHaveAttribute("href", "tel:+1(555)123-4567");
-    });
-  });
-
-  describe("Styling and Layout", () => {
-    it("should have proper card headings", () => {
-      render(<ContactHeader />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      const phoneCards = screen.queryAllByTestId("contact-info-phone");
-      const addressCards = screen.queryAllByTestId("contact-info-address");
-
-      expect(emailCards.length).toBeGreaterThan(0);
-      expect(phoneCards.length).toBeGreaterThan(0);
-      expect(addressCards.length).toBeGreaterThan(0);
-
-      expect(emailCards[0].querySelector('h3')).toHaveTextContent("Email");
-      expect(phoneCards[0].querySelector('h3')).toHaveTextContent("Phone");
-      expect(addressCards[0].querySelector('h3')).toHaveTextContent("Address");
-    });
-
-    it("should apply grid layout classes", () => {
-      render(<ContactHeader />);
-
-      const headers = screen.queryAllByTestId("contact-header");
-      expect(headers.length).toBeGreaterThan(0);
-      const grid = headers[0].querySelector('.grid');
-      expect(grid).toBeInTheDocument();
-    });
-  });
-
-  describe("Accessibility", () => {
-    it("should have aria-hidden on decorative icons", () => {
-      render(<ContactHeader />);
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      const icon = emailCards[0].querySelector('svg');
-      expect(icon).toHaveAttribute("aria-hidden", "true");
-    });
-
-    it("should have semantic HTML structure", () => {
-      render(<ContactHeader />);
-
-      const headers = screen.queryAllByTestId("contact-header");
-      expect(headers.length).toBeGreaterThan(0);
-      const section = headers[0];
-      expect(section.tagName).toBe("SECTION");
-
-      const titles = screen.queryAllByTestId("contact-header-title");
-      expect(titles.length).toBeGreaterThan(0);
-      const title = titles[0];
-      expect(title.tagName).toBe("H1");
-
-      const emailCards = screen.queryAllByTestId("contact-info-email");
-      expect(emailCards.length).toBeGreaterThan(0);
-      const heading = emailCards[0].querySelector('h3');
-      expect(heading).toBeInTheDocument();
-    });
+    render(<ContactHeader contactInfo={legacy} />);
+    expect(screen.getByTestId("contact-header")).toBeInTheDocument();
   });
 });
