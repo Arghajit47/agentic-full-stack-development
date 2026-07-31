@@ -53,4 +53,12 @@ test.describe("About Us Page Suite", () => {
   test("KAN-97: Team photos load", async ({ aboutUsPage }) => {
     await aboutUsPage.assertTeamPhotosLoad();
   });
+
+  test("KAN-98: Client card order matches API (ABC first)", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertClientCardOrder();
+  });
+
+  test("KAN-98: Client card styling (bg #1A1A1A, border #262626, label #8C8C8C)", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertClientCardStyling();
+  });
 });
