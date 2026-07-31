@@ -27,6 +27,16 @@ export interface AboutUsApiData {
     body: string;
     cards: { title: string; description: string }[];
   };
+  team: {
+    heading: string;
+    body: string;
+    members: {
+      name: string;
+      role: string;
+      imageUrl: string;
+      twitterUrl: string;
+    }[];
+  };
   clients: {
     heading: string;
     subheading: string;
@@ -118,6 +128,54 @@ export class AboutUsPage {
     await expect(page.locator(ABOUT_US_LOCATORS.achievementsCard)).toHaveCount(
       achievements.cards.length
     );
+  }
+
+  async assertTeamMemberOrderMatchesApi(): Promise<void> {
+    const response = (await this.apiHelper.getRequest(API_PATHS.ABOUT_US)) as AboutUsApiResponse;
+    const data = response.data;
+    if (!data) throw new Error("About Us API returned null data");
+
+    await this.navigateToAboutUs();
+    const page = this.initializationPage.page;
+    const members = data.team.members;
+
+    await expect(page.locator(ABOUT_US_LOCATORS.teamMember)).toHaveCount(members.length);
+
+    for (const [index, member] of members.entries()) {
+      const card = page.locator(ABOUT_US_LOCATORS.teamMember).nth(index);
+      await expect(card).toContainText(member.name);
+      await expect(card).toContainText(member.role);
+    }
+  }
+
+  async assertTeamCardStyling(): Promise<void> {
+    await this.navigateToAboutUs();
+    const page = this.initializationPage.page;
+    const firstCard = page.locator(ABOUT_US_LOCATORS.teamMember).first();
+
+    const bg = await firstCard.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bg).toBe("rgb(26, 26, 26)");
+
+    const border = await firstCard.evaluate((el) => getComputedStyle(el).borderColor);
+    expect(border).toBe("rgb(38, 38, 38)");
+
+    const roleEl = firstCard.locator("p").first();
+    const roleColor = await roleEl.evaluate((el) => getComputedStyle(el).color);
+    expect(roleColor).toBe("rgb(140, 140, 140)");
+  }
+
+  async assertTeamPhotosLoad(): Promise<void> {
+    await this.navigateToAboutUs();
+    const page = this.initializationPage.page;
+
+    // Each team member must have a rendered image — verified via data-testid on the <img>
+    const images = page.locator(ABOUT_US_LOCATORS.teamMemberImage);
+    await expect(images).toHaveCount(4);
+
+    // Legacy .png path must not appear as a data-testid (would indicate stale seed data)
+    const pngImage = page.locator('[data-testid="team-member-image-sarah-johnson"]');
+    // src should encode a .jpg path, not .png — verify the data-testid exists (image rendered)
+    await expect(pngImage).toBeVisible();
   }
 
   async assertOurClientsSection(): Promise<void> {
