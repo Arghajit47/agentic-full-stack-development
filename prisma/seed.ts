@@ -413,8 +413,8 @@ async function main() {
     // Clients section
     { section: "clients", slug: "clients-heading", value: JSON.stringify("Our Valued Clients"), order: 1 },
     { section: "clients", slug: "clients-subheading", value: JSON.stringify("At Estatein, we have had the privilege of working with a diverse range of clients across various industries. Here are some of the clients we've had the pleasure of serving"), order: 2 },
-    { section: "clients", slug: "clients-testimonial-greentech", value: JSON.stringify({ since: "Since 2018", company: "GreenTech Enterprises", domain: "Commercial Real Estate", category: "Retail Space", quote: "Estatein's ability to identify prime retail locations helped us expand our brand presence. Their attention to detail and market insights were invaluable.", websiteUrl: "https://example.com" }), order: 3 },
-    { section: "clients", slug: "clients-testimonial-abc", value: JSON.stringify({ since: "Since 2019", company: "ABC Corporation", domain: "Commercial Real Estate", category: "Luxury Home Development", quote: "Estatein's expertise in finding the perfect office space for our growing team was outstanding. They understood our needs and delivered beyond expectations.", websiteUrl: "https://example.com" }), order: 4 },
+    { section: "clients", slug: "clients-testimonial-abc", value: JSON.stringify({ since: "Since 2019", company: "ABC Corporation", domain: "Commercial Real Estate", category: "Luxury Home Development", quote: "Estatein's expertise in finding the perfect office space for our growing team was outstanding. They understood our needs and delivered beyond expectations.", websiteUrl: "https://example.com" }), order: 3 },
+    { section: "clients", slug: "clients-testimonial-greentech", value: JSON.stringify({ since: "Since 2018", company: "GreenTech Enterprises", domain: "Commercial Real Estate", category: "Retail Space", quote: "Estatein's ability to identify prime retail locations helped us expand our brand presence. Their attention to detail and market insights were invaluable.", websiteUrl: "https://example.com" }), order: 4 },
   ];
 
   for (const a of aboutPageContent) {
