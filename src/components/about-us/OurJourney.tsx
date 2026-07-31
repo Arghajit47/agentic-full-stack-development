@@ -48,17 +48,16 @@ export function OurJourney({ data }: OurJourneyProps) {
           </div>
         </div>
 
-        <div className="relative order-1 md:order-2">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl md:aspect-square">
-            <Image
-              src={data.imageUrl}
-              alt={data.heading}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              data-testid="our-journey-image"
-            />
-          </div>
+        <div className="relative order-1 md:order-2 flex items-center justify-center">
+          <Image
+            src={data.imageUrl}
+            alt={data.heading}
+            width={680}
+            height={540}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="w-full max-w-[680px] object-contain"
+            data-testid="our-journey-image"
+          />
         </div>
       </div>
     </section>

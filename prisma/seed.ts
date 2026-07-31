@@ -376,7 +376,7 @@ async function main() {
   const aboutPageContent = [
     { section: "journey", slug: "journey-heading", value: JSON.stringify("Our Journey"), order: 1 },
     { section: "journey", slug: "journey-body", value: JSON.stringify("Our story is one of continuous growth and evolution. We started as a small team with big dreams, determined to create a real estate platform that transcended the ordinary. Over the years, we've expanded our reach, forged valuable partnerships, and gained the trust of countless clients."), order: 2 },
-    { section: "journey", slug: "journey-image-url", value: JSON.stringify("https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80\u0026w=1600\u0026auto=format\u0026fit=crop"), order: 3 },
+    { section: "journey", slug: "journey-image-url", value: JSON.stringify("/images/about-hero.png"), order: 3 },
     { section: "journey", slug: "journey-stat-happy-customers", value: JSON.stringify({ value: "200+", label: "Happy Customers", icon: "Home" }), order: 4 },
     { section: "journey", slug: "journey-stat-properties-for-clients", value: JSON.stringify({ value: "10k+", label: "Properties For Clients", icon: "Home" }), order: 5 },
     { section: "journey", slug: "journey-stat-years-of-experience", value: JSON.stringify({ value: "16+", label: "Years of Experience", icon: "Home" }), order: 6 },
