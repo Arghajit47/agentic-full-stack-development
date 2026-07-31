@@ -34,18 +34,17 @@ export function SearchFilterBar({
   return (
     <div className="relative mx-auto w-full max-w-[1920px]">
       {/* Banner Section */}
-      <div className="relative bg-gradient-to-b from-zinc-200 to-white px-4 py-16 text-zinc-900 sm:px-6 lg:px-8 text-center overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_70%)]" />
+      <div className="relative bg-[#141414] px-4 py-16 text-white sm:px-6 lg:px-8 text-center overflow-hidden">
         <div className="relative mx-auto max-w-3xl">
           <h1
             data-testid="properties-page-heading"
-            className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl lg:text-5xl"
+            className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
           >
             {heading}
           </h1>
           <p
             data-testid="properties-page-subheading"
-            className="mt-4 text-base text-zinc-600 sm:text-lg"
+            className="mt-4 text-base text-zinc-400 sm:text-lg"
           >
             {subheading}
           </p>
@@ -64,7 +63,7 @@ export function SearchFilterBar({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search For A Property"
+              placeholder="Search Properties"
               data-testid="search-input"
               className="w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white placeholder-zinc-500 outline-none focus:border-violet-600 transition-colors"
             />

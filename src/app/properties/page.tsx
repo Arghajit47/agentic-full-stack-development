@@ -8,7 +8,7 @@ import { Pagination } from "@/components/properties/Pagination";
 import { PropertyContactForm } from "@/components/properties/PropertyContactForm";
 import { type Property } from "@/mocks/properties-listings";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 3;
 const DEBOUNCE_MS = 300;
 
 // API response shape from GET /api/properties (KAN-10)

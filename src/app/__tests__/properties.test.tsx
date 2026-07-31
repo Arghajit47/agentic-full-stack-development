@@ -95,7 +95,7 @@ describe("Properties Page integration", () => {
 
     expect(screen.getByTestId("properties-page-heading")).toHaveTextContent("Find Your Dream Property");
     expect(screen.getByTestId("property-grid")).toBeInTheDocument();
-    expect(screen.getAllByTestId("property-card").length).toBe(6);
+    expect(screen.getAllByTestId("property-card").length).toBe(3);
     expect(screen.getByTestId("property-contact-form")).toBeInTheDocument();
   });
 
@@ -171,7 +171,7 @@ describe("Properties Page integration", () => {
           json: async () => ({ success: true, submissionId: 42 }),
         } as Response);
       }
-      return Promise.resolve(mockApiResponse(...Object.values(filteredAndPaginated("", "All", 1, 6)) as [typeof MOCK_PROPERTIES, number, number, number]));
+      return Promise.resolve(mockApiResponse(...Object.values(filteredAndPaginated("", "All", 1, 3)) as [typeof MOCK_PROPERTIES, number, number, number]));
     });
     vi.stubGlobal("fetch", fetchMock);
 

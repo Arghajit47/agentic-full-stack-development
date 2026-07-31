@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const PROPERTY_TITLES = [
   "Seawide Serenity Villa",
-  "Metropolitan Haven",
+  "Metropolitan House",
   "Rustic Retreat Cottage",
   "Suburban Family Home in Austin",
   "Luxury Condo with Miami Skyline View",

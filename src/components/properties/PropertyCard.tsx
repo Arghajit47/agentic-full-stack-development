@@ -19,19 +19,19 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
   return (
     <article
       data-testid="property-card"
-      className="flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900/60"
+      className="flex flex-col overflow-hidden rounded-xl border border-[#262626] bg-[#1a1a1a] transition-all duration-200 hover:border-zinc-700"
     >
-      <div className="overflow-hidden rounded-lg">
+      <div className="relative h-[220px] w-full shrink-0">
         <Image
           src={property.imageUrl}
           alt={property.title}
-          width={400}
-          height={300}
-          className="aspect-[4/3] w-full object-cover transition-transform duration-300 hover:scale-105"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
       </div>
-      
-      <div className="mt-4 flex flex-1 flex-col">
+
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center gap-1.5 text-xs text-zinc-400">
           <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
           <span>{property.location}</span>
@@ -43,7 +43,7 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
         >
           {property.title}
         </h3>
-        
+
         <p
           data-testid={`property-description-${property.id}`}
           className="mt-1 line-clamp-2 text-left text-sm text-zinc-400"
@@ -78,7 +78,7 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
               {priceFormatter.format(property.price)}
             </p>
           </div>
-          
+
           <button
             type="button"
             data-testid={`view-details-${property.id}`}
