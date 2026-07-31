@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Bed, Bath, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFeaturedProperties, type FeaturedProperty } from "@/lib/api";
+import { useMounted } from "@/lib/use-mounted";
 
 const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -42,9 +43,10 @@ export function FeaturedProperties({
   subheading = "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein.",
   onPropertyClick = (slug: string) => console.log(slug),
 }: FeaturedPropertiesProps) {
+  const mounted = useMounted();
   const { data: fetchedData, isLoading: isFetching, error, mutate } = useFeaturedProperties();
   const properties = useMemo(() => data ?? fetchedData ?? [], [data, fetchedData]);
-  const isLoading = isLoadingProp ?? isFetching;
+  const isLoading = isLoadingProp ?? (mounted ? isFetching : true);
 
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
