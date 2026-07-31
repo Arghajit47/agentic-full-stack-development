@@ -31,20 +31,22 @@ export function OurValues({ data }: OurValuesProps) {
           </p>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 md:gap-5 lg:gap-6">
+        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-10 md:grid-cols-2">
           {data.cards.map((value) => {
             const Icon = getIcon(value.icon);
             return (
               <div
                 key={value.title}
                 data-testid={`our-values-card-${slugify(value.title)}`}
-                className="flex flex-col rounded-2xl bg-[#1a1a1a] border border-zinc-800/50 px-5 py-6 transition-colors hover:bg-[#222222] md:px-6 md:py-7"
+                className="flex flex-col rounded-xl border border-[#262626] bg-[#1a1a1a] p-6"
               >
-                <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-violet-500/40 bg-zinc-900 md:h-14 md:w-14">
-                  <Icon className="h-5 w-5 text-violet-400 md:h-6 md:w-6" aria-hidden="true" />
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#703BF7]">
+                    <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-base font-semibold text-white">{value.title}</h3>
                 </div>
-                <h3 className="text-base font-medium text-white md:text-lg">{value.title}</h3>
-                <p className="mt-2 text-sm text-zinc-400">{value.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-[#8C8C8C]">{value.description}</p>
               </div>
             );
           })}
