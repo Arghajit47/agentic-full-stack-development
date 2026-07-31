@@ -3,9 +3,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PROPERTY_TITLES = [
-  "Modern Villa in Sunset Hills",
-  "Downtown Loft Penthouse",
-  "Beachfront Cottage in Malibu",
+  "Seawide Serenity Villa",
+  "Metropolitan Haven",
+  "Rustic Retreat Cottage",
   "Suburban Family Home in Austin",
   "Luxury Condo with Miami Skyline View",
   "Cozy Studio Cabin in Aspen",
@@ -199,7 +199,7 @@ async function main() {
       slug: slugify(title),
       title,
       description: `${title} — ${FEATURES[i].join(", ")}. A beautiful home waiting for the right buyer.`,
-      price: 250000 + i * 75000 + (i % 3) * 25000,
+      price: i === 0 ? 1250000 : i === 1 ? 600000 : i === 2 ? 350000 : 250000 + i * 75000 + (i % 3) * 25000,
       location: LOCATIONS[i],
       bedrooms: 1 + (i % 6),
       bathrooms: 1 + (i % 4),
@@ -238,7 +238,7 @@ async function main() {
     { key: "hero_subheading", value: "Browse curated featured properties handpicked by our experts" },
     { key: "hero_cta_text", value: "View Properties" },
     { key: "properties_heading", value: "Featured Properties" },
-    { key: "properties_subheading", value: "Explore our handpicked selection of premium homes" },
+    { key: "properties_subheading", value: "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein. Click View Details for more information." },
     { key: "reviews_heading", value: "What Our Clients Say" },
     { key: "reviews_subheading", value: "Real stories from happy homeowners" },
     { key: "footer_about", value: "EstateHub is a premier real estate platform connecting buyers with their dream homes." },
