@@ -99,26 +99,6 @@ describe("Properties Page integration", () => {
     expect(screen.getByTestId("property-contact-form")).toBeInTheDocument();
   });
 
-  it("filters properties when the property type dropdown changes", async () => {
-    render(<PropertiesPage />);
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("property-grid-loading")).not.toBeInTheDocument();
-    }, { timeout: 2000 });
-
-    const select = screen.getByTestId("property-type-filter");
-    fireEvent.change(select, { target: { value: "Mansion" } });
-
-    // Wait for debounced fetch + loading to complete
-    await waitFor(() => {
-      expect(screen.queryByTestId("property-grid-loading")).not.toBeInTheDocument();
-    }, { timeout: 2000 });
-
-    expect(screen.getAllByTestId("property-card").length).toBe(2);
-    expect(screen.getByText("Royal Oak Mansion")).toBeInTheDocument();
-    expect(screen.getByText("Whispering Pines Mansion")).toBeInTheDocument();
-  });
-
   it("filters properties based on search query when submitting search", async () => {
     render(<PropertiesPage />);
 

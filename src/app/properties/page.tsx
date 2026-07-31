@@ -167,10 +167,18 @@ export default function PropertiesPage() {
       <SearchFilterBar
         onSearch={handleSearch}
         initialQuery={searchQuery}
-        initialType={propertyType}
       />
 
       <div className="mx-auto w-full max-w-[1920px] flex-1 px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="py-10" data-testid="properties-discover-section">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            Discover a World of Possibilities
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm text-zinc-400 sm:text-base">
+            Our portfolio of properties is as diverse as your dreams. Explore the following categories to find the perfect property that resonates with your vision of home
+          </p>
+        </div>
+
         {apiError ? (
           <div
             data-testid="api-error"

@@ -7,7 +7,6 @@ interface SearchFilterBarProps {
   subheading?: string;
   onSearch: (query: string, type: string) => void;
   initialQuery?: string;
-  initialType?: string;
 }
 
 export function SearchFilterBar({
@@ -15,20 +14,12 @@ export function SearchFilterBar({
   subheading = "Welcome to Estatein, where your dream property awaits in every corner of our beautiful world. Explore our curated selection of properties, each offering a unique story and a chance to redefine your life. With categories to suit every dreamer, your journey ",
   onSearch,
   initialQuery = "",
-  initialType = "All"
 }: SearchFilterBarProps) {
   const [query, setQuery] = useState(initialQuery);
-  const [type, setType] = useState(initialType);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query, type);
-  };
-
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedType = e.target.value;
-    setType(selectedType);
-    onSearch(query, selectedType);
+    onSearch(query, "All");
   };
 
   return (
@@ -67,22 +58,6 @@ export function SearchFilterBar({
               data-testid="search-input"
               className="w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white placeholder-zinc-500 outline-none focus:border-violet-600 transition-colors"
             />
-          </div>
-
-          <div className="w-full lg:w-48">
-            <select
-              value={type}
-              onChange={handleTypeChange}
-              data-testid="property-type-filter"
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 py-3 px-4 text-sm text-white outline-none focus:border-violet-600 transition-colors appearance-none cursor-pointer property-select"
-            >
-              <option value="All" className="bg-zinc-900">All Types</option>
-              <option value="Villa" className="bg-zinc-900">Villa</option>
-              <option value="Mansion" className="bg-zinc-900">Mansion</option>
-              <option value="Cottage" className="bg-zinc-900">Cottage</option>
-              <option value="Estate" className="bg-zinc-900">Estate</option>
-              <option value="House" className="bg-zinc-900">House</option>
-            </select>
           </div>
 
           <button
