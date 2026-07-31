@@ -219,6 +219,42 @@ export class AboutUsPage {
     }
   }
 
+  async assertClientCardOrder(): Promise<void> {
+    const response = (await this.apiHelper.getRequest(API_PATHS.ABOUT_US)) as AboutUsApiResponse;
+    const data = response.data;
+    if (!data) throw new Error("About Us API returned null data");
+
+    await this.navigateToAboutUs();
+    const page = this.initializationPage.page;
+    const testimonials = data.clients.testimonials;
+
+    await expect(page.locator(ABOUT_US_LOCATORS.clientCard)).toHaveCount(testimonials.length);
+    for (const [index, testimonial] of testimonials.entries()) {
+      await expect(page.locator(ABOUT_US_LOCATORS.clientCompany).nth(index)).toHaveText(
+        testimonial.company
+      );
+    }
+  }
+
+  async assertClientCardStyling(): Promise<void> {
+    await this.navigateToAboutUs();
+    const page = this.initializationPage.page;
+    const firstCard = page.locator(ABOUT_US_LOCATORS.clientCard).first();
+
+    const bg = await firstCard.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bg).toBe("rgb(26, 26, 26)");
+
+    const border = await firstCard.evaluate((el) => getComputedStyle(el).borderColor);
+    expect(border).toBe("rgb(38, 38, 38)");
+
+    const sinceEl = firstCard.locator('[data-testid="client-since"]');
+    const sinceColor = await sinceEl.evaluate((el) => getComputedStyle(el).color);
+    expect(sinceColor).toBe("rgb(140, 140, 140)");
+
+    const sinceFontSize = await sinceEl.evaluate((el) => getComputedStyle(el).fontSize);
+    expect(sinceFontSize).toBe("12px");
+  }
+
   async assertLoadingSkeleton(): Promise<void> {
     await this.initializationPage.mockDelayRoute(API_PATHS.ABOUT_US, 1000);
     await this.navigateToAboutUs();
