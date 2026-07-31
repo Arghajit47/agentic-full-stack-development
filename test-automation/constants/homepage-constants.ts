@@ -1,5 +1,5 @@
 export const HOMEPAGE_CONSTANTS = {
-  NO_PROPERTIES_TEXT: "No featured properties",
+  NO_PROPERTIES_TEXT: "No properties found",
   NO_REVIEWS_TEXT: "No reviews yet",
 } as const;
 

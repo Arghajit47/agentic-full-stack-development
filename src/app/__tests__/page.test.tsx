@@ -1,94 +1,123 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach, beforeAll } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import Home from "@/app/page";
+import HomePage from "@/app/page";
+import { featuredProperties } from "@/mocks/featured-properties";
+import { testimonials } from "@/mocks/testimonials";
 
-// Mock Next.js router
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    replace: vi.fn(),
-    refresh: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    prefetch: vi.fn(),
-  }),
-  useSearchParams: () => ({
-    get: vi.fn(),
-  }),
-  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
 }));
 
-const mockProperties = [
-  {
-    id: 1,
-    slug: "modern-luxury-villa",
-    title: "Modern Luxury Villa",
-    description: "Spacious contemporary villa with floor-to-ceiling windows.",
-    price: 1250000,
-    location: "Beverly Hills, CA",
-    bedrooms: 5,
-    bathrooms: 4,
-    propertyType: "Villa",
-    imageUrl: "https://example.com/villa.jpg",
-  },
-];
+const mockUseHero = vi.hoisted(() => vi.fn());
+const mockUseFeaturedProperties = vi.hoisted(() => vi.fn());
+const mockUseFeaturedReviews = vi.hoisted(() => vi.fn());
 
-const mockReviews = [
-  {
-    id: 1,
-    clientName: "Sarah Johnson",
-    clientAvatarUrl: "https://example.com/avatar.jpg",
-    rating: 5,
-    reviewText: "Great experience!",
-    propertyTitle: "Modern Luxury Villa",
-  },
-];
+vi.mock("@/lib/api", () => ({
+  useHero: mockUseHero,
+  useFeaturedProperties: mockUseFeaturedProperties,
+  useFeaturedReviews: mockUseFeaturedReviews,
+}));
 
-const mockSettings = {
-  properties_heading: "Featured Properties",
-  properties_subheading: "Explore our handpicked selection of premium homes",
-  reviews_heading: "What Our Clients Say",
-  reviews_subheading: "Real stories from happy homeowners",
+const defaultHero = {
+  data: {
+    heading: "Find Your Dream Home",
+    subheading: "Discover the perfect property with Estatein.",
+    primaryCta: { text: "Browse Properties", href: "/properties" },
+    secondaryCta: { text: "Contact Us", href: "/contact" },
+    stats: [{ value: "200+", label: "Properties" }],
+    features: [{ title: "Trusted", description: "Reliable service" }],
+  },
+  isLoading: false,
+  error: null,
+  mutate: vi.fn(),
 };
 
-describe("Home page integration", () => {
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
+const defaultPropertyHook = {
+  data: featuredProperties,
+  isLoading: false,
+  error: null,
+  mutate: vi.fn(),
+};
+
+const defaultReviewHook = {
+  data: testimonials,
+  isLoading: false,
+  error: null,
+  mutate: vi.fn(),
+};
+
+beforeEach(() => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: vi.fn().mockResolvedValue({}),
+  });
+});
+
+beforeAll(() => {
+  Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1920 });
+});
+
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
+function renderHome() {
+  mockUseHero.mockReturnValue(defaultHero);
+  mockUseFeaturedProperties.mockReturnValue(defaultPropertyHook);
+  mockUseFeaturedReviews.mockReturnValue(defaultReviewHook);
+  return render(<HomePage />);
+}
+
+describe("HomePage", () => {
+  it("renders featured properties section", async () => {
+    renderHome();
+    await waitFor(() => {
+      expect(screen.getByTestId("featured-properties-section")).toBeInTheDocument();
+    });
   });
 
-  it("fetches properties, reviews, and settings and renders them", async () => {
-    global.fetch = vi.fn().mockImplementation((url: string) => {
-      let body: unknown = {};
-      if (url === "/api/properties/featured") body = mockProperties;
-      if (url === "/api/reviews/featured") body = mockReviews;
-      if (url === "/api/settings") body = mockSettings;
-      return Promise.resolve(new Response(JSON.stringify(body), { status: 200 }));
-    });
-
-    render(<Home />);
-
+  it("renders testimonials section", async () => {
+    renderHome();
     await waitFor(() => {
-      expect(screen.getByTestId("featured-properties-heading")).toHaveTextContent("Featured Properties");
+      expect(screen.getByTestId("testimonials-section")).toBeInTheDocument();
     });
-
-    expect(screen.getByTestId("featured-properties-subheading")).toHaveTextContent(
-      "Explore our handpicked selection of premium homes"
-    );
-    expect(screen.getByTestId("testimonials-heading")).toHaveTextContent("What Our Clients Say");
-    expect(screen.getByTestId("testimonials-subheading")).toHaveTextContent("Real stories from happy homeowners");
-    expect(screen.getByTestId("property-title-1")).toHaveTextContent("Modern Luxury Villa");
-    expect(screen.getByTestId("review-name-1")).toHaveTextContent("Sarah Johnson");
   });
 
-  it("renders error fallback when fetch fails", async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error("network"));
+  it("renders property cards from API data", async () => {
+    renderHome();
+    await waitFor(() => {
+      expect(screen.getAllByTestId(/property-card/)).toHaveLength(3);
+    });
+  });
 
-    render(<Home />);
+  it("renders review cards from API data", async () => {
+    renderHome();
+    await waitFor(() => {
+      expect(screen.getAllByTestId(/review-card/)).toHaveLength(3);
+    });
+  });
+
+  it("shows loading skeleton for properties when featured properties hook is loading", async () => {
+    mockUseHero.mockReturnValue(defaultHero);
+    mockUseFeaturedProperties.mockReturnValue({ data: undefined, isLoading: true, error: null, mutate: vi.fn() });
+    mockUseFeaturedReviews.mockReturnValue(defaultReviewHook);
+    render(<HomePage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Unable to load properties. Please try again later.")).toBeInTheDocument();
+      expect(screen.getAllByTestId(/property-skeleton/)).toHaveLength(3);
+    });
+  });
+
+  it("shows empty state for properties when API returns empty data", async () => {
+    mockUseHero.mockReturnValue(defaultHero);
+    mockUseFeaturedProperties.mockReturnValue({ data: [], isLoading: false, error: null, mutate: vi.fn() });
+    mockUseFeaturedReviews.mockReturnValue(defaultReviewHook);
+    render(<HomePage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
     });
   });
 });
