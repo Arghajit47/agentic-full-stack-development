@@ -405,10 +405,10 @@ async function main() {
 
     { section: "team", slug: "team-heading", value: JSON.stringify("Meet the Estatein Team"), order: 1 },
     { section: "team", slug: "team-body", value: JSON.stringify("At Estatein, our success is driven by the dedication and expertise of our team. Get to know the people behind our mission to make your real estate dreams a reality."), order: 2 },
-    { section: "team", slug: "team-member-sarah-johnson", value: JSON.stringify({ name: "Sarah Johnson", role: "Chief Real Estate Officer", imageUrl: "/images/team/team-sarah.png", twitterUrl: "https://twitter.com/estatein" }), order: 3 },
-    { section: "team", slug: "team-member-david-brown", value: JSON.stringify({ name: "David Brown", role: "Head of Property Management", imageUrl: "/images/team/team-david.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 4 },
-    { section: "team", slug: "team-member-michael-turner", value: JSON.stringify({ name: "Michael Turner", role: "Legal Counsel", imageUrl: "/images/team/team-michael.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 5 },
-    { section: "team", slug: "team-member-max-mitchell", value: JSON.stringify({ name: "Max Mitchell", role: "Founder", imageUrl: "/images/team/team-max.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 6 },
+    { section: "team", slug: "team-member-max-mitchell", value: JSON.stringify({ name: "Max Mitchell", role: "Founder", imageUrl: "/images/team/team-max.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 3 },
+    { section: "team", slug: "team-member-sarah-johnson", value: JSON.stringify({ name: "Sarah Johnson", role: "Chief Real Estate Officer", imageUrl: "/images/team/team-sarah.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 4 },
+    { section: "team", slug: "team-member-david-brown", value: JSON.stringify({ name: "David Brown", role: "Head of Property Management", imageUrl: "/images/team/team-david.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 5 },
+    { section: "team", slug: "team-member-michael-turner", value: JSON.stringify({ name: "Michael Turner", role: "Legal Counsel", imageUrl: "/images/team/team-michael.jpg", twitterUrl: "https://twitter.com/estatein" }), order: 6 },
 
     // Clients section
     { section: "clients", slug: "clients-heading", value: JSON.stringify("Our Valued Clients"), order: 1 },

@@ -26,7 +26,7 @@ export function TeamMember({ member }: TeamMemberProps) {
   return (
     <li
       data-testid={`team-member-${slugify(member.name)}`}
-      className="flex h-full flex-col rounded-xl border border-zinc-800/60 bg-[#141414] p-4 transition-colors duration-200 hover:border-zinc-700 md:p-5"
+      className="flex h-full flex-col rounded-xl border border-[#262626] bg-[#1a1a1a] p-4 md:p-5"
     >
       <div className="relative">
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg sm:aspect-square md:aspect-[4/5]">
@@ -52,10 +52,10 @@ export function TeamMember({ member }: TeamMemberProps) {
         </a>
       </div>
       <div className="mt-8 pb-1 text-center">
-        <h3 className="text-base font-semibold text-white md:text-lg">
+        <h3 className="text-base font-semibold text-white">
           {member.name}
         </h3>
-        <p className="mt-1 text-sm text-zinc-400">{member.role}</p>
+        <p className="mt-1 text-sm text-[#8C8C8C]">{member.role}</p>
       </div>
     </li>
   );
