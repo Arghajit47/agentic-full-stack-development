@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { testimonials, type Review } from "@/mocks/testimonials";
+import { useFeaturedReviews, type FeaturedReview } from "@/lib/api";
 
 function useResponsiveCardCount() {
   const [count, setCount] = useState(3);
@@ -21,33 +21,37 @@ function useResponsiveCardCount() {
 }
 
 interface TestimonialsProps {
-  data?: Review[];
+  data?: FeaturedReview[];
   isLoading?: boolean;
   heading?: string;
   subheading?: string;
 }
 
 export function Testimonials({
-  data = testimonials,
-  isLoading = false,
+  data,
+  isLoading: isLoadingProp,
   heading = "What Our Clients Say",
   subheading = "Read the success stories and heartfelt testimonials from our valued clients. Discover why they chose Estatein for their real estate needs.",
 }: TestimonialsProps) {
+  const { data: fetchedData, isLoading: isFetching, error, mutate } = useFeaturedReviews();
+  const reviews = useMemo(() => data ?? fetchedData ?? [], [data, fetchedData]);
+  const isLoading = isLoadingProp ?? isFetching;
+
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
 
   const visibleCards = useMemo(
-    () => data.slice(startIndex, startIndex + cardsVisible),
-    [data, startIndex, cardsVisible]
+    () => reviews.slice(startIndex, startIndex + cardsVisible),
+    [reviews, startIndex, cardsVisible]
   );
 
   const canGoLeft = startIndex > 0;
-  const canGoRight = startIndex + cardsVisible < data.length;
+  const canGoRight = startIndex + cardsVisible < reviews.length;
   const isMobile = cardsVisible === 1;
 
   const goLeft = () => canGoLeft && setStartIndex((i) => Math.max(0, i - cardsVisible));
   const goRight = () =>
-    canGoRight && setStartIndex((i) => Math.min(data.length - cardsVisible, i + cardsVisible));
+    canGoRight && setStartIndex((i) => Math.min(reviews.length - cardsVisible, i + cardsVisible));
 
   return (
     <section
@@ -189,10 +193,24 @@ export function Testimonials({
         </button>
       </div>
 
-      {!isLoading && data.length === 0 && (
+      {!isLoading && reviews.length === 0 && (
         <p data-testid="no-reviews" className="py-12 text-center text-lg text-zinc-400">
           No reviews yet
         </p>
+      )}
+
+      {!isLoading && error && (
+        <div data-testid="testimonials-error" className="py-12 text-center">
+          <p className="text-lg text-zinc-400">Unable to load reviews. Please try again.</p>
+          <button
+            type="button"
+            data-testid="testimonials-retry"
+            onClick={() => mutate()}
+            className="mt-4 rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
+          >
+            Retry
+          </button>
+        </div>
       )}
     </section>
   );

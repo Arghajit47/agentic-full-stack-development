@@ -1,5 +1,5 @@
 export const HOMEPAGE_CONSTANTS = {
-  NO_PROPERTIES_TEXT: "No featured properties",
+  NO_PROPERTIES_TEXT: "No properties found",
   NO_REVIEWS_TEXT: "No reviews yet",
 } as const;
 
@@ -29,7 +29,7 @@ export const UI_TEXT = {
   TESTIMONIALS_SUBHEADING:
     "Real stories from real clients who found their perfect home with us.",
   CTA_LABEL: "Explore Properties",
-  NO_PROPERTIES: "No featured properties",
+  NO_PROPERTIES: "No properties found",
   NO_REVIEWS: "No reviews yet",
   // KAN-58 — Properties page SearchFilterBar
   PROPERTIES_PAGE_HEADING: "Find Your Dream Property",

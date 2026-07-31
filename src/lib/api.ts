@@ -17,6 +17,8 @@ import {
   type ServicesBottomCta,
   type Office,
   type GalleryImage,
+  FeaturedProperty,
+  FeaturedReview,
   newsletterSchema,
 } from "./api-types";
 import { type AboutUsData } from "./schemas";
@@ -41,6 +43,8 @@ export type {
   AboutUsData,
   Office,
   GalleryImage,
+  FeaturedProperty,
+  FeaturedReview,
 };
 export { newsletterSchema };
 
@@ -51,6 +55,14 @@ export async function fetcher<T>(url: string): Promise<T> {
     throw new Error(!payload.success ? payload.error : `Failed to fetch ${url}`);
   }
   return payload.data;
+}
+
+export async function rawArrayFetcher<T>(url: string): Promise<T[]> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch ${url}`);
+  }
+  return res.json() as Promise<T[]>;
 }
 
 export const subscribeNewsletter = async (
@@ -112,6 +124,18 @@ export function useContactOffices() {
 
 export function useContactGallery() {
   return useSWR<GalleryImage[], Error>(isBrowser ? "/api/gallery" : null, fetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useFeaturedProperties() {
+  return useSWR<FeaturedProperty[], Error>(isBrowser ? "/api/properties/featured" : null, rawArrayFetcher, {
+    revalidateOnFocus: false,
+  });
+}
+
+export function useFeaturedReviews() {
+  return useSWR<FeaturedReview[], Error>(isBrowser ? "/api/reviews/featured" : null, rawArrayFetcher, {
     revalidateOnFocus: false,
   });
 }

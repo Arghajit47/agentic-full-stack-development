@@ -144,3 +144,30 @@ export interface GalleryImage {
   caption?: string;
   order: number;
 }
+
+export interface FeaturedProperty {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  location: string;
+  bedrooms: number;
+  bathrooms: number;
+  areaSqft: number;
+  propertyType: string;
+  imageUrl: string;
+  isFeatured: boolean;
+  galleryUrls: string[];
+  features: string[];
+}
+
+export interface FeaturedReview {
+  id: number;
+  clientName: string;
+  clientLocation: string;
+  clientAvatarUrl: string;
+  rating: number;
+  reviewText: string;
+  propertyTitle: string | null;
+}

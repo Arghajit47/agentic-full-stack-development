@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Bed, Bath, Home, ChevronLeft, ChevronRight } from "lucide-react";
-import { featuredProperties, type Property } from "@/mocks/featured-properties";
+import { useFeaturedProperties, type FeaturedProperty } from "@/lib/api";
 
 const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -28,7 +28,7 @@ function useResponsiveCardCount() {
 }
 
 interface FeaturedPropertiesProps {
-  data?: Property[];
+  data?: FeaturedProperty[];
   isLoading?: boolean;
   heading?: string;
   subheading?: string;
@@ -36,27 +36,31 @@ interface FeaturedPropertiesProps {
 }
 
 export function FeaturedProperties({
-  data = featuredProperties,
-  isLoading = false,
+  data,
+  isLoading: isLoadingProp,
   heading = "Featured Properties",
   subheading = "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein.",
   onPropertyClick = (slug: string) => console.log(slug),
 }: FeaturedPropertiesProps) {
+  const { data: fetchedData, isLoading: isFetching, error, mutate } = useFeaturedProperties();
+  const properties = useMemo(() => data ?? fetchedData ?? [], [data, fetchedData]);
+  const isLoading = isLoadingProp ?? isFetching;
+
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
 
   const visibleCards = useMemo(
-    () => data.slice(startIndex, startIndex + cardsVisible),
-    [data, startIndex, cardsVisible]
+    () => properties.slice(startIndex, startIndex + cardsVisible),
+    [properties, startIndex, cardsVisible]
   );
 
   const canGoLeft = startIndex > 0;
-  const canGoRight = startIndex + cardsVisible < data.length;
+  const canGoRight = startIndex + cardsVisible < properties.length;
   const isMobile = cardsVisible === 1;
 
   const goLeft = () => canGoLeft && setStartIndex((i) => Math.max(0, i - cardsVisible));
   const goRight = () =>
-    canGoRight && setStartIndex((i) => Math.min(data.length - cardsVisible, i + cardsVisible));
+    canGoRight && setStartIndex((i) => Math.min(properties.length - cardsVisible, i + cardsVisible));
 
   return (
     <section
@@ -219,10 +223,24 @@ export function FeaturedProperties({
         </Link>
       </div>
 
-      {!isLoading && data.length === 0 && (
+      {!isLoading && properties.length === 0 && (
         <p data-testid="no-properties" className="py-12 text-center text-lg text-zinc-400">
-          No featured properties
+          No properties found
         </p>
+      )}
+
+      {!isLoading && error && (
+        <div data-testid="featured-properties-error" className="py-12 text-center">
+          <p className="text-lg text-zinc-400">Unable to load properties. Please try again.</p>
+          <button
+            type="button"
+            data-testid="featured-properties-retry"
+            onClick={() => mutate()}
+            className="mt-4 rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
+          >
+            Retry
+          </button>
+        </div>
       )}
     </section>
   );

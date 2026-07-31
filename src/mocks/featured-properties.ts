@@ -7,8 +7,12 @@ export interface Property {
   location: string;
   bedrooms: number;
   bathrooms: number;
+  areaSqft: number;
   propertyType: string;
   imageUrl: string;
+  isFeatured: boolean;
+  galleryUrls: string[];
+  features: string[];
 }
 
 export const featuredProperties: Property[] = [
@@ -21,8 +25,12 @@ export const featuredProperties: Property[] = [
     location: "Beverly Hills, CA",
     bedrooms: 5,
     bathrooms: 4,
+    areaSqft: 4200,
     propertyType: "Villa",
     imageUrl: "/images/properties/property-1.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-1.jpg"],
+    features: ["Garden", "Pool"],
   },
   {
     id: 2,
@@ -33,8 +41,12 @@ export const featuredProperties: Property[] = [
     location: "New York, NY",
     bedrooms: 3,
     bathrooms: 2,
+    areaSqft: 2100,
     propertyType: "Penthouse",
     imageUrl: "/images/properties/property-2.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-2.jpg"],
+    features: ["City view", "Gym"],
   },
   {
     id: 3,
@@ -45,8 +57,12 @@ export const featuredProperties: Property[] = [
     location: "Malibu, CA",
     bedrooms: 6,
     bathrooms: 5,
+    areaSqft: 5500,
     propertyType: "Estate",
     imageUrl: "/images/properties/property-3.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-3.jpg"],
+    features: ["Beach access", "Pool"],
   },
   {
     id: 4,
@@ -57,8 +73,12 @@ export const featuredProperties: Property[] = [
     location: "Austin, TX",
     bedrooms: 4,
     bathrooms: 3,
+    areaSqft: 2800,
     propertyType: "House",
     imageUrl: "/images/properties/property-4.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-4.jpg"],
+    features: ["Garage", "Garden"],
   },
   {
     id: 5,
@@ -69,8 +89,12 @@ export const featuredProperties: Property[] = [
     location: "Chicago, IL",
     bedrooms: 2,
     bathrooms: 2,
+    areaSqft: 1500,
     propertyType: "Loft",
     imageUrl: "/images/properties/property-5.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-5.jpg"],
+    features: ["High ceilings", "Gym"],
   },
   {
     id: 6,
@@ -81,7 +105,11 @@ export const featuredProperties: Property[] = [
     location: "Scottsdale, AZ",
     bedrooms: 4,
     bathrooms: 4,
+    areaSqft: 4800,
     propertyType: "Villa",
     imageUrl: "/images/properties/property-6.jpg",
+    isFeatured: true,
+    galleryUrls: ["/images/properties/property-6.jpg"],
+    features: ["Hill view", "Pool"],
   },
 ];

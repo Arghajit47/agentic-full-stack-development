@@ -1,16 +1,18 @@
 export interface Review {
   id: number;
   clientName: string;
+  clientLocation: string;
   clientAvatarUrl: string;
   rating: number;
   reviewText: string;
-  propertyTitle?: string;
+  propertyTitle: string | null;
 }
 
 export const testimonials: Review[] = [
   {
     id: 1,
     clientName: "Sarah Johnson",
+    clientLocation: "Beverly Hills, CA",
     clientAvatarUrl:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
     rating: 5,
@@ -21,6 +23,7 @@ export const testimonials: Review[] = [
   {
     id: 2,
     clientName: "Michael Chen",
+    clientLocation: "New York, NY",
     clientAvatarUrl:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
     rating: 5,
@@ -31,6 +34,7 @@ export const testimonials: Review[] = [
   {
     id: 3,
     clientName: "Emily Rodriguez",
+    clientLocation: "Austin, TX",
     clientAvatarUrl:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80",
     rating: 4,
@@ -41,15 +45,18 @@ export const testimonials: Review[] = [
   {
     id: 4,
     clientName: "David Thompson",
+    clientLocation: "Malibu, CA",
     clientAvatarUrl:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
     rating: 5,
     reviewText:
       "Outstanding service. The attention to detail and market knowledge is unmatched. Highly recommended.",
+    propertyTitle: null,
   },
   {
     id: 5,
     clientName: "Jessica Williams",
+    clientLocation: "Chicago, IL",
     clientAvatarUrl:
       "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80",
     rating: 4,
