@@ -1,25 +1,18 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FeaturedProperties } from "@/components/home/FeaturedProperties";
 import { Testimonials } from "@/components/home/Testimonials";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
 import { useHero } from "@/lib/api";
+import { useMounted } from "@/lib/use-mounted";
 
 interface Settings {
   properties_heading?: string;
   properties_subheading?: string;
   reviews_heading?: string;
   reviews_subheading?: string;
-}
-
-const subscribe = () => () => {};
-const getSnapshot = () => true;
-const getServerSnapshot = () => false;
-
-function useMounted() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export default function Home() {

@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFeaturedReviews, type FeaturedReview } from "@/lib/api";
+import { useMounted } from "@/lib/use-mounted";
 
 function useResponsiveCardCount() {
   const [count, setCount] = useState(3);
@@ -33,9 +34,10 @@ export function Testimonials({
   heading = "What Our Clients Say",
   subheading = "Read the success stories and heartfelt testimonials from our valued clients. Discover why they chose Estatein for their real estate needs.",
 }: TestimonialsProps) {
+  const mounted = useMounted();
   const { data: fetchedData, isLoading: isFetching, error, mutate } = useFeaturedReviews();
   const reviews = useMemo(() => data ?? fetchedData ?? [], [data, fetchedData]);
-  const isLoading = isLoadingProp ?? isFetching;
+  const isLoading = isLoadingProp ?? (mounted ? isFetching : true);
 
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
