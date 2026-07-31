@@ -25,7 +25,7 @@ export function SearchFilterBar({
   return (
     <div className="relative mx-auto w-full max-w-[1920px]">
       {/* Banner Section */}
-      <div className="relative bg-[#141414] px-4 py-16 text-white sm:px-6 lg:px-8 text-center overflow-hidden">
+      <div data-testid="search-banner" className="relative bg-[#141414] px-4 py-16 text-white sm:px-6 lg:px-8 text-center overflow-hidden">
         <div className="relative mx-auto max-w-3xl">
           <h1
             data-testid="properties-page-heading"

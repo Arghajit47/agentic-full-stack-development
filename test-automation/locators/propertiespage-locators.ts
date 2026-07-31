@@ -19,4 +19,7 @@ export const PROPERTIESPAGE_LOCATORS = {
   nextPageBtn: '[data-testid="next-page-btn"]',
   prevPageBtnMobile: '[data-testid="prev-page-btn-mobile"]',
   nextPageBtnMobile: '[data-testid="next-page-btn-mobile"]',
+  searchBanner: '[data-testid="search-banner"]',
+  propertyCardImage: '[data-testid="property-card-image"]',
+  discoverSection: '[data-testid="properties-discover-section"]',
 } as const;

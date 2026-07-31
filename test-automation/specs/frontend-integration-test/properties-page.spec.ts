@@ -44,3 +44,27 @@ test("Properties page console error and image error handling", async ({ properti
   await propertiesPage.assertNoConsoleErrors();
   await propertiesPage.assertNoImage404s();
 });
+
+test("KAN-99: First property is Seawide Serenity Villa, second is Metropolitan House", async ({ propertiesPage }) => {
+  await propertiesPage.assertPropertyOrder();
+});
+
+test("KAN-99: Page 1 shows exactly 3 property cards", async ({ propertiesPage }) => {
+  await propertiesPage.assertPageOneCardCount();
+});
+
+test("KAN-99: Property card styling (bg #1A1A1A, border #262626, image ~220px)", async ({ propertiesPage }) => {
+  await propertiesPage.assertCardStyling();
+});
+
+test("KAN-99: Search banner background is #141414 (no white gradient)", async ({ propertiesPage }) => {
+  await propertiesPage.assertBannerBackground();
+});
+
+test("KAN-99: No property type filter dropdown present", async ({ propertiesPage }) => {
+  await propertiesPage.assertNoPropertyTypeFilter();
+});
+
+test("KAN-99: Discover a World of Possibilities section is visible", async ({ propertiesPage }) => {
+  await propertiesPage.assertDiscoverSection();
+});

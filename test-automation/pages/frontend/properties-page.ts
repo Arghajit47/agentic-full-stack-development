@@ -8,6 +8,9 @@ import {
   PROPERTIES_GRID_COLS,
   API_PATHS,
   PROPERTIES_TEXT,
+  PROPERTIES_PAGE_ONE_CARD_COUNT,
+  PROPERTIES_CARD_STYLES,
+  PROPERTIES_BANNER_STYLES,
   type Property,
   type PropertiesResponse,
 } from "@constants/index";
@@ -148,5 +151,71 @@ export class PropertiesPage {
 
   async assertNoImage404s(): Promise<void> {
     await this.initializationPage.assertNoImage404s(UI_ROUTES.PROPERTIES);
+  }
+
+  async assertPropertyOrder(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
+    await this.initializationPage.expectTextContains(
+      PROPERTIESPAGE_LOCATORS.propertyTitles,
+      PROPERTIES_TEXT.FIRST_PROPERTY_TITLE,
+      0
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTIESPAGE_LOCATORS.propertyTitles,
+      PROPERTIES_TEXT.SECOND_PROPERTY_TITLE,
+      1
+    );
+  }
+
+  async assertPageOneCardCount(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
+    const count = await this.initializationPage.getElementsCount(
+      PROPERTIESPAGE_LOCATORS.propertyCard
+    );
+    expect(count).toBe(PROPERTIES_PAGE_ONE_CARD_COUNT);
+  }
+
+  async assertCardStyling(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
+    const page = this.initializationPage.page;
+
+    const cardBg = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCard).first()
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(cardBg).toBe(PROPERTIES_CARD_STYLES.BG_COLOR);
+
+    const cardBorder = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCard).first()
+      .evaluate((el) => getComputedStyle(el).borderColor);
+    expect(cardBorder).toBe(PROPERTIES_CARD_STYLES.BORDER_COLOR);
+
+    const imageHeight = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCardImage).first()
+      .evaluate((el) => el.getBoundingClientRect().height);
+    expect(imageHeight).toBeCloseTo(PROPERTIES_CARD_STYLES.IMAGE_HEIGHT_PX, -1);
+  }
+
+  async assertBannerBackground(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    const page = this.initializationPage.page;
+    const bannerBg = await page.locator(PROPERTIESPAGE_LOCATORS.searchBanner)
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(bannerBg).toBe(PROPERTIES_BANNER_STYLES.BG_COLOR);
+  }
+
+  async assertNoPropertyTypeFilter(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    const page = this.initializationPage.page;
+    const count = await page.locator(PROPERTIESPAGE_LOCATORS.propertyTypeFilter).count();
+    expect(count).toBe(0);
+  }
+
+  async assertDiscoverSection(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
+    await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.discoverSection);
+    await this.initializationPage.expectTextContains(
+      PROPERTIESPAGE_LOCATORS.discoverSection,
+      PROPERTIES_TEXT.DISCOVER_HEADING
+    );
   }
 }
