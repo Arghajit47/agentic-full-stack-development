@@ -41,4 +41,16 @@ test.describe("About Us Page Suite", () => {
     await aboutUsPage.assertNoConsoleErrors();
     await aboutUsPage.assertNoImage404s();
   });
+
+  test("KAN-97: Team member order matches API", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertTeamMemberOrderMatchesApi();
+  });
+
+  test("KAN-97: Team card styling", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertTeamCardStyling();
+  });
+
+  test("KAN-97: Team photos load", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertTeamPhotosLoad();
+  });
 });
