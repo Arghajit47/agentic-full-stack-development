@@ -40,7 +40,7 @@ export function FeaturedProperties({
   data,
   isLoading: isLoadingProp,
   heading = "Featured Properties",
-  subheading = "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein.",
+  subheading = "Explore our handpicked selection of featured properties. Each listing offers a glimpse into exceptional homes and investments available through Estatein. Click View Details for more information.",
   onPropertyClick = (slug: string) => console.log(slug),
 }: FeaturedPropertiesProps) {
   const mounted = useMounted();

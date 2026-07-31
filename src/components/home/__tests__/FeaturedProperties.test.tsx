@@ -72,7 +72,7 @@ describe("FeaturedProperties", () => {
 
   it("renders property image in each card", () => {
     render(<FeaturedProperties data={featuredProperties} />);
-    const images = screen.getAllByRole("img", { name: /Modern|Downtown|Beachfront/i });
+    const images = screen.getAllByRole("img", { name: /Seawide|Metropolitan|Rustic/i });
     expect(images).toHaveLength(3);
   });
 
