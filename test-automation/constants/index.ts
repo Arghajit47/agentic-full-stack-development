@@ -36,9 +36,11 @@ export const PROPERTY_FIELDS = [
 
 export const REVIEW_FIELDS = [
   "clientName",
+  "clientLocation",
   "clientAvatarUrl",
   "rating",
   "reviewText",
+  "reviewTitle",
   "propertyTitle",
 ] as const;
 

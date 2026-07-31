@@ -119,9 +119,16 @@ describe("FeaturedProperties", () => {
     });
   });
 
-  it("renders 'Explore Properties' CTA below section", () => {
+  it("renders 'View All Properties' CTA in header", () => {
     render(<FeaturedProperties data={featuredProperties} />);
-    expect(screen.getByTestId("explore-properties-cta")).toHaveTextContent("Explore Properties");
+    const cta = screen.getByTestId("view-all-properties-cta");
+    expect(cta).toHaveTextContent("View All Properties");
+    expect(cta).toHaveAttribute("href", "/properties");
+  });
+
+  it("does not render old 'Explore Properties' bottom CTA", () => {
+    render(<FeaturedProperties data={featuredProperties} />);
+    expect(screen.queryByTestId("explore-properties-cta")).not.toBeInTheDocument();
   });
 
   it("renders skeleton loading state", () => {
@@ -134,13 +141,11 @@ describe("FeaturedProperties", () => {
     expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
   });
 
-  it("cards have no visible border/ring (blended with bg)", () => {
+  it("cards have a subtle border matching the Figma design", () => {
     render(<FeaturedProperties data={featuredProperties} />);
     const cards = screen.getAllByTestId(/property-card/);
     cards.forEach((card) => {
-      expect(card.className).not.toContain("ring");
-      expect(card.className).not.toContain("border");
-      expect(card.className).not.toContain("shadow");
+      expect(card.className).toContain("border");
     });
   });
 

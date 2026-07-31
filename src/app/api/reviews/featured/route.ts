@@ -15,6 +15,7 @@ export async function GET() {
       clientAvatarUrl: r.clientAvatarUrl,
       rating: r.rating,
       reviewText: r.reviewText,
+      reviewTitle: r.reviewTitle,
       propertyTitle: r.propertyTitle,
     }));
 
