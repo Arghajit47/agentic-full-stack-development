@@ -5,6 +5,7 @@ export const PROPERTIES_TEXT = {
   SEARCH_PLACEHOLDER: "Search Properties",
   SEARCH_SUBMIT_TEXT: "Find Property",
   NO_PROPERTIES_TEXT: "No properties found",
+  SEARCH_TEST_QUERY: "Seawide",
 } as const;
 
 export const PROPERTIES_GRID_COLS = {

@@ -92,7 +92,7 @@ export class PropertiesPage {
     // Search for "Seawide" — should return Seawide Serenity Villa (first property per Figma order)
     await this.initializationPage.fill(
       PROPERTIESPAGE_LOCATORS.searchInput,
-      "Seawide"
+      PROPERTIES_TEXT.SEARCH_TEST_QUERY
     );
     await this.initializationPage.click(PROPERTIESPAGE_LOCATORS.searchSubmitBtn);
     await this.initializationPage.waitForSomeTime(2000);
@@ -103,7 +103,7 @@ export class PropertiesPage {
     expect(searchCount).toBeGreaterThan(0);
     await this.initializationPage.expectTextContains(
       PROPERTIESPAGE_LOCATORS.propertyCard,
-      "Seawide",
+      PROPERTIES_TEXT.SEARCH_TEST_QUERY,
       0
     );
 
