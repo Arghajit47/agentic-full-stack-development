@@ -44,9 +44,11 @@ describe("GET /api/reviews/featured", () => {
 
     const first = json[0];
     expect(first).toHaveProperty("clientName");
+    expect(first).toHaveProperty("clientLocation");
     expect(first).toHaveProperty("clientAvatarUrl");
     expect(first).toHaveProperty("rating");
     expect(first).toHaveProperty("reviewText");
+    expect(first).toHaveProperty("reviewTitle");
     expect(first).toHaveProperty("propertyTitle");
   });
 

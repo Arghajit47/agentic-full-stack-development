@@ -84,11 +84,30 @@ const REVIEW_NAMES = [
   "Ethan Harris", "Isabella Martin", "William Thompson", "Mia Garcia", "Alexander Martinez",
 ];
 
+const REVIEW_TITLES = [
+  "Exceptional Service!",
+  "Efficient and Reliable",
+  "Trusted Advisors",
+  "Made Buying Easy",
+  "Highly Recommend",
+  "Outstanding Support",
+  "Smooth Closing",
+  "Perfect Rental Help",
+  "Great First-Time Buyer Experience",
+  "Virtual Tours Saved Time",
+];
+
 const REVIEW_LOCATIONS = [
-  "New York, NY", "San Francisco, CA", "Chicago, IL", "Los Angeles, CA", "Miami, FL",
-  "Boston, MA", "Seattle, WA", "Austin, TX", "Denver, CO", "Portland, OR",
-  "Atlanta, GA", "Dallas, TX", "Phoenix, AZ", "San Diego, CA", "Nashville, TN",
-  "Philadelphia, PA", "Las Vegas, NV", "Houston, TX", "Orlando, FL", "Detroit, MI",
+  "USA, California",
+  "USA, Florida",
+  "USA, Nevada",
+  "USA, Texas",
+  "USA, New York",
+  "USA, Massachusetts",
+  "USA, Washington",
+  "USA, Illinois",
+  "USA, Colorado",
+  "USA, Oregon",
 ];
 
 const REVIEW_TEXTS = [
@@ -200,9 +219,10 @@ async function main() {
   const propertyTitles = properties.map((p) => p.title);
   const reviews = REVIEW_NAMES.map((clientName, i) => ({
     clientName,
-    clientLocation: REVIEW_LOCATIONS[i],
+    clientLocation: REVIEW_LOCATIONS[i % REVIEW_LOCATIONS.length],
     clientAvatarUrl: avatarUrl(clientName),
     rating: i < 5 ? [5, 5, 4, 5, 4][i] : (i % 5) + 1,
+    reviewTitle: REVIEW_TITLES[i % REVIEW_TITLES.length],
     reviewText: REVIEW_TEXTS[i % REVIEW_TEXTS.length],
     propertyTitle: i % 4 === 0 ? null : propertyTitles[i % propertyTitles.length],
   }));

@@ -169,5 +169,6 @@ export interface FeaturedReview {
   clientAvatarUrl: string;
   rating: number;
   reviewText: string;
+  reviewTitle?: string;
   propertyTitle: string | null;
 }

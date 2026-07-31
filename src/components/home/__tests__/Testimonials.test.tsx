@@ -70,10 +70,18 @@ describe("Testimonials", () => {
     expect(images).toHaveLength(3);
   });
 
-  it("renders client name in each card", () => {
+  it("renders client name and location in each card", () => {
     render(<Testimonials data={testimonials} />);
     testimonials.slice(0, 3).forEach((r) => {
       expect(screen.getByTestId(`review-name-${r.id}`)).toHaveTextContent(r.clientName);
+      expect(screen.getByTestId(`review-location-${r.id}`)).toHaveTextContent(r.clientLocation);
+    });
+  });
+
+  it("renders review title in each card", () => {
+    render(<Testimonials data={testimonials} />);
+    testimonials.slice(0, 3).forEach((r) => {
+      expect(screen.getByTestId(`review-title-${r.id}`)).toHaveTextContent(r.reviewTitle ?? "");
     });
   });
 
@@ -100,13 +108,11 @@ describe("Testimonials", () => {
     expect(screen.getByTestId("no-reviews")).toHaveTextContent("No reviews yet");
   });
 
-  it("cards have no visible border/ring (blended with bg)", () => {
+  it("cards have a subtle border matching the Figma design", () => {
     render(<Testimonials data={testimonials} />);
     const cards = screen.getAllByTestId(/review-card/);
     cards.forEach((card) => {
-      expect(card.className).not.toContain("ring");
-      expect(card.className).not.toContain("border");
-      expect(card.className).not.toContain("shadow");
+      expect(card.className).toContain("border");
     });
   });
 

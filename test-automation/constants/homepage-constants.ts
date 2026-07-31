@@ -28,7 +28,7 @@ export const UI_TEXT = {
   TESTIMONIALS_HEADING: "What Our Clients Say",
   TESTIMONIALS_SUBHEADING:
     "Real stories from real clients who found their perfect home with us.",
-  CTA_LABEL: "Explore Properties",
+  CTA_LABEL: "View All Properties",
   NO_PROPERTIES: "No properties found",
   NO_REVIEWS: "No reviews yet",
   // KAN-58 — Properties page SearchFilterBar

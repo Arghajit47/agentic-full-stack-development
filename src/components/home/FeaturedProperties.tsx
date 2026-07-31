@@ -58,7 +58,6 @@ export function FeaturedProperties({
 
   const canGoLeft = startIndex > 0;
   const canGoRight = startIndex + cardsVisible < properties.length;
-  const isMobile = cardsVisible === 1;
 
   const goLeft = () => canGoLeft && setStartIndex((i) => Math.max(0, i - cardsVisible));
   const goRight = () =>
@@ -70,33 +69,133 @@ export function FeaturedProperties({
       data-testid="featured-properties-section"
       className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 text-zinc-100 sm:px-6 lg:px-8"
     >
-      <div className="mb-10 text-left">
-        <h2
-          id="featured-properties-heading"
-          data-testid="featured-properties-heading"
-          className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
+      <div className="mb-10 flex items-end justify-between gap-4">
+        <div className="text-left">
+          <h2
+            id="featured-properties-heading"
+            data-testid="featured-properties-heading"
+            className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
+          >
+            {heading}
+          </h2>
+          <p
+            data-testid="featured-properties-subheading"
+            className="mt-3 max-w-2xl text-base text-[#999999] sm:text-lg"
+          >
+            {subheading}
+          </p>
+        </div>
+        <Link
+          href="/properties"
+          data-testid="view-all-properties-cta"
+          className="inline-block shrink-0 rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
         >
-          {heading}
-        </h2>
-        <p
-          data-testid="featured-properties-subheading"
-          className="mt-3 max-w-2xl text-base text-[#999999] sm:text-lg"
-        >
-          {subheading}
-        </p>
+          View All Properties
+        </Link>
       </div>
 
       <div
-        className={`flex items-center gap-4 ${isMobile ? "justify-end" : "justify-center"}`}
-        data-testid="carousel-container"
+        className="grid gap-6"
+        style={{ gridTemplateColumns: `repeat(${cardsVisible}, minmax(0, 1fr))` }}
+        data-testid="property-grid"
       >
+        {isLoading
+          ? Array.from({ length: cardsVisible }).map((_, i) => (
+              <div
+                key={`skeleton-${i}`}
+                data-testid="property-skeleton"
+                className="h-[480px] animate-pulse rounded-xl border border-zinc-800/60 p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
+              >
+                <div className="aspect-[4/3] w-full bg-zinc-800" />
+                <div className="mt-4 h-5 w-32 rounded bg-zinc-800" />
+                <div className="mt-2 h-4 w-48 rounded bg-zinc-800" />
+                <div className="mt-3 flex gap-4">
+                  <div className="h-4 w-16 rounded bg-zinc-800" />
+                  <div className="h-4 w-16 rounded bg-zinc-800" />
+                  <div className="h-4 w-20 rounded bg-zinc-800" />
+                </div>
+                <div className="mt-8 flex items-center justify-between">
+                  <div className="flex flex-col gap-2">
+                    <div className="h-3 w-12 rounded bg-zinc-800" />
+                    <div className="h-6 w-32 rounded bg-zinc-800" />
+                  </div>
+                  <div className="h-10 w-36 rounded bg-zinc-800" />
+                </div>
+              </div>
+            ))
+          : visibleCards.map((property) => (
+              <article
+                key={property.id}
+                data-testid="property-card"
+                className="flex h-[480px] flex-col rounded-xl border border-zinc-800/60 p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
+              >
+                <img
+                  src={property.imageUrl}
+                  alt={property.title}
+                  className="aspect-[4/3] w-full rounded-lg object-cover"
+                  loading="lazy"
+                />
+                <div className="mt-4 flex flex-col">
+                  <h3
+                    data-testid={`property-title-${property.id}`}
+                    className="text-left text-lg font-semibold text-white"
+                  >
+                    {property.title}
+                  </h3>
+                  <p
+                    data-testid={`property-description-${property.id}`}
+                    className="mt-1 line-clamp-2 text-left text-sm text-[#999999]"
+                  >
+                    {property.description}
+                  </p>
+                  <div
+                    className="mt-3 flex items-center gap-4 text-sm text-[#999999]"
+                    data-testid={`property-specs-${property.id}`}
+                  >
+                    <span className="flex items-center gap-1 text-[#999999]">
+                      <Bed className="h-4 w-4 text-[#999999]" />
+                      {property.bedrooms} bedrooms
+                    </span>
+                    <span className="flex items-center gap-1 text-[#999999]">
+                      <Bath className="h-4 w-4 text-[#999999]" />
+                      {property.bathrooms} bathrooms
+                    </span>
+                    <span className="flex items-center gap-1 text-[#999999]">
+                      <Home className="h-4 w-4 text-[#999999]" />
+                      {property.propertyType}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-end justify-between" data-testid={`property-price-${property.id}`}>
+                    <div>
+                      <p className="text-xs text-[#666666]" data-testid={`price-label-${property.id}`}>
+                        Price
+                      </p>
+                      <p className="text-xl font-bold text-white">
+                        {priceFormatter.format(property.price)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      data-testid={`view-details-${property.id}`}
+                      onClick={() => onPropertyClick(property.slug ?? "")}
+                      className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
+                    >
+                      View property details
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+      </div>
+
+      <div className="mt-8 flex items-center justify-center gap-3">
         <button
           type="button"
           onClick={goLeft}
           disabled={!canGoLeft}
           aria-label="Previous properties"
           data-testid="prev-arrow"
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoLeft
               ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
@@ -104,108 +203,13 @@ export function FeaturedProperties({
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
-
-        <div
-          className="grid flex-1 gap-6"
-          style={{ gridTemplateColumns: `repeat(${cardsVisible}, minmax(0, 1fr))` }}
-          data-testid="property-grid"
-        >
-          {isLoading
-            ? Array.from({ length: cardsVisible }).map((_, i) => (
-                <div
-                  key={`skeleton-${i}`}
-                  data-testid="property-skeleton"
-                  className="h-[480px] animate-pulse md:h-[520px] lg:h-[580px] xl:h-[620px]"
-                >
-                  <div className="aspect-[4/3] w-full bg-zinc-800" />
-                  <div className="mt-4 h-5 w-32 rounded bg-zinc-800" />
-                  <div className="mt-2 h-4 w-48 rounded bg-zinc-800" />
-                  <div className="mt-3 flex gap-4">
-                    <div className="h-4 w-16 rounded bg-zinc-800" />
-                    <div className="h-4 w-16 rounded bg-zinc-800" />
-                    <div className="h-4 w-20 rounded bg-zinc-800" />
-                  </div>
-                  <div className="mt-8 flex items-center justify-between">
-                    <div className="flex flex-col gap-2">
-                      <div className="h-3 w-12 rounded bg-zinc-800" />
-                      <div className="h-6 w-32 rounded bg-zinc-800" />
-                    </div>
-                    <div className="h-10 w-36 rounded bg-zinc-800" />
-                  </div>
-                </div>
-              ))
-            : visibleCards.map((property) => (
-                <article
-                  key={property.id}
-                  data-testid="property-card"
-                  className="flex h-[480px] flex-col md:h-[520px] lg:h-[580px] xl:h-[620px]"
-                >
-                  <img
-                    src={property.imageUrl}
-                    alt={property.title}
-                    className="aspect-[4/3] w-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="mt-4 flex flex-col">
-                    <h3
-                      data-testid={`property-title-${property.id}`}
-                      className="text-left text-lg font-semibold text-white"
-                    >
-                      {property.title}
-                    </h3>
-                    <p
-                      data-testid={`property-description-${property.id}`}
-                      className="mt-1 line-clamp-2 text-left text-sm text-[#999999]"
-                    >
-                      {property.description}
-                    </p>
-                    <div
-                      className="mt-3 flex items-center gap-4 text-sm text-[#999999]"
-                      data-testid={`property-specs-${property.id}`}
-                    >
-                      <span className="flex items-center gap-1 text-[#999999]">
-                        <Bed className="h-4 w-4 text-[#999999]" />
-                        {property.bedrooms} bedrooms
-                      </span>
-                      <span className="flex items-center gap-1 text-[#999999]">
-                        <Bath className="h-4 w-4 text-[#999999]" />
-                        {property.bathrooms} bathrooms
-                      </span>
-                      <span className="flex items-center gap-1 text-[#999999]">
-                        <Home className="h-4 w-4 text-[#999999]" />
-                        {property.propertyType}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex items-end justify-between" data-testid={`property-price-${property.id}`}>
-                      <div>
-                        <p className="text-xs text-[#666666]" data-testid={`price-label-${property.id}`}>
-                          Price
-                        </p>
-                        <p className="text-xl font-bold text-white">
-                          {priceFormatter.format(property.price)}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        data-testid={`view-details-${property.id}`}
-                        onClick={() => onPropertyClick(property.slug ?? "")}
-                        className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500"
-                      >
-                        View property details
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-        </div>
-
         <button
           type="button"
           onClick={goRight}
           disabled={!canGoRight}
           aria-label="Next properties"
           data-testid="next-arrow"
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoRight
               ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
@@ -213,16 +217,6 @@ export function FeaturedProperties({
         >
           <ChevronRight className="h-5 w-5" />
         </button>
-      </div>
-
-      <div className="mt-10 text-left">
-        <Link
-          href="/properties"
-          data-testid="explore-properties-cta"
-          className="inline-block rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
-        >
-          Explore Properties
-        </Link>
       </div>
 
       {!isLoading && properties.length === 0 && (

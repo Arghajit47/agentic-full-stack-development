@@ -78,9 +78,11 @@ export const propertySchema = z.object({
 export const reviewSchema = z.object({
   id: z.number().int(),
   clientName: z.string(),
+  clientLocation: z.string(),
   clientAvatarUrl: z.string(),
   rating: z.number().int().min(1).max(5),
   reviewText: z.string(),
+  reviewTitle: z.string().nullable(),
   propertyTitle: z.string().nullable(),
 });
 
@@ -186,9 +188,11 @@ export interface PropertiesResponse {
 export interface Review {
   id: number;
   clientName: string;
+  clientLocation: string;
   clientAvatarUrl: string;
   rating: number;
   reviewText: string;
+  reviewTitle: string | null;
   propertyTitle: string | null;
 }
 

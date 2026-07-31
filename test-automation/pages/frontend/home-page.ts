@@ -116,10 +116,15 @@ export class HomePage {
           item.reviewText,
           cardIndex
         );
-        if (item.propertyTitle) {
+        await this.initializationPage.expectTextContains(
+          HOMEPAGE_LOCATORS.reviewCards,
+          item.clientLocation,
+          cardIndex
+        );
+        if (item.reviewTitle) {
           await this.initializationPage.expectTextContains(
             HOMEPAGE_LOCATORS.reviewCards,
-            item.propertyTitle,
+            item.reviewTitle,
             cardIndex
           );
         }

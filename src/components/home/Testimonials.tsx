@@ -49,7 +49,6 @@ export function Testimonials({
 
   const canGoLeft = startIndex > 0;
   const canGoRight = startIndex + cardsVisible < reviews.length;
-  const isMobile = cardsVisible === 1;
 
   const goLeft = () => canGoLeft && setStartIndex((i) => Math.max(0, i - cardsVisible));
   const goRight = () =>
@@ -77,17 +76,98 @@ export function Testimonials({
         </p>
       </div>
 
-      <div
-        className={`flex items-center gap-4 ${isMobile ? "justify-end" : "justify-center"}`}
-        data-testid="testimonials-carousel"
-      >
+      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${cardsVisible}, minmax(0, 1fr))` }} data-testid="reviews-grid">
+        {isLoading
+          ? Array.from({ length: cardsVisible }).map((_, i) => (
+              <div
+                key={`skeleton-${i}`}
+                data-testid="review-skeleton"
+                className="h-[260px] animate-pulse rounded-xl border border-zinc-800/60 p-6 md:h-[300px] lg:h-[340px]"
+              >
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <div key={j} className="h-5 w-5 rounded bg-zinc-800" />
+                  ))}
+                </div>
+                <div className="mt-4 h-5 w-40 rounded bg-zinc-800" />
+                <div className="mt-4 h-4 w-full rounded bg-zinc-800" />
+                <div className="mt-2 h-4 w-3/4 rounded bg-zinc-800" />
+                <div className="mt-8 flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-full bg-zinc-800" />
+                  <div className="flex flex-col gap-2">
+                    <div className="h-4 w-24 rounded bg-zinc-800" />
+                    <div className="h-3 w-20 rounded bg-zinc-800" />
+                  </div>
+                </div>
+              </div>
+            ))
+          : visibleCards.map((review) => (
+              <article
+                key={review.id}
+                data-testid="review-card"
+                className="flex h-[260px] flex-col rounded-xl border border-zinc-800/60 p-6 md:h-[300px] lg:h-[340px]"
+              >
+                <div
+                  className="flex gap-0.5"
+                  role="img"
+                  aria-label={`${review.rating} out of 5 stars`}
+                  data-testid={`review-stars-${review.id}`}
+                >
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < review.rating ? "fill-amber-400 text-amber-400" : "text-zinc-700"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <h3
+                  data-testid={`review-title-${review.id}`}
+                  className="mt-4 text-lg font-semibold text-white"
+                >
+                  {review.reviewTitle ?? "Great Experience"}
+                </h3>
+                <p
+                  data-testid={`review-text-${review.id}`}
+                  className="mt-2 line-clamp-3 flex-1 text-sm text-[#999999]"
+                >
+                  {review.reviewText}
+                </p>
+                <div className="mt-6 flex items-center gap-4">
+                  <img
+                    src={review.clientAvatarUrl}
+                    alt={review.clientName}
+                    className="h-14 w-14 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                  <div>
+                    <p
+                      data-testid={`review-name-${review.id}`}
+                      className="review-card-name font-semibold text-white"
+                    >
+                      {review.clientName}
+                    </p>
+                    <p
+                      data-testid={`review-location-${review.id}`}
+                      className="text-sm text-[#666666]"
+                    >
+                      {review.clientLocation}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+      </div>
+
+      <div className="mt-8 flex items-center justify-center gap-3">
         <button
           type="button"
           onClick={goLeft}
           disabled={!canGoLeft}
           aria-label="Previous reviews"
           data-testid="testimonials-prev-arrow"
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoLeft
               ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
@@ -95,97 +175,13 @@ export function Testimonials({
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
-
-        <div
-          className="grid flex-1 gap-6"
-          style={{ gridTemplateColumns: `repeat(${cardsVisible}, minmax(0, 1fr))` }}
-          data-testid="reviews-grid"
-        >
-          {isLoading
-            ? Array.from({ length: cardsVisible }).map((_, i) => (
-                <div
-                  key={`skeleton-${i}`}
-                  data-testid="review-skeleton"
-                  className="h-[260px] animate-pulse md:h-[280px] lg:h-[300px]"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-full bg-zinc-800" />
-                    <div className="flex flex-col gap-2">
-                      <div className="h-4 w-24 rounded bg-zinc-800" />
-                      <div className="h-3 w-20 rounded bg-zinc-800" />
-                    </div>
-                  </div>
-                  <div className="mt-4 flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <div key={j} className="h-5 w-5 rounded bg-zinc-800" />
-                    ))}
-                  </div>
-                  <div className="mt-4 h-4 w-full rounded bg-zinc-800" />
-                  <div className="mt-2 h-4 w-3/4 rounded bg-zinc-800" />
-                </div>
-              ))
-            : visibleCards.map((review) => (
-                <article
-                  key={review.id}
-                  data-testid="review-card"
-                  className="flex h-[260px] flex-col md:h-[280px] lg:h-[300px]"
-                >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={review.clientAvatarUrl}
-                      alt={review.clientName}
-                      className="h-14 w-14 rounded-full object-cover"
-                      loading="lazy"
-                    />
-                    <div>
-                      <h3
-                        data-testid={`review-name-${review.id}`}
-                        className="font-semibold text-white"
-                      >
-                        {review.clientName}
-                      </h3>
-                      {review.propertyTitle && (
-                        <p
-                          data-testid={`review-property-${review.id}`}
-                          className="text-sm text-[#666666]"
-                        >
-                          {review.propertyTitle}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    className="mt-4 flex gap-0.5"
-                    role="img"
-                    aria-label={`${review.rating} out of 5 stars`}
-                    data-testid={`review-stars-${review.id}`}
-                  >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-5 w-5 ${
-                          i < review.rating ? "fill-[#703BF7] text-[#703BF7]" : "text-zinc-700"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p
-                    data-testid={`review-text-${review.id}`}
-                    className="mt-4 line-clamp-3 text-sm text-[#999999]"
-                  >
-                    {review.reviewText}
-                  </p>
-                </article>
-              ))}
-        </div>
-
         <button
           type="button"
           onClick={goRight}
           disabled={!canGoRight}
           aria-label="Next reviews"
           data-testid="testimonials-next-arrow"
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoRight
               ? "bg-zinc-800 text-white hover:bg-zinc-700"
               : "cursor-not-allowed bg-zinc-900 text-zinc-600"
