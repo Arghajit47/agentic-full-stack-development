@@ -4,8 +4,7 @@ import Image from "next/image";
 import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
 import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop";
+const HERO_IMAGE = "/images/hero-building.png";
 
 const DEFAULT_FEATURES: HeroFeature[] = [
   { title: "Find Your Dream Home", description: "" },
@@ -150,18 +149,18 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
 
           <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row md:mt-8 md:gap-4">
             <a
-              href={data.primaryCta.href}
-              data-testid="hero-browse-properties"
-              className="inline-flex items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-black"
-            >
-              {data.primaryCta.text}
-            </a>
-            <a
               href={data.secondaryCta.href}
               data-testid="hero-learn-more"
               className="inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-zinc-500 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               {data.secondaryCta.text}
+            </a>
+            <a
+              href={data.primaryCta.href}
+              data-testid="hero-browse-properties"
+              className="inline-flex items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              {data.primaryCta.text}
             </a>
           </div>
 
@@ -212,7 +211,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               data-testid="hero-image"
             />
           </div>
-          <div className="absolute bottom-4 left-4 md:bottom-8 md:left-8 lg:bottom-12 lg:left-12">
+          <div className="absolute right-4 top-4 md:right-8 md:top-8 lg:right-12 lg:top-12">
             <DiscoverBadge />
           </div>
         </div>
