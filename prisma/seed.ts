@@ -123,6 +123,49 @@ const REVIEW_TEXTS = [
   "The virtual tours saved us so much time. Found our home within two weeks.",
 ];
 
+const FIGMA_REVIEWS = [
+  {
+    clientName: "Wade Warren",
+    clientLocation: "USA, California",
+    clientAvatarUrl: "/images/reviewers/wade-warren.jpg",
+    rating: 5,
+    reviewTitle: "Exceptional Service!",
+    reviewText: "Our experience with Estatein was outstanding. Their team's dedication and professionalism made finding our dream home a breeze. Highly recommended!",
+  },
+  {
+    clientName: "Emelie Thomson",
+    clientLocation: "USA, Florida",
+    clientAvatarUrl: "/images/reviewers/emelie-thomson.jpg",
+    rating: 5,
+    reviewTitle: "Efficient and Reliable",
+    reviewText: "Estatein provided us with top-notch service. They helped us sell our property quickly and at a great price. We couldn't be happier with the results.",
+  },
+  {
+    clientName: "John Mans",
+    clientLocation: "USA, Nevada",
+    clientAvatarUrl: "/images/reviewers/john-mans.jpg",
+    rating: 5,
+    reviewTitle: "Trusted Advisors",
+    reviewText: "The Estatein team guided us through the entire buying process. Their knowledge and commitment to our needs were impressive. Thank you for your support!",
+  },
+  {
+    clientName: "Emily Raynald",
+    clientLocation: "France, Rennes",
+    clientAvatarUrl: "/images/reviewers/emily-raynald.jpg",
+    rating: 5,
+    reviewTitle: "Exceptional Service!",
+    reviewText: "Estatein made buying our first home a breeze. The team was professional, attentive, and guided us every step of the way. Highly recommend!",
+  },
+  {
+    clientName: "Maksym Voznichka",
+    clientLocation: "Ukraine, Odessa",
+    clientAvatarUrl: "/images/reviewers/maksym-voznichka.jpg",
+    rating: 5,
+    reviewTitle: "Trusted Advisors",
+    reviewText: "Exceptional service from Estatein! They found us the perfect property within our budget and handled all the details seamlessly. Truly a stress-free experience.",
+  },
+];
+
 function slugify(title: string): string {
   return title
     .toLowerCase()
@@ -217,15 +260,21 @@ async function main() {
   }
 
   const propertyTitles = properties.map((p) => p.title);
-  const reviews = REVIEW_NAMES.map((clientName, i) => ({
-    clientName,
-    clientLocation: REVIEW_LOCATIONS[i % REVIEW_LOCATIONS.length],
-    clientAvatarUrl: avatarUrl(clientName),
-    rating: i < 5 ? [5, 5, 4, 5, 4][i] : (i % 5) + 1,
-    reviewTitle: REVIEW_TITLES[i % REVIEW_TITLES.length],
-    reviewText: REVIEW_TEXTS[i % REVIEW_TEXTS.length],
-    propertyTitle: i % 4 === 0 ? null : propertyTitles[i % propertyTitles.length],
-  }));
+  const reviews = REVIEW_NAMES.map((clientName, i) => {
+    const propertyTitle = i % 4 === 0 ? null : propertyTitles[i % propertyTitles.length];
+    if (i < FIGMA_REVIEWS.length) {
+      return { ...FIGMA_REVIEWS[i], propertyTitle };
+    }
+    return {
+      clientName,
+      clientLocation: REVIEW_LOCATIONS[i % REVIEW_LOCATIONS.length],
+      clientAvatarUrl: avatarUrl(clientName),
+      rating: (i % 5) + 1,
+      reviewTitle: REVIEW_TITLES[i % REVIEW_TITLES.length],
+      reviewText: REVIEW_TEXTS[i % REVIEW_TEXTS.length],
+      propertyTitle,
+    };
+  });
 
   for (const r of reviews) {
     await prisma.review.create({ data: r });
