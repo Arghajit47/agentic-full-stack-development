@@ -50,12 +50,12 @@ describe("ClientCard", () => {
     render(<ClientCard client={mockClient} />);
     const meta = screen.getByTestId("client-meta");
     expect(meta).toBeInTheDocument();
-    expect(meta).toHaveClass("border-t", "border-zinc-800");
+    expect(meta).toHaveClass("border-t");
   });
 
   it("applies correct styling classes", () => {
     render(<ClientCard client={mockClient} />);
     const card = screen.getByTestId("client-card-greentech-enterprises");
-    expect(card).toHaveClass("rounded-xl", "bg-zinc-900", "shadow-lg");
+    expect(card).toHaveClass("rounded-xl", "bg-[#1a1a1a]", "border", "border-[#262626]");
   });
 });

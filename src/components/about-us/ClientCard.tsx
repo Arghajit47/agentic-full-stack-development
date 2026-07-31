@@ -8,12 +8,12 @@ export function ClientCard({ client }: ClientCardProps) {
   return (
     <article
       data-testid={`client-card-${client.company.toLowerCase().replace(/\s+/g, "-")}`}
-      className="relative rounded-xl bg-zinc-900 p-6 shadow-lg md:p-8"
+      className="relative rounded-xl border border-[#262626] bg-[#1a1a1a] p-6"
     >
       {/* Since Label */}
       <p
         data-testid="client-since"
-        className="text-sm text-zinc-400 md:text-base"
+        className="text-xs text-[#8C8C8C]"
       >
         {client.since}
       </p>
@@ -22,7 +22,7 @@ export function ClientCard({ client }: ClientCardProps) {
       <div className="mt-4 flex items-start justify-between gap-4">
         <h3
           data-testid="client-company"
-          className="text-xl font-semibold text-white md:text-2xl lg:text-3xl"
+          className="text-base font-semibold text-white"
         >
           {client.company}
         </h3>
@@ -44,20 +44,20 @@ export function ClientCard({ client }: ClientCardProps) {
         className="mt-6 flex items-center gap-4 border-t border-zinc-800 pt-4"
       >
         <div className="flex-1">
-          <p className="text-xs text-zinc-500 md:text-sm">Domain</p>
+          <p className="text-xs text-[#8C8C8C]">Domain</p>
           <p
             data-testid="client-domain"
-            className="mt-1 text-sm text-white md:text-base"
+            className="mt-1 text-sm text-white"
           >
             {client.domain}
           </p>
         </div>
         <div className="h-10 w-px bg-zinc-700" aria-hidden="true" />
         <div className="flex-1">
-          <p className="text-xs text-zinc-500 md:text-sm">Category</p>
+          <p className="text-xs text-[#8C8C8C]">Category</p>
           <p
             data-testid="client-category"
-            className="mt-1 text-sm text-white md:text-base"
+            className="mt-1 text-sm text-white"
           >
             {client.category}
           </p>
