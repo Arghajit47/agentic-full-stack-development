@@ -120,6 +120,29 @@ export class ApiHelper {
       queryParams
     );
   }
+
+  assertDefined(value: unknown, label = "value"): void {
+    expect(value, `${label} should be defined`).toBeDefined();
+  }
+
+  assertIsArray(value: unknown, label = "response"): void {
+    expect(Array.isArray(value), `${label} should be an array`).toBe(true);
+  }
+
+  assertSchemaValid(parsed: { success: boolean; error?: { format?: () => unknown } }, label = "schema"): void {
+    expect(
+      parsed.success,
+      `${label} validation failed: ${JSON.stringify(parsed.error?.format?.())}`
+    ).toBe(true);
+  }
+
+  assertNotNull(value: unknown, label = "value"): void {
+    expect(value, `${label} should not be null`).not.toBeNull();
+  }
+
+  assertResponseStatus(status: number, expected: number, label = "response"): void {
+    expect(status, `${label} status should be ${expected}`).toBe(expected);
+  }
 }
 
 const propertySchema = z.object({

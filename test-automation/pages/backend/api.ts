@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { ApiHelper } from "@base/api-base";
 import {
   API_PATHS,
@@ -19,63 +18,45 @@ export class BackendApi {
 
   async validateFeaturedPropertiesApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.PROPERTIES_FEATURED);
-    expect(Array.isArray(data), "Featured properties should return an array").toBe(true);
+    this.apiHelper.assertIsArray(data, "Featured properties");
 
     for (const item of data) {
       const parsed = propertySchema.safeParse(item);
-      expect(
-        parsed.success,
-        `Featured property schema error: ${JSON.stringify(parsed.error?.format())}`
-      ).toBe(true);
+      this.apiHelper.assertSchemaValid(parsed, "Featured property schema");
     }
   }
 
   async validateFeaturedReviewsApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.REVIEWS_FEATURED);
-    expect(Array.isArray(data), "Featured reviews should return an array").toBe(true);
+    this.apiHelper.assertIsArray(data, "Featured reviews");
 
     for (const item of data) {
       const parsed = reviewSchema.safeParse(item);
-      expect(
-        parsed.success,
-        `Featured review schema error: ${JSON.stringify(parsed.error?.format())}`
-      ).toBe(true);
+      this.apiHelper.assertSchemaValid(parsed, "Featured review schema");
     }
   }
 
   async validatePropertiesApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.PROPERTIES);
     const parsed = propertiesResponseSchema.safeParse(data);
-    expect(
-      parsed.success,
-      `Properties response schema error: ${JSON.stringify(parsed.error?.format())}`
-    ).toBe(true);
+    this.apiHelper.assertSchemaValid(parsed, "Properties response schema");
   }
 
   async validateSettingsApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.SETTINGS);
     const parsed = settingsSchema.safeParse(data);
-    expect(
-      parsed.success,
-      `Settings response schema error: ${JSON.stringify(parsed.error?.format())}`
-    ).toBe(true);
+    this.apiHelper.assertSchemaValid(parsed, "Settings response schema");
   }
 
   async validateServicesApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.SERVICES);
     const parsed = servicesSchema.safeParse(data);
-    expect(
-      parsed.success,
-      `Services response schema error: ${JSON.stringify(parsed.error?.format())}`
-    ).toBe(true);
+    this.apiHelper.assertSchemaValid(parsed, "Services response schema");
   }
 
   async validateAboutUsApi(): Promise<void> {
     const data = await this.apiHelper.getRequest(API_PATHS.ABOUT_US);
     const parsed = aboutUsSchema.safeParse(data);
-    expect(
-      parsed.success,
-      `About Us response schema error: ${JSON.stringify(parsed.error?.format())}`
-    ).toBe(true);
+    this.apiHelper.assertSchemaValid(parsed, "About Us response schema");
   }
 }

@@ -7,7 +7,7 @@ import {
   API_PATHS,
 } from "@constants/index";
 import { ABOUT_US_LOCATORS } from "@locators/about-us-locators";
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 
 export interface AboutUsApiData {
@@ -122,12 +122,9 @@ export class AboutUsPage {
       achievements.body
     );
 
-    const page = this.initializationPage.page;
-    await expect(page.locator(ABOUT_US_LOCATORS.journeyStat)).toHaveCount(journey.stats.length);
-    await expect(page.locator(ABOUT_US_LOCATORS.valuesCard)).toHaveCount(values.cards.length);
-    await expect(page.locator(ABOUT_US_LOCATORS.achievementsCard)).toHaveCount(
-      achievements.cards.length
-    );
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.journeyStat, journey.stats.length);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.valuesCard, values.cards.length);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.achievementsCard, achievements.cards.length);
   }
 
   async assertTeamMemberOrderMatchesApi(): Promise<void> {
@@ -136,46 +133,38 @@ export class AboutUsPage {
     if (!data) throw new Error("About Us API returned null data");
 
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
     const members = data.team.members;
 
-    await expect(page.locator(ABOUT_US_LOCATORS.teamMember)).toHaveCount(members.length);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.teamMember, members.length);
 
     for (const [index, member] of members.entries()) {
-      const card = page.locator(ABOUT_US_LOCATORS.teamMember).nth(index);
-      await expect(card).toContainText(member.name);
-      await expect(card).toContainText(member.role);
+      await this.initializationPage.expectTextContains(ABOUT_US_LOCATORS.teamMember, member.name, index);
+      await this.initializationPage.expectTextContains(ABOUT_US_LOCATORS.teamMember, member.role, index);
     }
   }
 
   async assertTeamCardStyling(): Promise<void> {
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
-    const firstCard = page.locator(ABOUT_US_LOCATORS.teamMember).first();
-
-    const bg = await firstCard.evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe("rgb(26, 26, 26)");
-
-    const border = await firstCard.evaluate((el) => getComputedStyle(el).borderColor);
-    expect(border).toBe("rgb(38, 38, 38)");
-
-    const roleEl = firstCard.locator("p").first();
-    const roleColor = await roleEl.evaluate((el) => getComputedStyle(el).color);
-    expect(roleColor).toBe("rgb(140, 140, 140)");
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.teamMember, 0, "background-color", "rgb(26, 26, 26)"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.teamMember, 0, "border-color", "rgb(38, 38, 38)"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.teamMemberRole, 0, "color", "rgb(140, 140, 140)"
+    );
   }
 
   async assertTeamPhotosLoad(): Promise<void> {
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
 
     // Each team member must have a rendered image — verified via data-testid on the <img>
-    const images = page.locator(ABOUT_US_LOCATORS.teamMemberImage);
-    await expect(images).toHaveCount(4);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.teamMemberImage, 4);
 
     // Legacy .png path must not appear as a data-testid (would indicate stale seed data)
-    const pngImage = page.locator('[data-testid="team-member-image-sarah-johnson"]');
     // src should encode a .jpg path, not .png — verify the data-testid exists (image rendered)
-    await expect(pngImage).toBeVisible();
+    await this.initializationPage.expectVisible('[data-testid="team-member-image-sarah-johnson"]');
   }
 
   async assertOurClientsSection(): Promise<void> {
@@ -207,15 +196,10 @@ export class AboutUsPage {
       clients.subheading
     );
 
-    const page = this.initializationPage.page;
-    await expect(page.locator(ABOUT_US_LOCATORS.clientCard)).toHaveCount(
-      clients.testimonials.length
-    );
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.clientCard, clients.testimonials.length);
 
     for (const [index, testimonial] of clients.testimonials.entries()) {
-      await expect(page.locator(ABOUT_US_LOCATORS.clientCompany).nth(index)).toHaveText(
-        testimonial.company
-      );
+      await this.initializationPage.expectText(ABOUT_US_LOCATORS.clientCompany, testimonial.company, index);
     }
   }
 
@@ -225,34 +209,28 @@ export class AboutUsPage {
     if (!data) throw new Error("About Us API returned null data");
 
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
     const testimonials = data.clients.testimonials;
 
-    await expect(page.locator(ABOUT_US_LOCATORS.clientCard)).toHaveCount(testimonials.length);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.clientCard, testimonials.length);
     for (const [index, testimonial] of testimonials.entries()) {
-      await expect(page.locator(ABOUT_US_LOCATORS.clientCompany).nth(index)).toHaveText(
-        testimonial.company
-      );
+      await this.initializationPage.expectText(ABOUT_US_LOCATORS.clientCompany, testimonial.company, index);
     }
   }
 
   async assertClientCardStyling(): Promise<void> {
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
-    const firstCard = page.locator(ABOUT_US_LOCATORS.clientCard).first();
-
-    const bg = await firstCard.evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe("rgb(26, 26, 26)");
-
-    const border = await firstCard.evaluate((el) => getComputedStyle(el).borderColor);
-    expect(border).toBe("rgb(38, 38, 38)");
-
-    const sinceEl = firstCard.locator('[data-testid="client-since"]');
-    const sinceColor = await sinceEl.evaluate((el) => getComputedStyle(el).color);
-    expect(sinceColor).toBe("rgb(140, 140, 140)");
-
-    const sinceFontSize = await sinceEl.evaluate((el) => getComputedStyle(el).fontSize);
-    expect(sinceFontSize).toBe("12px");
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.clientCard, 0, "background-color", "rgb(26, 26, 26)"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.clientCard, 0, "border-color", "rgb(38, 38, 38)"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.clientSince, 0, "color", "rgb(140, 140, 140)"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.clientSince, 0, "font-size", "12px"
+    );
   }
 
   async assertLoadingSkeleton(): Promise<void> {
@@ -294,17 +272,12 @@ export class AboutUsPage {
 
   async assertResponsiveCardCounts(): Promise<void> {
     await this.navigateToAboutUs();
-    const page = this.initializationPage.page;
 
     await this.initializationPage.setViewport({ width: 375, height: 667 });
-    await expect(page.locator(ABOUT_US_LOCATORS.valuesCard)).toHaveCount(
-      ABOUT_US_COUNTS.VALUE_CARDS
-    );
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.valuesCard, ABOUT_US_COUNTS.VALUE_CARDS);
 
     await this.initializationPage.setViewport({ width: 768, height: 1024 });
-    await expect(page.locator(ABOUT_US_LOCATORS.achievementsCard)).toHaveCount(
-      ABOUT_US_COUNTS.ACHIEVEMENT_CARDS
-    );
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.achievementsCard, ABOUT_US_COUNTS.ACHIEVEMENT_CARDS);
   }
 
   async assertNoConsoleErrors(): Promise<void> {
