@@ -105,7 +105,7 @@ export function Testimonials({
               <article
                 key={review.id}
                 data-testid="review-card"
-                className="flex h-[260px] flex-col rounded-xl border border-zinc-800/60 p-6 md:h-[300px] lg:h-[340px]"
+                className="flex h-[260px] flex-col rounded-xl border border-[rgba(30,28,28,0.8)] bg-[#141414] p-6 md:h-[300px] lg:h-[340px]"
               >
                 <div
                   className="flex gap-0.5"
@@ -169,8 +169,8 @@ export function Testimonials({
           data-testid="testimonials-prev-arrow"
           className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoLeft
-              ? "bg-zinc-800 text-white hover:bg-zinc-700"
-              : "cursor-not-allowed bg-zinc-900 text-zinc-600"
+              ? "bg-[#262626] text-white hover:bg-zinc-700"
+              : "cursor-not-allowed bg-[#262626] text-zinc-600"
           }`}
         >
           <ChevronLeft className="h-5 w-5" />
@@ -183,8 +183,8 @@ export function Testimonials({
           data-testid="testimonials-next-arrow"
           className={`flex h-10 w-10 items-center justify-center rounded-full ${
             canGoRight
-              ? "bg-zinc-800 text-white hover:bg-zinc-700"
-              : "cursor-not-allowed bg-zinc-900 text-zinc-600"
+              ? "bg-[#262626] text-white hover:bg-zinc-700"
+              : "cursor-not-allowed bg-[#262626] text-zinc-600"
           }`}
         >
           <ChevronRight className="h-5 w-5" />

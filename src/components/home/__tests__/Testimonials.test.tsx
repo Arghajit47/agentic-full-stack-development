@@ -66,7 +66,7 @@ describe("Testimonials", () => {
 
   it("renders avatar image in each card", () => {
     render(<Testimonials data={testimonials} />);
-    const images = screen.getAllByRole("img", { name: /Sarah|Michael|Emily/i });
+    const images = screen.getAllByRole("img", { name: /Wade|Emelie|John/i });
     expect(images).toHaveLength(3);
   });
 
