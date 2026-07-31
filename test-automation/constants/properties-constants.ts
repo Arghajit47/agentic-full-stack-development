@@ -2,7 +2,7 @@ export const PROPERTIES_TEXT = {
   HEADING: "Find Your Dream Property",
   SUBHEADING:
     "Welcome to Estatein, where your dream property awaits in every corner of our beautiful world. Explore our curated selection of properties, each offering a unique story and a chance to redefine your life. With categories to suit every dreamer, your journey",
-  SEARCH_PLACEHOLDER: "Search For A Property",
+  SEARCH_PLACEHOLDER: "Search Properties",
   SEARCH_SUBMIT_TEXT: "Find Property",
   NO_PROPERTIES_TEXT: "No properties found",
 } as const;

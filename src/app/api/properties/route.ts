@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         where: whereClause,
         skip,
         take: limit,
-        orderBy: { createdAt: "desc" },
+        orderBy: { id: "asc" },
       }),
       prisma.property.count({ where: whereClause }),
     ]);
