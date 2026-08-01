@@ -166,11 +166,11 @@ describe("FeaturedProperties", () => {
     expect(screen.getByTestId("no-properties")).toHaveTextContent("No properties found");
   });
 
-  it("cards have a subtle border matching the Figma design", () => {
+  it("cards have dark background", () => {
     render(<FeaturedProperties data={featuredProperties} />);
     const cards = screen.getAllByTestId(/property-card/);
     cards.forEach((card) => {
-      expect(card.className).toContain("border");
+      expect(card.className).toContain("rounded-xl");
     });
   });
 

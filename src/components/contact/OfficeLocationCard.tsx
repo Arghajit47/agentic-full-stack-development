@@ -26,7 +26,7 @@ export function OfficeLocationCard({ office }: OfficeLocationCardProps) {
   return (
     <div
       data-testid={`office-card-${office.id}`}
-      className="flex flex-col rounded-lg bg-zinc-900 p-6"
+      className="flex flex-col rounded-lg bg-zinc-900 p-6 transition-colors"
     >
       {/* Office Name */}
       <h3

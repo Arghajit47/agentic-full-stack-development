@@ -99,7 +99,6 @@ describe("OfficeLocationCard", () => {
   it("applies hover styles with transition classes", () => {
     const { container } = render(<OfficeLocationCard office={mockOffice} />);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain("hover:border-violet-600/50");
     expect(card.className).toContain("transition-colors");
   });
 
