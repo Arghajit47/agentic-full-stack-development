@@ -230,6 +230,34 @@ export class HomePage {
     expect(rightSrc).toContain("abstract-design-right");
   }
 
+  async assertDiscoverBadgePosition(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+
+    // Mobile (375px): badge must be on the LEFT side of the hero image
+    await this.initializationPage.setViewport({ width: 375, height: 812 });
+    const badge375 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.discoverBadge);
+    const image375 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.heroImage);
+    await expect(badge375).toBeVisible();
+    const badgeBox375 = await badge375.boundingBox();
+    const imageBox375 = await image375.boundingBox();
+    expect(badgeBox375).not.toBeNull();
+    expect(imageBox375).not.toBeNull();
+    // Badge should be in the left half of the image
+    expect(badgeBox375!.x).toBeLessThan(imageBox375!.x + imageBox375!.width / 2);
+
+    // Desktop (1440px): badge must be on the RIGHT side of the hero image
+    await this.initializationPage.setViewport({ width: 1440, height: 900 });
+    const badge1440 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.discoverBadge);
+    const image1440 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.heroImage);
+    await expect(badge1440).toBeVisible();
+    const badgeBox1440 = await badge1440.boundingBox();
+    const imageBox1440 = await image1440.boundingBox();
+    expect(badgeBox1440).not.toBeNull();
+    expect(imageBox1440).not.toBeNull();
+    // Badge should be in the right half of the image
+    expect(badgeBox1440!.x).toBeGreaterThan(imageBox1440!.x + imageBox1440!.width / 2);
+  }
+
   async assertFeaturedNavDots(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     await this.initializationPage.setViewport({ width: 375, height: 812 });

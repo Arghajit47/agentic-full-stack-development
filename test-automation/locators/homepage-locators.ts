@@ -24,4 +24,6 @@ export const HOMEPAGE_LOCATORS = {
     prevArrow: '[data-testid="prev-arrow"]',
     nextArrow: '[data-testid="next-arrow"]',
     viewAllMobileCta: '[data-testid="view-all-properties-mobile-cta"]',
+    discoverBadge: '[data-testid="hero-discover-badge"]',
+    heroImage: '[data-testid="hero-image"]',
 } as const;
