@@ -7,6 +7,7 @@ import {
   VIEWPORTS,
   FEATURED_GRID_COLS,
   TESTIMONIALS_GRID_COLS,
+  HERO_GRID_COLS,
   ERROR_MESSAGES,
   INTEGRATION_COUNTS,
   API_PATHS,
@@ -55,6 +56,15 @@ export class HomePage {
       HOMEPAGE_LOCATORS.testimonialsGrid,
       expected,
       `testimonials grid ${key}`
+    );
+  }
+
+  async assertHeroGridColumns(key: ViewportKey): Promise<void> {
+    const expected = HERO_GRID_COLS[key];
+    await this.initializationPage.assertGridTrackCount(
+      HOMEPAGE_LOCATORS.heroGrid,
+      expected,
+      `hero grid ${key}`
     );
   }
 

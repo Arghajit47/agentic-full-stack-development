@@ -33,6 +33,30 @@ test("Home Page components, responsive layout", async ({ homepage }) => {
   });
 });
 
+test("KAN-102: Hero section grid columns at all breakpoints", async ({ homepage }) => {
+  await homepage.navigateHomePage();
+  await test.step("WIDE (1920px): hero is two-column", async () => {
+    await homepage.setViewport("WIDE");
+    await homepage.assertHeroGridColumns("WIDE");
+  });
+  await test.step("DESKTOP (1440px): hero is two-column", async () => {
+    await homepage.setViewport("DESKTOP");
+    await homepage.assertHeroGridColumns("DESKTOP");
+  });
+  await test.step("LAPTOP (1024px): hero is two-column", async () => {
+    await homepage.setViewport("LAPTOP");
+    await homepage.assertHeroGridColumns("LAPTOP");
+  });
+  await test.step("TABLET (768px): hero is single-column", async () => {
+    await homepage.setViewport("TABLET");
+    await homepage.assertHeroGridColumns("TABLET");
+  });
+  await test.step("MOBILE (375px): hero is single-column", async () => {
+    await homepage.setViewport("MOBILE");
+    await homepage.assertHeroGridColumns("MOBILE");
+  });
+});
+
 test("Home page skeleton loading", async ({ homepage }) => {
   await homepage.assertLoadingSkeletons();
 });

@@ -18,4 +18,6 @@ export const HOMEPAGE_LOCATORS = {
     testimonialsHeading: '[data-testid="testimonials-heading"]',
     testimonialsSubheading: '[data-testid="testimonials-subheading"]',
     homeError: '[data-testid="home-error"]',
+    heroSection: '[data-testid="hero-section"]',
+    heroGrid: '[data-testid="hero-section"] > div',
 } as const;
