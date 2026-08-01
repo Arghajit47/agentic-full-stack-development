@@ -73,3 +73,7 @@ test("Home page console error handling and image error handling", async ({ homep
   await homepage.assertNoConsoleErrors();
   await homepage.assertNoImage404s();
 });
+
+test("KAN-118: Navbar banner strip has abstract design background image", async ({ homepage }) => {
+  await homepage.assertNavbarBannerAbstractDesign();
+});

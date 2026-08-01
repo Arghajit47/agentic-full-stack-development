@@ -208,6 +208,14 @@ export class HomePage {
     );
   }
 
+  async assertNavbarBannerAbstractDesign(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    const banner = this.initializationPage.page.locator('[data-testid="navbar"] > div').first();
+    await expect(banner).toBeVisible();
+    const bgImage = await banner.evaluate((el) => getComputedStyle(el).backgroundImage);
+    expect(bgImage).toContain("abstract-design.png");
+  }
+
   async assertFeaturedNavDots(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     await this.initializationPage.setViewport({ width: 375, height: 812 });
