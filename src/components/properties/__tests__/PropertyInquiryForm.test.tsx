@@ -28,43 +28,48 @@ describe("PropertyInquiryForm", () => {
   it("should display the heading and subheading", () => {
     render(<PropertyInquiryForm {...mockProps} />);
     expect(screen.getByTestId("inquiry-form-heading")).toHaveTextContent(
-      "Interested in This Property?"
+      "Inquire About Beautiful Test Property"
     );
     expect(screen.getByTestId("inquiry-form-subheading")).toHaveTextContent(
-      "Fill out the form below and our team will contact you shortly."
+      "Interested in this property? Fill out the form below"
     );
   });
 
   it("should render all form fields", () => {
     render(<PropertyInquiryForm {...mockProps} />);
-    expect(screen.getByTestId("input-name")).toBeInTheDocument();
+    expect(screen.getByTestId("input-first-name")).toBeInTheDocument();
+    expect(screen.getByTestId("input-last-name")).toBeInTheDocument();
     expect(screen.getByTestId("input-email")).toBeInTheDocument();
     expect(screen.getByTestId("input-phone")).toBeInTheDocument();
     expect(screen.getByTestId("input-message")).toBeInTheDocument();
+    expect(screen.getByTestId("input-agree-terms")).toBeInTheDocument();
   });
 
   it("should render submit button", () => {
     render(<PropertyInquiryForm {...mockProps} />);
     const submitButton = screen.getByTestId("submit-button");
     expect(submitButton).toBeInTheDocument();
-    expect(submitButton).toHaveTextContent("Submit Inquiry");
+    expect(submitButton).toHaveTextContent("Send Your Message");
   });
 
   it("should update form fields on input", async () => {
     const user = userEvent.setup();
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name") as HTMLInputElement;
+    const firstNameInput = screen.getByTestId("input-first-name") as HTMLInputElement;
+    const lastNameInput = screen.getByTestId("input-last-name") as HTMLInputElement;
     const emailInput = screen.getByTestId("input-email") as HTMLInputElement;
     const phoneInput = screen.getByTestId("input-phone") as HTMLInputElement;
     const messageInput = screen.getByTestId("input-message") as HTMLTextAreaElement;
 
-    await user.type(nameInput, "John Doe");
+    await user.type(firstNameInput, "John");
+    await user.type(lastNameInput, "Doe");
     await user.type(emailInput, "john@example.com");
     await user.type(phoneInput, "1234567890");
     await user.type(messageInput, "I am interested in this property");
 
-    expect(nameInput.value).toBe("John Doe");
+    expect(firstNameInput.value).toBe("John");
+    expect(lastNameInput.value).toBe("Doe");
     expect(emailInput.value).toBe("john@example.com");
     expect(phoneInput.value).toBe("1234567890");
     expect(messageInput.value).toBe("I am interested in this property");
@@ -74,12 +79,12 @@ describe("PropertyInquiryForm", () => {
     const user = userEvent.setup();
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name");
-    await user.click(nameInput);
+    const firstNameInput = screen.getByTestId("input-first-name");
+    await user.click(firstNameInput);
     await user.tab();
 
     await waitFor(() => {
-      expect(screen.getByTestId("error-name")).toHaveTextContent("Name is required");
+      expect(screen.getByTestId("error-first-name")).toHaveTextContent("First name is required");
     });
   });
 
@@ -132,18 +137,18 @@ describe("PropertyInquiryForm", () => {
     const user = userEvent.setup();
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name");
-    await user.click(nameInput);
+    const firstNameInput = screen.getByTestId("input-first-name");
+    await user.click(firstNameInput);
     await user.tab();
 
     await waitFor(() => {
-      expect(screen.getByTestId("error-name")).toBeInTheDocument();
+      expect(screen.getByTestId("error-first-name")).toBeInTheDocument();
     });
 
-    await user.type(nameInput, "John Doe");
+    await user.type(firstNameInput, "John");
 
     await waitFor(() => {
-      expect(screen.queryByTestId("error-name")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("error-first-name")).not.toBeInTheDocument();
     });
   });
 
@@ -156,7 +161,7 @@ describe("PropertyInquiryForm", () => {
 
     expect(mockProps.onSubmit).not.toHaveBeenCalled();
     await waitFor(() => {
-      expect(screen.getByTestId("error-name")).toBeInTheDocument();
+      expect(screen.getByTestId("error-first-name")).toBeInTheDocument();
       expect(screen.getByTestId("error-email")).toBeInTheDocument();
       expect(screen.getByTestId("error-phone")).toBeInTheDocument();
       expect(screen.getByTestId("error-message")).toBeInTheDocument();
@@ -167,23 +172,27 @@ describe("PropertyInquiryForm", () => {
     const user = userEvent.setup();
     render(<PropertyInquiryForm {...mockProps} />);
 
-    await user.type(screen.getByTestId("input-name"), "John Doe");
+    await user.type(screen.getByTestId("input-first-name"), "John");
+    await user.type(screen.getByTestId("input-last-name"), "Doe");
     await user.type(screen.getByTestId("input-email"), "john@example.com");
     await user.type(screen.getByTestId("input-phone"), "1234567890");
     await user.type(
       screen.getByTestId("input-message"),
       "I am interested in this property"
     );
+    await user.click(screen.getByTestId("input-agree-terms"));
 
     const submitButton = screen.getByTestId("submit-button");
     await user.click(submitButton);
 
     await waitFor(() => {
       expect(mockProps.onSubmit).toHaveBeenCalledWith({
-        name: "John Doe",
+        firstName: "John",
+        lastName: "Doe",
         email: "john@example.com",
         phone: "1234567890",
         message: "I am interested in this property",
+        agreeToTerms: true,
         propertySlug: "test-property-slug",
       });
     });
@@ -193,13 +202,15 @@ describe("PropertyInquiryForm", () => {
     const user = userEvent.setup();
     render(<PropertyInquiryForm {...mockProps} />);
 
-    await user.type(screen.getByTestId("input-name"), "John Doe");
+    await user.type(screen.getByTestId("input-first-name"), "John");
+    await user.type(screen.getByTestId("input-last-name"), "Doe");
     await user.type(screen.getByTestId("input-email"), "john@example.com");
     await user.type(screen.getByTestId("input-phone"), "1234567890");
     await user.type(
       screen.getByTestId("input-message"),
       "I am interested in this property"
     );
+    await user.click(screen.getByTestId("input-agree-terms"));
 
     await user.click(screen.getByTestId("submit-button"));
 
@@ -219,15 +230,19 @@ describe("PropertyInquiryForm", () => {
 
     render(<PropertyInquiryForm {...mockProps} onSubmit={slowOnSubmit} />);
 
-    const nameInput = screen.getByTestId("input-name") as HTMLInputElement;
+    const firstNameInput = screen.getByTestId("input-first-name") as HTMLInputElement;
+    const lastNameInput = screen.getByTestId("input-last-name") as HTMLInputElement;
     const emailInput = screen.getByTestId("input-email") as HTMLInputElement;
     const phoneInput = screen.getByTestId("input-phone") as HTMLInputElement;
     const messageInput = screen.getByTestId("input-message") as HTMLTextAreaElement;
+    const agreeTerms = screen.getByTestId("input-agree-terms") as HTMLInputElement;
 
-    fireEvent.change(nameInput, { target: { value: "John Doe" } });
+    fireEvent.change(firstNameInput, { target: { value: "John" } });
+    fireEvent.change(lastNameInput, { target: { value: "Doe" } });
     fireEvent.change(emailInput, { target: { value: "john@example.com" } });
     fireEvent.change(phoneInput, { target: { value: "1234567890" } });
     fireEvent.change(messageInput, { target: { value: "I am interested in this property" } });
+    fireEvent.click(agreeTerms);
 
     const submitButton = screen.getByTestId("submit-button");
     fireEvent.click(submitButton);
@@ -244,15 +259,19 @@ describe("PropertyInquiryForm", () => {
 
     render(<PropertyInquiryForm {...mockProps} onSubmit={failingOnSubmit} />);
 
-    const nameInput = screen.getByTestId("input-name") as HTMLInputElement;
+    const firstNameInput = screen.getByTestId("input-first-name") as HTMLInputElement;
+    const lastNameInput = screen.getByTestId("input-last-name") as HTMLInputElement;
     const emailInput = screen.getByTestId("input-email") as HTMLInputElement;
     const phoneInput = screen.getByTestId("input-phone") as HTMLInputElement;
     const messageInput = screen.getByTestId("input-message") as HTMLTextAreaElement;
+    const agreeTerms = screen.getByTestId("input-agree-terms") as HTMLInputElement;
 
-    fireEvent.change(nameInput, { target: { value: "John Doe" } });
+    fireEvent.change(firstNameInput, { target: { value: "John" } });
+    fireEvent.change(lastNameInput, { target: { value: "Doe" } });
     fireEvent.change(emailInput, { target: { value: "john@example.com" } });
     fireEvent.change(phoneInput, { target: { value: "1234567890" } });
     fireEvent.change(messageInput, { target: { value: "I am interested in this property" } });
+    fireEvent.click(agreeTerms);
 
     fireEvent.click(screen.getByTestId("submit-button"));
 
@@ -266,7 +285,6 @@ describe("PropertyInquiryForm", () => {
 
     const phoneInput = screen.getByTestId("input-phone");
 
-    // Test various valid phone formats
     const validPhones = [
       "1234567890",
       "+1 234 567 8900",
@@ -291,16 +309,16 @@ describe("PropertyInquiryForm", () => {
     expect(container).toHaveClass(customClass);
   });
 
-  it("should validate name minimum length", async () => {
+  it("should validate first name minimum length", async () => {
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name");
-    fireEvent.change(nameInput, { target: { value: "A" } });
-    fireEvent.blur(nameInput);
+    const firstNameInput = screen.getByTestId("input-first-name");
+    fireEvent.change(firstNameInput, { target: { value: "A" } });
+    fireEvent.blur(firstNameInput);
 
     await waitFor(() => {
-      expect(screen.getByTestId("error-name")).toHaveTextContent(
-        "Name must be at least 2 characters"
+      expect(screen.getByTestId("error-first-name")).toHaveTextContent(
+        "First name must be at least 2 characters"
       );
     });
   });
@@ -308,12 +326,12 @@ describe("PropertyInquiryForm", () => {
   it("should have proper ARIA attributes", () => {
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name");
+    const firstNameInput = screen.getByTestId("input-first-name");
     const emailInput = screen.getByTestId("input-email");
     const phoneInput = screen.getByTestId("input-phone");
     const messageInput = screen.getByTestId("input-message");
 
-    expect(nameInput).toHaveAttribute("aria-invalid", "false");
+    expect(firstNameInput).toHaveAttribute("aria-invalid", "false");
     expect(emailInput).toHaveAttribute("aria-invalid", "false");
     expect(phoneInput).toHaveAttribute("aria-invalid", "false");
     expect(messageInput).toHaveAttribute("aria-invalid", "false");
@@ -322,13 +340,13 @@ describe("PropertyInquiryForm", () => {
   it("should update ARIA attributes when errors are present", async () => {
     render(<PropertyInquiryForm {...mockProps} />);
 
-    const nameInput = screen.getByTestId("input-name");
-    fireEvent.focus(nameInput);
-    fireEvent.blur(nameInput);
+    const firstNameInput = screen.getByTestId("input-first-name");
+    fireEvent.focus(firstNameInput);
+    fireEvent.blur(firstNameInput);
 
     await waitFor(() => {
-      expect(nameInput).toHaveAttribute("aria-invalid", "true");
-      expect(nameInput).toHaveAttribute("aria-describedby", "error-name");
+      expect(firstNameInput).toHaveAttribute("aria-invalid", "true");
+      expect(firstNameInput).toHaveAttribute("aria-describedby", "error-first-name");
     });
   });
 });

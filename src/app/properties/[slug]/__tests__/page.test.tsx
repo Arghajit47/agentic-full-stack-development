@@ -200,10 +200,12 @@ describe("Property Details Page integration", () => {
       expect(screen.getByTestId("property-inquiry-form")).toBeInTheDocument();
     });
 
-    await userEvent.type(screen.getByTestId("input-name"), "QA Automation");
+    await userEvent.type(screen.getByTestId("input-first-name"), "QA");
+    await userEvent.type(screen.getByTestId("input-last-name"), "Automation");
     await userEvent.type(screen.getByTestId("input-email"), "qa+test@example.com");
     await userEvent.type(screen.getByTestId("input-phone"), "+1 555 123 4567");
     await userEvent.type(screen.getByTestId("input-message"), "I am interested in scheduling a viewing for this property.");
+    fireEvent.click(screen.getByTestId("input-agree-terms"));
 
     fireEvent.click(screen.getByTestId("submit-button"));
 
@@ -246,10 +248,12 @@ describe("Property Details Page integration", () => {
       expect(screen.getByTestId("property-inquiry-form")).toBeInTheDocument();
     });
 
-    await userEvent.type(screen.getByTestId("input-name"), "QA Automation");
+    await userEvent.type(screen.getByTestId("input-first-name"), "QA");
+    await userEvent.type(screen.getByTestId("input-last-name"), "Automation");
     await userEvent.type(screen.getByTestId("input-email"), "qa+test@example.com");
     await userEvent.type(screen.getByTestId("input-phone"), "+1 555 123 4567");
     await userEvent.type(screen.getByTestId("input-message"), "I am interested in scheduling a viewing for this property.");
+    fireEvent.click(screen.getByTestId("input-agree-terms"));
 
     fireEvent.click(screen.getByTestId("submit-button"));
 
