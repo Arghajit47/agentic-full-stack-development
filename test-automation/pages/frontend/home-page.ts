@@ -216,6 +216,20 @@ export class HomePage {
     expect(bgImage).toContain("abstract-design.png");
   }
 
+  async assertFooterCtaAbstractDesign(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    const ctaSection = this.initializationPage.page.locator('[data-testid="footer"] > div').first();
+    await expect(ctaSection).toBeVisible();
+    const leftImg = ctaSection.locator('img[src*="abstract-design-left"]');
+    const rightImg = ctaSection.locator('img[src*="abstract-design-right"]');
+    await expect(leftImg).toBeAttached();
+    await expect(rightImg).toBeAttached();
+    const leftSrc = await leftImg.getAttribute("src");
+    const rightSrc = await rightImg.getAttribute("src");
+    expect(leftSrc).toContain("abstract-design-left");
+    expect(rightSrc).toContain("abstract-design-right");
+  }
+
   async assertFeaturedNavDots(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     await this.initializationPage.setViewport({ width: 375, height: 812 });

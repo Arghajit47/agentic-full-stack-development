@@ -77,3 +77,7 @@ test("Home page console error handling and image error handling", async ({ homep
 test("KAN-118: Navbar banner strip has abstract design background image", async ({ homepage }) => {
   await homepage.assertNavbarBannerAbstractDesign();
 });
+
+test("KAN-119: Footer CTA section has abstract design left and right corner images", async ({ homepage }) => {
+  await homepage.assertFooterCtaAbstractDesign();
+});
