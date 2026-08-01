@@ -97,12 +97,14 @@ export class PropertyDetailsPage {
 
   async assertInquiryFormSubmission(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(PROPERTY_DETAILS.SLUG));
-    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.inputName);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.inputFirstName);
 
-    await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputName, PROPERTY_DETAILS.INQUIRY_NAME);
+    await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputFirstName, PROPERTY_DETAILS.INQUIRY_FIRST_NAME);
+    await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputLastName, PROPERTY_DETAILS.INQUIRY_LAST_NAME);
     await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputEmail, PROPERTY_DETAILS.INQUIRY_EMAIL);
     await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputPhone, PROPERTY_DETAILS.INQUIRY_PHONE);
     await this.initializationPage.fill(PROPERTY_DETAILS_LOCATORS.inputMessage, PROPERTY_DETAILS.INQUIRY_MESSAGE);
+    await this.initializationPage.page.check('[data-testid="input-agree-terms"]');
 
     const responsePromise = this.initializationPage.page.waitForResponse(
       (res) => res.url().includes("/api/contact/property") && res.request().method() === "POST"

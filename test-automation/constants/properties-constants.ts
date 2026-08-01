@@ -33,7 +33,8 @@ export const PROPERTIES_GRID_COLS = {
 
 export const PROPERTY_DETAILS = {
   SLUG: "seawide-serenity-villa",
-  INQUIRY_NAME: "Automation SDET",
+  INQUIRY_FIRST_NAME: "Automation",
+  INQUIRY_LAST_NAME: "SDET",
   INQUIRY_EMAIL: "sdet+automation@example.com",
   INQUIRY_PHONE: "+1 555 000 1234",
   INQUIRY_MESSAGE: "Interested in this property for automated regression testing.",

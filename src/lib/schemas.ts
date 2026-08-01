@@ -195,6 +195,23 @@ export const propertyContactSubmissionSchema = z.union([
       .max(1000, "Message too long"),
     agreeToTerms: z.boolean().refine((v) => v === true, "You must agree to the terms"),
   }),
+  // inquiry form shape used by PropertyInquiryForm on /properties/[slug]
+  z.object({
+    propertySlug: z.string().optional(),
+    firstName: z.string().min(1, "First name is required").max(100, "First name too long"),
+    lastName: z.string().min(1, "Last name is required").max(100, "Last name too long"),
+    email: z.string().email("Invalid email format").max(255, "Email too long"),
+    phone: z
+      .string()
+      .min(10, "Phone must be at least 10 digits")
+      .max(20, "Phone too long")
+      .regex(/^[0-9+\-() ]+$/, "Phone contains invalid characters"),
+    message: z
+      .string()
+      .min(10, "Message must be at least 10 characters")
+      .max(1000, "Message too long"),
+    agreeToTerms: z.literal(true, { error: "You must agree to the Terms of Use" }),
+  }),
 ]);
 
 export type PropertyContactSubmissionInput = z.infer<typeof propertyContactSubmissionSchema>;
