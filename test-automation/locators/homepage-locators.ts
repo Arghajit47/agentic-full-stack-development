@@ -20,4 +20,8 @@ export const HOMEPAGE_LOCATORS = {
     homeError: '[data-testid="home-error"]',
     heroSection: '[data-testid="hero-section"]',
     heroGrid: '[data-testid="hero-section"] > div',
+    navDots: '[data-testid="nav-dots"]',
+    prevArrow: '[data-testid="prev-arrow"]',
+    nextArrow: '[data-testid="next-arrow"]',
+    viewAllMobileCta: '[data-testid="view-all-properties-mobile-cta"]',
 } as const;

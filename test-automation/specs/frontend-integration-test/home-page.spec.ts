@@ -57,6 +57,10 @@ test("KAN-102: Hero section grid columns at all breakpoints", async ({ homepage 
   });
 });
 
+test("KAN-104: Featured Properties nav dots visible at 375px mobile; arrows below card; mobile CTA present", async ({ homepage }) => {
+  await homepage.assertFeaturedNavDots();
+});
+
 test("Home page skeleton loading", async ({ homepage }) => {
   await homepage.assertLoadingSkeletons();
 });

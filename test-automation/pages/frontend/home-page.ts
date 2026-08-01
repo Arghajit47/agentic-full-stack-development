@@ -207,4 +207,22 @@ export class HomePage {
       HOMEPAGE_LOCATORS.propertyCards
     );
   }
+
+  async assertFeaturedNavDots(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    await this.initializationPage.setViewport({ width: 375, height: 812 });
+    // Wait for SWR data to load
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.featuredSection);
+    await this.initializationPage.expectCount(HOMEPAGE_LOCATORS.propertyCards, 1);
+    // Navigation dots must be present
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.navDots);
+    // Prev arrow must be visible and below the card (not overlaid on image)
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.prevArrow);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.nextArrow);
+    // Mobile-only "View All Properties" CTA must be visible at 375px
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.viewAllMobileCta);
+    // First dot must be active (bg-[#703BF7])
+    const activeDot = await this.initializationPage.page.locator('[data-testid="nav-dot-0"]');
+    await expect(activeDot).toHaveClass(/bg-\[#703BF7\]/);
+  }
 }
