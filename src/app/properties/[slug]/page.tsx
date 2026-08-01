@@ -232,6 +232,7 @@ export default function PropertyDetailsPage() {
           <PropertyInquiryForm
             propertySlug={data.slug}
             propertyTitle={data.title}
+            propertyLocation={data.location}
             onSubmit={handleInquirySubmit}
           />
         </div>

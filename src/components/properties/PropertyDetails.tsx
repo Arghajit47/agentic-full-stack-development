@@ -29,7 +29,7 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
       {/* Description + Key Features — Two-Column Layout */}
       <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-zinc-800 md:grid-cols-2">
         {/* Left Column — Description */}
-        <div className="border-b border-zinc-800 p-12 md:border-b-0 md:border-r">
+        <div className="border-b border-zinc-800 p-6 sm:p-8 md:p-12 md:border-b-0 md:border-r">
           <h2 className="mb-4 text-2xl font-bold text-white">Description</h2>
           <p
             data-testid="property-short-description"
@@ -65,7 +65,7 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
         </div>
 
         {/* Right Column — Key Features and Amenities */}
-        <div className="p-12">
+        <div className="p-6 sm:p-8 md:p-12">
           <h2 className="mb-6 text-2xl font-bold text-white">
             Key Features and Amenities
           </h2>
