@@ -31,7 +31,7 @@ export function HowItWorks({ data }: HowItWorksProps) {
 
         <ul
           data-testid="how-it-works-grid"
-          className="mt-10 grid list-none grid-cols-1 gap-5 md:mt-12 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-10 xl:gap-x-6 2xl:gap-x-8"
+          className="mt-10 grid list-none grid-cols-1 gap-5 md:mt-12 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12 xl:gap-x-8"
         >
           {data.steps.map((step) => (
             <StepCard key={step.stepNumber} step={step} />

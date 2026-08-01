@@ -290,4 +290,34 @@ export class AboutUsPage {
   async assertNoImage404s(): Promise<void> {
     await this.initializationPage.assertNoImage404s(UI_ROUTES.ABOUT_US);
   }
+
+  async assertStepCardStyling(): Promise<void> {
+    await this.navigateToAboutUs();
+    // Wait for SWR data to render step cards
+    await this.initializationPage.expectVisible(ABOUT_US_LOCATORS.howItWorksSection);
+    await this.initializationPage.expectCount(ABOUT_US_LOCATORS.stepCard, 6);
+    // Content div must have a full border on all 4 sides (purple border per Figma)
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-top-width", "1px"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-right-width", "1px"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-bottom-width", "1px"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-left-width", "1px"
+    );
+    // Step label div must have only a left border
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-left-width", "1px"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-top-width", "0px"
+    );
+    await this.initializationPage.checkCSSProperty(
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-right-width", "0px"
+    );
+  }
 }
