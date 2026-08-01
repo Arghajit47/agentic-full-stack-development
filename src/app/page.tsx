@@ -18,7 +18,7 @@ interface Settings {
 export default function Home() {
   const mounted = useMounted();
   const router = useRouter();
-  const { data: hero, isLoading: heroLoading, error: heroError, mutate: retryHero } = useHero();
+  const { data: hero, error: heroError, mutate: retryHero } = useHero();
   const [settings, setSettings] = useState<Settings>({});
 
   const handlePropertyClick = (slug: string) => {
@@ -28,7 +28,9 @@ export default function Home() {
   // Hydration-safe initial render: server and first client paint must match.
   // After mount, reflect the real SWR loading/error state so the skeleton is shown.
   const heroData = mounted ? hero : null;
-  const heroIsLoading = mounted ? heroLoading : false;
+  // Never blank out hero image with skeleton — DEFAULT_DATA is a valid fallback
+  // and showing a skeleton after SSR causes LCP to spike (image disappears then reappears)
+  const heroIsLoading = false;
   const heroErrorState = mounted ? heroError : null;
 
   useEffect(() => {

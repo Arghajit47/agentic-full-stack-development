@@ -176,7 +176,7 @@ export function FeaturedProperties({
                   </div>
                   <div className="mt-4 flex items-end justify-between" data-testid={`property-price-${property.id}`}>
                     <div>
-                      <p className="text-xs text-[#666666]" data-testid={`price-label-${property.id}`}>
+                      <p className="text-xs text-zinc-400" data-testid={`price-label-${property.id}`}>
                         Price
                       </p>
                       <p className="text-xl font-bold text-white">

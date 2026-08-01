@@ -150,7 +150,7 @@ export function Testimonials({
                     </p>
                     <p
                       data-testid={`review-location-${review.id}`}
-                      className="text-sm text-[#666666]"
+                      className="text-sm text-zinc-400"
                     >
                       {review.clientLocation}
                     </p>

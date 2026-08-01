@@ -151,6 +151,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
             <a
               href={data.secondaryCta.href}
               data-testid="hero-learn-more"
+              aria-label={`${data.secondaryCta.text} about Estatein properties`}
               className="inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-zinc-500 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               {data.secondaryCta.text}
@@ -207,6 +208,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               alt="Modern blue glass skyscrapers"
               fill
               priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
               className="rounded-2xl object-cover"
               data-testid="hero-image"

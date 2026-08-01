@@ -156,7 +156,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-zinc-900/60 px-4 py-6 sm:px-6 lg:px-8 xl:px-12">
         <div className="mx-auto flex max-w-[1920px] flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-500 sm:gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-400 sm:gap-6">
             <span>{bottom?.copyright ?? "©2024 Estatein. All Rights Reserved."}</span>
             <Link href="/terms" className="transition-colors hover:text-white">
               {bottom?.legalText ?? "Terms & Conditions"}
