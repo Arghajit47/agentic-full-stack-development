@@ -3,6 +3,15 @@ export const HOMEPAGE_CONSTANTS = {
   NO_REVIEWS_TEXT: "No reviews yet",
 } as const;
 
+// Hero section grid columns per viewport: single-column at tablet/mobile, two at lg+.
+export const HERO_GRID_COLS = {
+  WIDE: 2,
+  DESKTOP: 2,
+  LAPTOP: 2,
+  TABLET: 1,
+  MOBILE: 1,
+} as const;
+
 // Expected grid column counts per viewport.
 export const FEATURED_GRID_COLS = {
   WIDE: 3,
