@@ -81,3 +81,7 @@ test("KAN-118: Navbar banner strip has abstract design background image", async 
 test("KAN-119: Footer CTA section has abstract design left and right corner images", async ({ homepage }) => {
   await homepage.assertFooterCtaAbstractDesign();
 });
+
+test("KAN-122: Hero discover badge is on the left at mobile and right at desktop", async ({ homepage }) => {
+  await homepage.assertDiscoverBadgePosition();
+});

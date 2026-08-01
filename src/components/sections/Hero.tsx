@@ -61,7 +61,7 @@ function DiscoverBadge() {
         </defs>
         <text fill="#a1a1aa" fontSize="10" letterSpacing="2">
           <textPath href="#circlePath" startOffset="0%">
-            {text.repeat(2)}
+            {text}
           </textPath>
         </text>
       </svg>
@@ -213,9 +213,9 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               className="rounded-2xl object-cover"
               data-testid="hero-image"
             />
-          </div>
-          <div className="absolute right-4 top-4 md:right-8 md:top-8 lg:right-12 lg:top-12">
-            <DiscoverBadge />
+            <div className="absolute left-4 top-4 lg:left-auto lg:right-8 lg:top-8">
+              <DiscoverBadge />
+            </div>
           </div>
         </div>
       </div>
