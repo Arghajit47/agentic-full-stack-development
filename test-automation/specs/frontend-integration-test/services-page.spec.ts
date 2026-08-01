@@ -36,4 +36,18 @@ test.describe("Services Page Suite", () => {
     await servicesPage.assertNoConsoleErrors();
     await servicesPage.assertNoImage404s();
   });
+
+  test("KAN-101: CTA headings are anchor links with ArrowUpRight icon", async ({ servicesPage }) => {
+    await servicesPage.navigateToServices();
+    await servicesPage.assertCtaHeadingIsLink();
+  });
+
+  test("KAN-101: CTA Learn More buttons are ghost/outline style", async ({ servicesPage }) => {
+    await servicesPage.navigateToServices();
+    await servicesPage.assertLearnMoreIsGhostButton();
+  });
+
+  test("KAN-101: Service feature cards render as 4 columns at 1920px", async ({ servicesPage }) => {
+    await servicesPage.assertServiceGridColumnsAtDesktop();
+  });
 });
