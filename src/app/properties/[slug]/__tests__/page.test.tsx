@@ -57,20 +57,29 @@ const MOCK_PROPERTY = {
 };
 
 const MOCK_PRICING = {
-  propertySlug: "modern-villa-sunset-hills",
-  breakdown: {
-    listing: { amount: 1500000, label: "Listing Price" },
-    fees: {
-      platformFee: { amount: 15000, label: "Platform Service Fee" },
-      processingFee: { amount: 450, label: "Transaction Processing Fee" },
+  success: true,
+  data: {
+    propertySlug: "modern-villa-sunset-hills",
+    additionalFees: {
+      propertyTransferTax: 25000,
+      legalFees: 3000,
+      homeInspection: 500,
+      propertyInsurance: 1200,
+      mortgageFees: "Varies",
     },
-    costs: {
-      inspectionCost: { amount: 500, label: "Property Inspection" },
-      legalFee: { amount: 1200, label: "Legal Documentation" },
-      insuranceCost: { amount: 2500, label: "Insurance Cost" },
+    monthlyCosts: {
+      propertyTaxesMonthly: 1250,
+      hoaFeeMonthly: 300,
     },
+    totalInitialCosts: {
+      downPayment: 250000,
+      downPaymentPct: 20,
+      mortgageAmount: 1000000,
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
-  totalPrice: 1520650,
+  error: null,
 };
 
 function renderPage() {

@@ -529,30 +529,25 @@ async function main() {
     await prisma.galleryImage.create({ data: image });
   }
 
-  // ─── Property Pricing (KAN-36) ────────────────────────────────────────────────
-  const propertyPricingData = properties.map((property) => {
-    const listingPrice = property.price;
-    const platformFee = Math.floor(listingPrice * 0.02); // 2% platform fee
-    const processingFee = Math.floor(listingPrice * 0.005); // 0.5% processing fee
-    const inspectionCost = 500; // Fixed inspection cost
-    const legalFee = 1500; // Fixed legal fee
-    const insuranceCost = Math.floor(listingPrice * 0.003); // 0.3% insurance
-    const totalPrice = listingPrice + platformFee + processingFee + inspectionCost + legalFee + insuranceCost;
-
-    return {
-      propertySlug: property.slug,
-      listingPrice,
-      platformFee,
-      processingFee,
-      inspectionCost,
-      legalFee,
-      insuranceCost,
-      totalPrice,
-    };
-  });
-
-  for (const pricingData of propertyPricingData) {
-    await prisma.propertyPricing.create({ data: pricingData });
+  // ─── Property Pricing (KAN-114) ──────────────────────────────────────────────
+  for (const property of properties) {
+    await prisma.propertyPricing.upsert({
+      where: { propertySlug: property.slug },
+      update: {},
+      create: {
+        propertySlug: property.slug,
+        propertyTransferTax: 25000,
+        legalFees: 3000,
+        homeInspection: 500,
+        propertyInsurance: 1200,
+        mortgageFees: 'Varies',
+        propertyTaxesMonthly: 1250,
+        hoaFeeMonthly: 300,
+        downPayment: 250000,
+        downPaymentPct: 20,
+        mortgageAmount: 1000000,
+      },
+    });
   }
 
   // ─── General Inquiries (KAN-42) ───────────────────────────────────────────────
@@ -643,7 +638,7 @@ async function main() {
     await prisma.generalInquiry.create({ data: inquiry });
   }
 
-  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions, ${offices.length} offices, ${galleryImages.length} gallery images, ${propertyPricingData.length} property pricing records, ${generalInquiries.length} general inquiries`);
+  console.log(`Seed complete: ${properties.length} properties, ${reviews.length} reviews, ${settings.length} settings, ${navigationLinks.length} nav links, ${footerSections.length} footer sections, ${heroContent.length} hero content rows, ${servicesContent.length} services content rows, ${aboutPageContent.length} about page content rows, ${contactSubmissions.length} contact submissions, ${offices.length} offices, ${galleryImages.length} gallery images, ${properties.length} property pricing records, ${generalInquiries.length} general inquiries`);
 }
 
 main()

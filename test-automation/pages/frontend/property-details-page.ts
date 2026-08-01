@@ -45,44 +45,53 @@ export class PropertyDetailsPage {
     const parsed = propertyPricingSchema.safeParse(pricingData);
     this.apiHelper.assertSchemaValid(parsed, "pricing schema");
 
-    const data = parsed.data!;
+    const { additionalFees, monthlyCosts, totalInitialCosts } = parsed.data!.data;
     const formatCurrency = (n: number) =>
       new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(PROPERTY_DETAILS.SLUG));
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingBreakdown);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingNoteCard);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingMonthlyCosts);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingTotalInitialCosts);
+    await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.pricingMonthlyExpenses);
 
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingListing,
-      data.breakdown.listing.label
+      PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees,
+      formatCurrency(additionalFees.propertyTransferTax)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingListing,
-      formatCurrency(data.breakdown.listing.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees,
+      formatCurrency(additionalFees.legalFees)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingPlatformFee,
-      formatCurrency(data.breakdown.fees.platformFee.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees,
+      formatCurrency(additionalFees.homeInspection)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingProcessingFee,
-      formatCurrency(data.breakdown.fees.processingFee.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees,
+      formatCurrency(additionalFees.propertyInsurance)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingInspectionCost,
-      formatCurrency(data.breakdown.costs.inspectionCost.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingAdditionalFees,
+      additionalFees.mortgageFees
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingLegalFee,
-      formatCurrency(data.breakdown.costs.legalFee.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingMonthlyCosts,
+      formatCurrency(monthlyCosts.propertyTaxesMonthly)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingInsuranceCost,
-      formatCurrency(data.breakdown.costs.insuranceCost.amount)
+      PROPERTY_DETAILS_LOCATORS.pricingMonthlyCosts,
+      formatCurrency(monthlyCosts.hoaFeeMonthly)
     );
     await this.initializationPage.expectTextContains(
-      PROPERTY_DETAILS_LOCATORS.pricingTotal,
-      formatCurrency(data.totalPrice)
+      PROPERTY_DETAILS_LOCATORS.pricingTotalInitialCosts,
+      formatCurrency(totalInitialCosts.downPayment)
+    );
+    await this.initializationPage.expectTextContains(
+      PROPERTY_DETAILS_LOCATORS.pricingTotalInitialCosts,
+      formatCurrency(totalInitialCosts.mortgageAmount)
     );
   }
 

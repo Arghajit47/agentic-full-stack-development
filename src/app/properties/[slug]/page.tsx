@@ -16,8 +16,7 @@ import {
 } from "@/components/properties/PropertyInquiryForm";
 import { type PropertyDetailedInfo } from "@/lib/schemas";
 
-// ponytail: pricing endpoint returns raw JSON (no {success,data} wrapper),
-// so it cannot reuse the global fetcher. Keep the dedicated fetcher inline.
+// ponytail: pricing endpoint uses {success,data,error} envelope; unwrap .data here
 class PricingFetchError extends Error {
   constructor(message: string, public status: number) {
     super(message);
@@ -34,7 +33,9 @@ async function pricingFetcher<T>(url: string): Promise<T> {
       res.status,
     );
   }
-  return res.json();
+  const json = await res.json();
+  // API returns { success, data, error } envelope — unwrap data
+  return (json.data ?? json) as T;
 }
 
 function PropertyDetailsSkeleton() {
@@ -112,8 +113,10 @@ function PricingEmptyState() {
 
 function PricingSection({
   slug,
+  listingPrice,
 }: {
   slug: string;
+  listingPrice?: number;
 }) {
   const pricingUrl = `/api/properties/${encodeURIComponent(slug)}/pricing`;
   const {
@@ -145,7 +148,7 @@ function PricingSection({
     return <PricingEmptyState />;
   }
 
-  return <PricingBreakdown data={pricingData} />;
+  return <PricingBreakdown data={pricingData} listingPrice={listingPrice} />;
 }
 
 export default function PropertyDetailsPage() {
@@ -219,7 +222,7 @@ export default function PropertyDetailsPage() {
 
         {/* Pricing Breakdown */}
         <div className="mt-12">
-          <PricingSection slug={slug} />
+          <PricingSection slug={slug} listingPrice={data.price} />
         </div>
 
         {/* Inquiry Form */}

@@ -134,26 +134,30 @@ export const servicesSchema = z.object({
   message: z.string().optional(),
 });
 
-const pricingBreakdownItemSchema = z.object({
-  amount: z.number().int(),
-  label: z.string().min(1),
-});
-
 export const propertyPricingSchema = z.object({
-  propertySlug: z.string().min(1),
-  breakdown: z.object({
-    listing: pricingBreakdownItemSchema,
-    fees: z.object({
-      platformFee: pricingBreakdownItemSchema,
-      processingFee: pricingBreakdownItemSchema,
+  success: z.boolean(),
+  data: z.object({
+    propertySlug: z.string().min(1),
+    additionalFees: z.object({
+      propertyTransferTax: z.number().int(),
+      legalFees: z.number().int(),
+      homeInspection: z.number().int(),
+      propertyInsurance: z.number().int(),
+      mortgageFees: z.string().min(1),
     }),
-    costs: z.object({
-      inspectionCost: pricingBreakdownItemSchema,
-      legalFee: pricingBreakdownItemSchema,
-      insuranceCost: pricingBreakdownItemSchema,
+    monthlyCosts: z.object({
+      propertyTaxesMonthly: z.number().int(),
+      hoaFeeMonthly: z.number().int(),
     }),
+    totalInitialCosts: z.object({
+      downPayment: z.number().int(),
+      downPaymentPct: z.number().int(),
+      mortgageAmount: z.number().int(),
+    }),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
   }),
-  totalPrice: z.number().int(),
+  error: z.null(),
 });
 
 export const propertiesResponseSchema = z.object({
