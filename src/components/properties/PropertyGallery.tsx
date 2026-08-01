@@ -77,13 +77,14 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" role="tablist" aria-label="Image navigation">
             {images.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => setCurrentIndex(i)}
-                aria-label={`Go to image ${i + 1}`}
+                aria-label={`Image ${i + 1} of ${images.length}`}
+                aria-current={i === currentIndex ? "true" : undefined}
                 className={`h-1.5 rounded-full transition-all duration-200 ${
                   i === currentIndex
                     ? "w-5 bg-violet-500"

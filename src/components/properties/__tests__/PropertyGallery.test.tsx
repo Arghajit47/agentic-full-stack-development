@@ -63,13 +63,13 @@ describe("PropertyGallery", () => {
 
   it("renders indicator pills for navigation", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    const indicators = screen.getAllByLabelText(/Go to image/);
+    const indicators = screen.getAllByLabelText(/Image \d+ of \d+/);
     expect(indicators.length).toBeGreaterThanOrEqual(mockImages.length);
   });
 
   it("navigates via indicator pill click", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    const indicator2s = screen.getAllByLabelText("Go to image 2");
+    const indicator2s = screen.getAllByLabelText(`Image 2 of ${mockImages.length}`);
     fireEvent.click(indicator2s[0]);
     expect(screen.getAllByTestId("gallery-main-image-1")[0]).toBeInTheDocument();
   });
