@@ -63,6 +63,15 @@ export function FeaturedProperties({
   const goRight = () =>
     canGoRight && setStartIndex((i) => Math.min(properties.length - cardsVisible, i + cardsVisible));
 
+  const totalPages = useMemo(
+    () => (properties.length > 0 ? Math.ceil(properties.length / cardsVisible) : 0),
+    [properties.length, cardsVisible]
+  );
+  const currentPage = useMemo(
+    () => Math.floor(startIndex / cardsVisible),
+    [startIndex, cardsVisible]
+  );
+
   return (
     <section
       aria-labelledby="featured-properties-heading"
@@ -88,7 +97,7 @@ export function FeaturedProperties({
         <Link
           href="/properties"
           data-testid="view-all-properties-cta"
-          className="inline-block shrink-0 rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
+          className="hidden shrink-0 rounded-md border border-zinc-700 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800 sm:inline-block"
         >
           View All Properties
         </Link>
@@ -188,35 +197,62 @@ export function FeaturedProperties({
             ))}
       </div>
 
-      <div className="mt-8 flex items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={goLeft}
-          disabled={!canGoLeft}
-          aria-label="Previous properties"
-          data-testid="prev-arrow"
-          className={`flex h-10 w-10 items-center justify-center rounded-full ${
-            canGoLeft
-              ? "bg-zinc-800 text-white hover:bg-zinc-700"
-              : "cursor-not-allowed bg-zinc-900 text-zinc-600"
-          }`}
+      <div className="mt-8 flex flex-col items-center gap-3">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={goLeft}
+            disabled={!canGoLeft}
+            aria-label="Previous properties"
+            data-testid="prev-arrow"
+            className={`flex h-10 w-10 items-center justify-center rounded-full border ${
+              canGoLeft
+                ? "border-[#383737] bg-[#262626] text-white hover:bg-zinc-700"
+                : "cursor-not-allowed border-zinc-800 bg-zinc-900 text-zinc-600"
+            }`}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          {!isLoading && totalPages > 1 && (
+            <div className="flex items-center gap-2" data-testid="nav-dots">
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <span
+                  key={i}
+                  data-testid={`nav-dot-${i}`}
+                  className={`block h-2 w-2 rounded-full ${
+                    i === currentPage
+                      ? "bg-[#703BF7]"
+                      : "border border-[#383737] bg-transparent"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={goRight}
+            disabled={!canGoRight}
+            aria-label="Next properties"
+            data-testid="next-arrow"
+            className={`flex h-10 w-10 items-center justify-center rounded-full border ${
+              canGoRight
+                ? "border-[#383737] bg-[#262626] text-white hover:bg-zinc-700"
+                : "cursor-not-allowed border-zinc-800 bg-zinc-900 text-zinc-600"
+            }`}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        <Link
+          href="/properties"
+          data-testid="view-all-properties-mobile-cta"
+          className="text-sm font-medium text-zinc-300 hover:text-white sm:hidden"
         >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          onClick={goRight}
-          disabled={!canGoRight}
-          aria-label="Next properties"
-          data-testid="next-arrow"
-          className={`flex h-10 w-10 items-center justify-center rounded-full ${
-            canGoRight
-              ? "bg-zinc-800 text-white hover:bg-zinc-700"
-              : "cursor-not-allowed bg-zinc-900 text-zinc-600"
-          }`}
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+          View All Properties
+        </Link>
       </div>
 
       {!isLoading && properties.length === 0 && (

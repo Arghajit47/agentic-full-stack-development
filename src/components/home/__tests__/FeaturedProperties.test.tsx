@@ -131,6 +131,31 @@ describe("FeaturedProperties", () => {
     expect(screen.queryByTestId("explore-properties-cta")).not.toBeInTheDocument();
   });
 
+  it("renders navigation dots when there are multiple pages", () => {
+    render(<FeaturedProperties data={featuredProperties} />);
+    // 6 properties, 3 visible = 2 pages → dots should render
+    expect(screen.getByTestId("nav-dots")).toBeInTheDocument();
+  });
+
+  it("nav-dot-0 is active (bg-[#703BF7]) on first page", () => {
+    render(<FeaturedProperties data={featuredProperties} />);
+    const dot0 = screen.getByTestId("nav-dot-0");
+    expect(dot0.className).toContain("bg-[#703BF7]");
+  });
+
+  it("nav-dot-1 is inactive (border border-[#383737]) on first page", () => {
+    render(<FeaturedProperties data={featuredProperties} />);
+    const dot1 = screen.getByTestId("nav-dot-1");
+    expect(dot1.className).toContain("border-[#383737]");
+  });
+
+  it("renders mobile CTA below nav", () => {
+    render(<FeaturedProperties data={featuredProperties} />);
+    const mobileCta = screen.getByTestId("view-all-properties-mobile-cta");
+    expect(mobileCta).toHaveTextContent("View All Properties");
+    expect(mobileCta).toHaveAttribute("href", "/properties");
+  });
+
   it("renders skeleton loading state", () => {
     render(<FeaturedProperties isLoading={true} />);
     expect(screen.getAllByTestId(/skeleton|property-skeleton/)).toHaveLength(3);
