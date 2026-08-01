@@ -1,41 +1,26 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { PricingBreakdown, PricingBreakdownData } from "../PricingBreakdown";
 
 const mockPricingData: PricingBreakdownData = {
   propertySlug: "test-property",
-  breakdown: {
-    listing: {
-      amount: 1250000,
-      label: "Listing Price",
-    },
-    fees: {
-      platformFee: {
-        amount: 25000,
-        label: "Platform Service Fee",
-      },
-      processingFee: {
-        amount: 15000,
-        label: "Transaction Processing Fee",
-      },
-    },
-    costs: {
-      inspectionCost: {
-        amount: 5000,
-        label: "Property Inspection",
-      },
-      legalFee: {
-        amount: 10000,
-        label: "Legal Documentation",
-      },
-      insuranceCost: {
-        amount: 8000,
-        label: "Insurance Cost",
-      },
-    },
+  additionalFees: {
+    propertyTransferTax: 25000,
+    legalFees: 3000,
+    homeInspection: 500,
+    propertyInsurance: 1200,
+    mortgageFees: "Varies",
   },
-  totalPrice: 1313000,
+  monthlyCosts: {
+    propertyTaxesMonthly: 1250,
+    hoaFeeMonthly: 300,
+  },
+  totalInitialCosts: {
+    downPayment: 250000,
+    downPaymentPct: 20,
+    mortgageAmount: 1000000,
+  },
 };
 
 describe("PricingBreakdown", () => {
@@ -48,58 +33,74 @@ describe("PricingBreakdown", () => {
     expect(screen.getByTestId("pricing-breakdown")).toBeInTheDocument();
   });
 
-  it("should display the heading", () => {
+  it("should display the Additional Fees card", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    expect(screen.getByTestId("pricing-heading")).toHaveTextContent("Pricing Breakdown");
+    expect(screen.getByTestId("pricing-additional-fees")).toBeInTheDocument();
+    expect(screen.getByText("Additional Fees")).toBeInTheDocument();
   });
 
-  it("should display the listing price with correct formatting", () => {
+  it("should display the Monthly Costs card", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const listingElement = screen.getByTestId("pricing-listing");
-    expect(listingElement).toHaveTextContent("Listing Price");
-    expect(listingElement).toHaveTextContent("$1,250,000");
+    expect(screen.getByTestId("pricing-monthly-costs")).toBeInTheDocument();
+    expect(screen.getByText("Monthly Costs")).toBeInTheDocument();
   });
 
-  it("should display platform fee correctly", () => {
+  it("should display the Total Initial Investment card", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const platformFeeElement = screen.getByTestId("pricing-platform-fee");
-    expect(platformFeeElement).toHaveTextContent("Platform Service Fee");
-    expect(platformFeeElement).toHaveTextContent("$25,000");
+    expect(screen.getByTestId("pricing-total-initial-costs")).toBeInTheDocument();
+    expect(screen.getByText("Total Initial Investment")).toBeInTheDocument();
   });
 
-  it("should display processing fee correctly", () => {
+  it("should display propertyTransferTax correctly", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const processingFeeElement = screen.getByTestId("pricing-processing-fee");
-    expect(processingFeeElement).toHaveTextContent("Transaction Processing Fee");
-    expect(processingFeeElement).toHaveTextContent("$15,000");
+    expect(screen.getByText("Property Transfer Tax")).toBeInTheDocument();
+    expect(screen.getByText("$25,000")).toBeInTheDocument();
   });
 
-  it("should display inspection cost correctly", () => {
+  it("should display legalFees correctly", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const inspectionElement = screen.getByTestId("pricing-inspection-cost");
-    expect(inspectionElement).toHaveTextContent("Property Inspection");
-    expect(inspectionElement).toHaveTextContent("$5,000");
+    expect(screen.getByText("$3,000")).toBeInTheDocument();
   });
 
-  it("should display legal fee correctly", () => {
+  it("should display homeInspection correctly", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const legalFeeElement = screen.getByTestId("pricing-legal-fee");
-    expect(legalFeeElement).toHaveTextContent("Legal Documentation");
-    expect(legalFeeElement).toHaveTextContent("$10,000");
+    expect(screen.getByText("Home Inspection")).toBeInTheDocument();
+    expect(screen.getByText("$500")).toBeInTheDocument();
   });
 
-  it("should display insurance cost correctly", () => {
+  it("should display propertyInsurance correctly", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const insuranceElement = screen.getByTestId("pricing-insurance-cost");
-    expect(insuranceElement).toHaveTextContent("Insurance Cost");
-    expect(insuranceElement).toHaveTextContent("$8,000");
+    expect(screen.getByText("Property Insurance")).toBeInTheDocument();
+    expect(screen.getByText("$1,200")).toBeInTheDocument();
   });
 
-  it("should display total price with correct formatting and styling", () => {
+  it("should display mortgageFees as string 'Varies'", () => {
     render(<PricingBreakdown data={mockPricingData} />);
-    const totalElement = screen.getByTestId("pricing-total");
-    expect(totalElement).toHaveTextContent("Total Price");
-    expect(totalElement).toHaveTextContent("$1,313,000");
+    expect(screen.getByText("Varies")).toBeInTheDocument();
+  });
+
+  it("should display propertyTaxesMonthly correctly", () => {
+    render(<PricingBreakdown data={mockPricingData} />);
+    expect(screen.getByText("Property Taxes (Monthly)")).toBeInTheDocument();
+    expect(screen.getByText("$1,250")).toBeInTheDocument();
+  });
+
+  it("should display hoaFeeMonthly correctly", () => {
+    render(<PricingBreakdown data={mockPricingData} />);
+    expect(screen.getByText("HOA Fees (Monthly)")).toBeInTheDocument();
+    expect(screen.getByText("$300")).toBeInTheDocument();
+  });
+
+  it("should display downPayment with percentage correctly", () => {
+    render(<PricingBreakdown data={mockPricingData} />);
+    expect(screen.getByText(/Down Payment/)).toBeInTheDocument();
+    expect(screen.getByText("$250,000")).toBeInTheDocument();
+  });
+
+  it("should display mortgageAmount correctly", () => {
+    render(<PricingBreakdown data={mockPricingData} />);
+    expect(screen.getByText("Mortgage Amount")).toBeInTheDocument();
+    expect(screen.getByText("$1,000,000")).toBeInTheDocument();
   });
 
   it("should apply custom className when provided", () => {
@@ -107,57 +108,5 @@ describe("PricingBreakdown", () => {
     render(<PricingBreakdown data={mockPricingData} className={customClass} />);
     const container = screen.getByTestId("pricing-breakdown");
     expect(container).toHaveClass(customClass);
-  });
-
-  it("should handle zero values correctly", () => {
-    const zeroData: PricingBreakdownData = {
-      propertySlug: "test",
-      breakdown: {
-        listing: { amount: 0, label: "Listing Price" },
-        fees: {
-          platformFee: { amount: 0, label: "Platform Service Fee" },
-          processingFee: { amount: 0, label: "Transaction Processing Fee" },
-        },
-        costs: {
-          inspectionCost: { amount: 0, label: "Property Inspection" },
-          legalFee: { amount: 0, label: "Legal Documentation" },
-          insuranceCost: { amount: 0, label: "Insurance Cost" },
-        },
-      },
-      totalPrice: 0,
-    };
-
-    render(<PricingBreakdown data={zeroData} />);
-    expect(screen.getByTestId("pricing-total")).toHaveTextContent("$0");
-  });
-
-  it("should display section headings", () => {
-    render(<PricingBreakdown data={mockPricingData} />);
-    expect(screen.getByText("Fees")).toBeInTheDocument();
-    expect(screen.getByText("Additional Costs")).toBeInTheDocument();
-  });
-
-  it("should have proper ARIA structure", () => {
-    render(<PricingBreakdown data={mockPricingData} />);
-    const heading = screen.getByRole("heading", { name: /pricing breakdown/i });
-    expect(heading).toBeInTheDocument();
-  });
-
-  it("should render all pricing items in correct order", () => {
-    render(<PricingBreakdown data={mockPricingData} />);
-
-    const allText = screen.getByTestId("pricing-breakdown").textContent || "";
-
-    // Check that items appear in the expected order
-    const listingIndex = allText.indexOf("Listing Price");
-    const feesIndex = allText.indexOf("Fees");
-    const platformIndex = allText.indexOf("Platform Service Fee");
-    const costsIndex = allText.indexOf("Additional Costs");
-    const totalIndex = allText.indexOf("Total Price");
-
-    expect(listingIndex).toBeLessThan(feesIndex);
-    expect(feesIndex).toBeLessThan(platformIndex);
-    expect(platformIndex).toBeLessThan(costsIndex);
-    expect(costsIndex).toBeLessThan(totalIndex);
   });
 });

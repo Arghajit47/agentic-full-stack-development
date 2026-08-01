@@ -26,6 +26,7 @@ model Property {
   features    String   // JSON text — string[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  pricing     PropertyPricing?
 }
 
 model Review {
@@ -158,19 +159,21 @@ model GalleryImage {
 }
 
 model PropertyPricing {
-  id               Int      @id @default(autoincrement())
-  propertySlug     String   @unique
-  listingPrice     Int      // Base property listing price
-  platformFee      Int      // Platform service fee
-  processingFee    Int      // Transaction processing fee
-  inspectionCost   Int      // Property inspection cost
-  legalFee         Int      // Legal documentation fee
-  insuranceCost    Int      // Insurance cost
-  totalPrice       Int      // Total = listing + all fees + costs
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  @@index([propertySlug])
+  id                   Int      @id @default(autoincrement())
+  propertySlug         String   @unique
+  propertyTransferTax  Int
+  legalFees            Int
+  homeInspection       Int
+  propertyInsurance    Int
+  mortgageFees         String
+  propertyTaxesMonthly Int
+  hoaFeeMonthly        Int
+  downPayment          Int
+  downPaymentPct       Int
+  mortgageAmount       Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  property             Property @relation(fields: [propertySlug], references: [slug], onDelete: Cascade)
 }
 
 model GeneralInquiry {

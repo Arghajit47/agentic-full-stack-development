@@ -3,26 +3,32 @@
 import React from "react";
 import { formatCurrency } from "@/lib/utils";
 
-export interface PricingBreakdownItem {
-  amount: number;
-  label: string;
+export interface PricingAdditionalFees {
+  propertyTransferTax: number;
+  legalFees: number;
+  homeInspection: number;
+  propertyInsurance: number;
+  mortgageFees: string;
+}
+
+export interface PricingMonthlyCosts {
+  propertyTaxesMonthly: number;
+  hoaFeeMonthly: number;
+}
+
+export interface PricingTotalInitialCosts {
+  downPayment: number;
+  downPaymentPct: number;
+  mortgageAmount: number;
 }
 
 export interface PricingBreakdownData {
   propertySlug: string;
-  breakdown: {
-    listing: PricingBreakdownItem;
-    fees: {
-      platformFee: PricingBreakdownItem;
-      processingFee: PricingBreakdownItem;
-    };
-    costs: {
-      inspectionCost: PricingBreakdownItem;
-      legalFee: PricingBreakdownItem;
-      insuranceCost: PricingBreakdownItem;
-    };
-  };
-  totalPrice: number;
+  additionalFees: PricingAdditionalFees;
+  monthlyCosts: PricingMonthlyCosts;
+  totalInitialCosts: PricingTotalInitialCosts;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface PricingBreakdownProps {
@@ -31,107 +37,76 @@ export interface PricingBreakdownProps {
 }
 
 export function PricingBreakdown({ data, className = "" }: PricingBreakdownProps) {
-  const { breakdown, totalPrice } = data;
+  const { additionalFees, monthlyCosts, totalInitialCosts } = data;
 
   return (
     <div
       data-testid="pricing-breakdown"
-      className={`w-full bg-[#1A1A1A] rounded-lg border border-zinc-800 p-6 ${className}`}
+      className={`w-full space-y-4 ${className}`}
     >
-      {/* Heading */}
-      <h3
-        data-testid="pricing-heading"
-        className="text-2xl font-semibold text-white mb-6"
+      {/* Card 1 — Additional Fees (one-time) */}
+      <div
+        data-testid="pricing-additional-fees"
+        className="bg-[#1A1A1A] rounded-lg border border-zinc-800 p-6"
       >
-        Pricing Breakdown
-      </h3>
-
-      {/* Listing Price */}
-      <div className="space-y-4">
-        <div
-          data-testid="pricing-listing"
-          className="flex justify-between items-center pb-4 border-b border-zinc-800"
-        >
-          <span className="text-lg text-[#999999]">{breakdown.listing.label}</span>
-          <span className="text-xl font-semibold text-white">
-            {formatCurrency(breakdown.listing.amount)}
-          </span>
-        </div>
-
-        {/* Fees Section */}
+        <h3 className="text-lg font-semibold text-white mb-4">Additional Fees</h3>
         <div className="space-y-3">
-          <h4 className="text-lg font-medium text-white mt-4 mb-3">Fees</h4>
-          <div
-            data-testid="pricing-platform-fee"
-            className="flex justify-between items-center"
-          >
-            <span className="text-base text-[#999999]">
-              {breakdown.fees.platformFee.label}
-            </span>
-            <span className="text-lg font-medium text-white">
-              {formatCurrency(breakdown.fees.platformFee.amount)}
-            </span>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Property Transfer Tax</span>
+            <span className="text-white font-medium">{formatCurrency(additionalFees.propertyTransferTax)}</span>
           </div>
-          <div
-            data-testid="pricing-processing-fee"
-            className="flex justify-between items-center"
-          >
-            <span className="text-base text-[#999999]">
-              {breakdown.fees.processingFee.label}
-            </span>
-            <span className="text-lg font-medium text-white">
-              {formatCurrency(breakdown.fees.processingFee.amount)}
-            </span>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Legal &amp; Attorney Fees</span>
+            <span className="text-white font-medium">{formatCurrency(additionalFees.legalFees)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Home Inspection</span>
+            <span className="text-white font-medium">{formatCurrency(additionalFees.homeInspection)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Property Insurance</span>
+            <span className="text-white font-medium">{formatCurrency(additionalFees.propertyInsurance)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Mortgage Origination Fees</span>
+            <span className="text-white font-medium">{additionalFees.mortgageFees}</span>
           </div>
         </div>
+      </div>
 
-        {/* Costs Section */}
+      {/* Card 2 — Monthly Costs */}
+      <div
+        data-testid="pricing-monthly-costs"
+        className="bg-[#1A1A1A] rounded-lg border border-zinc-800 p-6"
+      >
+        <h3 className="text-lg font-semibold text-white mb-4">Monthly Costs</h3>
         <div className="space-y-3">
-          <h4 className="text-lg font-medium text-white mt-4 mb-3">Additional Costs</h4>
-          <div
-            data-testid="pricing-inspection-cost"
-            className="flex justify-between items-center"
-          >
-            <span className="text-base text-[#999999]">
-              {breakdown.costs.inspectionCost.label}
-            </span>
-            <span className="text-lg font-medium text-white">
-              {formatCurrency(breakdown.costs.inspectionCost.amount)}
-            </span>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Property Taxes (Monthly)</span>
+            <span className="text-white font-medium">{formatCurrency(monthlyCosts.propertyTaxesMonthly)}</span>
           </div>
-          <div
-            data-testid="pricing-legal-fee"
-            className="flex justify-between items-center"
-          >
-            <span className="text-base text-[#999999]">
-              {breakdown.costs.legalFee.label}
-            </span>
-            <span className="text-lg font-medium text-white">
-              {formatCurrency(breakdown.costs.legalFee.amount)}
-            </span>
-          </div>
-          <div
-            data-testid="pricing-insurance-cost"
-            className="flex justify-between items-center"
-          >
-            <span className="text-base text-[#999999]">
-              {breakdown.costs.insuranceCost.label}
-            </span>
-            <span className="text-lg font-medium text-white">
-              {formatCurrency(breakdown.costs.insuranceCost.amount)}
-            </span>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">HOA Fees (Monthly)</span>
+            <span className="text-white font-medium">{formatCurrency(monthlyCosts.hoaFeeMonthly)}</span>
           </div>
         </div>
+      </div>
 
-        {/* Total Price */}
-        <div
-          data-testid="pricing-total"
-          className="flex justify-between items-center pt-4 mt-4 border-t border-zinc-800"
-        >
-          <span className="text-xl font-semibold text-white">Total Price</span>
-          <span className="text-2xl font-bold text-violet-600">
-            {formatCurrency(totalPrice)}
-          </span>
+      {/* Card 3 — Total Initial Investment */}
+      <div
+        data-testid="pricing-total-initial-costs"
+        className="bg-[#1A1A1A] rounded-lg border border-zinc-800 p-6"
+      >
+        <h3 className="text-lg font-semibold text-white mb-4">Total Initial Investment</h3>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Down Payment ({totalInitialCosts.downPaymentPct}%)</span>
+            <span className="text-white font-medium">{formatCurrency(totalInitialCosts.downPayment)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#999999]">Mortgage Amount</span>
+            <span className="text-white font-medium">{formatCurrency(totalInitialCosts.mortgageAmount)}</span>
+          </div>
         </div>
       </div>
     </div>
