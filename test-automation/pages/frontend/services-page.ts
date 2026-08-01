@@ -123,6 +123,55 @@ export class ServicesPage {
     }
   }
 
+  async assertCtaHeadingIsLink(): Promise<void> {
+    for (const locator of [
+      SERVICES_LOCATORS.propertySellingCtaLink,
+      SERVICES_LOCATORS.propertyManagementCtaLink,
+      SERVICES_LOCATORS.investmentAdvisoryCtaLink,
+    ]) {
+      const link = this.initializationPage.page.locator(locator).first();
+      await expect(link).toBeVisible();
+      // Tag must be <a>, not <h3>
+      const tag = await link.evaluate((el) => el.tagName.toLowerCase());
+      expect(tag).toBe("a");
+      // Must contain an SVG (ArrowUpRight icon)
+      const svgCount = await link.locator("svg").count();
+      expect(svgCount).toBeGreaterThan(0);
+    }
+  }
+
+  async assertLearnMoreIsGhostButton(): Promise<void> {
+    for (const locator of [
+      SERVICES_LOCATORS.propertySellingCtaButton,
+      SERVICES_LOCATORS.propertyManagementCtaButton,
+      SERVICES_LOCATORS.investmentAdvisoryCtaButton,
+    ]) {
+      const btn = this.initializationPage.page.locator(locator).first();
+      await expect(btn).toBeVisible();
+      const cls = await btn.getAttribute("class");
+      // Ghost: transparent background + border
+      expect(cls).toContain("bg-transparent");
+      expect(cls).toContain("border");
+      // Must NOT be filled purple
+      expect(cls).not.toContain("bg-[#703BF7]");
+    }
+  }
+
+  async assertServiceGridColumnsAtDesktop(): Promise<void> {
+    await this.initializationPage.setViewport({ width: 1920, height: 1080 });
+    await this.navigateToServices();
+    await this.initializationPage.assertGridTrackCount(
+      SERVICES_LOCATORS.propertySellingGrid,
+      SERVICES_GRID_COLS.WIDE,
+      "property-selling grid at 1920px"
+    );
+    await this.initializationPage.assertGridTrackCount(
+      SERVICES_LOCATORS.propertyManagementGrid,
+      SERVICES_GRID_COLS.WIDE,
+      "property-management grid at 1920px"
+    );
+  }
+
   async assertNoConsoleErrors(): Promise<void> {
     await this.initializationPage.assertNoConsoleErrors(UI_ROUTES.SERVICES);
   }
