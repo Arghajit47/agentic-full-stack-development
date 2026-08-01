@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { ApiHelper } from "@base/api-base";
 import { PROPERTIESPAGE_LOCATORS } from "@locators/propertiespage-locators";
@@ -11,7 +11,6 @@ import {
   PROPERTIES_PAGE_ONE_CARD_COUNT,
   PROPERTIES_CARD_STYLES,
   PROPERTIES_BANNER_STYLES,
-  type Property,
   type PropertiesResponse,
 } from "@constants/index";
 
@@ -75,17 +74,12 @@ export class PropertiesPage {
       API_PATHS.PROPERTIES
     )) as PropertiesResponse;
 
-    expect(apiData).toBeDefined();
-    expect(Array.isArray(apiData.items)).toBe(true);
-    expect(apiData.items.length).toBeGreaterThan(0);
+    this.apiHelper.assertDefined(apiData, "API data");
+    this.apiHelper.assertIsArray(apiData.items, "items");
 
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
     await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
-
-    const cardCount = await this.initializationPage.getElementsCount(
-      PROPERTIESPAGE_LOCATORS.propertyCard
-    );
-    expect(cardCount).toBeGreaterThan(0);
+    await this.initializationPage.expectCountGreaterThan(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
   }
 
   async assertFilterAndSearchFunctionality(): Promise<void> {
@@ -100,10 +94,7 @@ export class PropertiesPage {
     await this.initializationPage.click(PROPERTIESPAGE_LOCATORS.searchSubmitBtn);
     await this.initializationPage.waitForSomeTime(2000);
 
-    const searchCount = await this.initializationPage.getElementsCount(
-      PROPERTIESPAGE_LOCATORS.propertyCard
-    );
-    expect(searchCount).toBeGreaterThan(0);
+    await this.initializationPage.expectCountGreaterThan(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
     await this.initializationPage.expectTextContains(
       PROPERTIESPAGE_LOCATORS.propertyCard,
       PROPERTIES_TEXT.SEARCH_TEST_QUERY,
@@ -136,10 +127,7 @@ export class PropertiesPage {
       "Page 2 of"
     );
 
-    const page2CardCount = await this.initializationPage.getElementsCount(
-      PROPERTIESPAGE_LOCATORS.propertyCard
-    );
-    expect(page2CardCount).toBeGreaterThan(0);
+    await this.initializationPage.expectCountGreaterThan(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
   }
 
   async assertNoConsoleErrors(): Promise<void> {
@@ -171,43 +159,33 @@ export class PropertiesPage {
   async assertPageOneCardCount(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
     await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
-    const count = await this.initializationPage.getElementsCount(
-      PROPERTIESPAGE_LOCATORS.propertyCard
-    );
-    expect(count).toBe(PROPERTIES_PAGE_ONE_CARD_COUNT);
+    await this.initializationPage.expectCount(PROPERTIESPAGE_LOCATORS.propertyCard, PROPERTIES_PAGE_ONE_CARD_COUNT);
   }
 
   async assertCardStyling(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
     await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyCard, 0);
-    const page = this.initializationPage.page;
-
-    const cardBg = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCard).first()
-      .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(cardBg).toBe(PROPERTIES_CARD_STYLES.BG_COLOR);
-
-    const cardBorder = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCard).first()
-      .evaluate((el) => getComputedStyle(el).borderColor);
-    expect(cardBorder).toBe(PROPERTIES_CARD_STYLES.BORDER_COLOR);
-
-    const imageHeight = await page.locator(PROPERTIESPAGE_LOCATORS.propertyCardImage).first()
-      .evaluate((el) => el.getBoundingClientRect().height);
-    expect(imageHeight).toBeCloseTo(PROPERTIES_CARD_STYLES.IMAGE_HEIGHT_PX, -1);
+    await this.initializationPage.checkCSSProperty(
+      PROPERTIESPAGE_LOCATORS.propertyCard, 0, "background-color", PROPERTIES_CARD_STYLES.BG_COLOR
+    );
+    await this.initializationPage.checkCSSProperty(
+      PROPERTIESPAGE_LOCATORS.propertyCard, 0, "border-color", PROPERTIES_CARD_STYLES.BORDER_COLOR
+    );
+    await this.initializationPage.checkCSSProperty(
+      PROPERTIESPAGE_LOCATORS.propertyCardImage, 0, "height", `${PROPERTIES_CARD_STYLES.IMAGE_HEIGHT_PX}px`
+    );
   }
 
   async assertBannerBackground(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
-    const page = this.initializationPage.page;
-    const bannerBg = await page.locator(PROPERTIESPAGE_LOCATORS.searchBanner)
-      .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(bannerBg).toBe(PROPERTIES_BANNER_STYLES.BG_COLOR);
+    await this.initializationPage.checkCSSProperty(
+      PROPERTIESPAGE_LOCATORS.searchBanner, 0, "background-color", PROPERTIES_BANNER_STYLES.BG_COLOR
+    );
   }
 
   async assertNoPropertyTypeFilter(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTIES);
-    const page = this.initializationPage.page;
-    const count = await page.locator(PROPERTIESPAGE_LOCATORS.propertyTypeFilter).count();
-    expect(count).toBe(0);
+    await this.initializationPage.expectNotPresent(PROPERTIESPAGE_LOCATORS.propertyTypeFilter);
   }
 
   async assertDiscoverSection(): Promise<void> {

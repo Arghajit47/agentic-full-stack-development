@@ -32,7 +32,7 @@ export const PROPERTIES_GRID_COLS = {
 } as const;
 
 export const PROPERTY_DETAILS = {
-  SLUG: "modern-villa-in-sunset-hills",
+  SLUG: "seawide-serenity-villa",
   INQUIRY_NAME: "Automation SDET",
   INQUIRY_EMAIL: "sdet+automation@example.com",
   INQUIRY_PHONE: "+1 555 000 1234",

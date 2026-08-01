@@ -103,7 +103,8 @@ export class ContactPage {
     await this.initializationPage.selectOption(CONTACT_LOCATORS.hearAboutSelect, data.hearAbout);
     await this.initializationPage.checkCheckbox(CONTACT_LOCATORS.termsCheckbox);
 
-    await this.initializationPage.clickOnElement(CONTACT_LOCATORS.submitButton);
+    await this.initializationPage.click(CONTACT_LOCATORS.submitButton);
+    await this.initializationPage.waitForSomeTime(2000);
     await this.initializationPage.expectVisible(CONTACT_LOCATORS.formSuccess, 0);
   }
 }
