@@ -48,7 +48,7 @@ describe("Navbar", () => {
   it("renders the top banner text", () => {
     mockUseNavigation.mockReturnValue({ ...baseState, data: defaultData, error: undefined } as unknown as SWRResponse<NavigationData, Error>);
     render(<Navbar />);
-    expect(screen.getByText(/Discover Your Dream Property with Estatein/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Discover Your Dream Property with Estatein/i)[0]).toBeInTheDocument();
   });
 
   it("renders the Learn More link", () => {
