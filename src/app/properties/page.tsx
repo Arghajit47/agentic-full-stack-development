@@ -182,6 +182,7 @@ export default function PropertiesPage() {
         {apiError ? (
           <div
             data-testid="api-error"
+            role="alert"
             className="py-20 text-center text-zinc-400"
           >
             {apiError}
