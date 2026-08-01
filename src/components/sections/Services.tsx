@@ -316,7 +316,7 @@ function ServiceSection({ service }: { service: Service }) {
           </p>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 md:gap-5 lg:grid-cols-4 lg:gap-6">
+        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 md:gap-5 lg:grid-cols-4 lg:gap-6 xl:grid-cols-4">
           {service.categories.map((category) => {
             const Icon = category.icon;
             return (
@@ -339,13 +339,19 @@ function ServiceSection({ service }: { service: Service }) {
           className="mt-8 flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-6 md:mt-10 md:flex-row md:items-center md:justify-between md:px-8 md:py-8"
         >
           <div className="max-w-2xl">
-            <h3 className="text-lg font-semibold text-white md:text-xl">{service.ctaHeading}</h3>
+            <a
+              href={service.ctaHref}
+              className="inline-flex items-center gap-2 text-lg font-semibold text-white transition-colors hover:text-violet-400 md:text-xl"
+            >
+              {service.ctaHeading}
+              <ArrowUpRight className="h-5 w-5 shrink-0 text-[#703BF7]" aria-hidden="true" />
+            </a>
             <p className="mt-2 text-sm text-zinc-400">{service.ctaBody}</p>
           </div>
           <a
             href={service.ctaHref}
             data-testid={`services-${service.testId}-cta-button`}
-            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
+            className="inline-flex shrink-0 items-center justify-center rounded-xl border border-zinc-700 bg-transparent px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
           >
             {service.ctaText}
           </a>
@@ -388,13 +394,19 @@ function InvestmentAdvisorySection({ service }: { service?: Service }) {
               className="mt-8 flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-6 md:px-8 md:py-8"
             >
               <div className="max-w-2xl">
-                <h3 className="text-lg font-semibold text-white md:text-xl">{displayService.ctaHeading}</h3>
+                <a
+                  href={displayService.ctaHref}
+                  className="inline-flex items-center gap-2 text-lg font-semibold text-white transition-colors hover:text-violet-400 md:text-xl"
+                >
+                  {displayService.ctaHeading}
+                  <ArrowUpRight className="h-5 w-5 shrink-0 text-[#703BF7]" aria-hidden="true" />
+                </a>
                 <p className="mt-2 text-sm text-zinc-400">{displayService.ctaBody}</p>
               </div>
               <a
                 href={displayService.ctaHref}
                 data-testid="services-investment-advisory-left-cta-button"
-                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl border border-zinc-700 bg-transparent px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-violet-500 hover:text-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
               >
                 {displayService.ctaText}
               </a>
