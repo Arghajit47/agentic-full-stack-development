@@ -12,20 +12,18 @@ export function StepCard({ step }: StepCardProps) {
   return (
     <li
       data-testid={`step-card-${slugify(step.stepNumber)}`}
-      className="relative flex h-full flex-col border-l border-[#703BF7]"
+      className="flex h-full flex-col"
     >
-      <div
-        className="pointer-events-none absolute left-0 top-0 h-16 w-16 bg-gradient-to-br from-[#703BF7]/80 via-[#703BF7]/30 to-transparent"
-        aria-hidden="true"
-      />
-      <p className="relative px-4 py-4 text-base font-medium text-white md:px-5 md:text-lg">
-        {step.stepNumber}
-      </p>
-      <div className="relative flex flex-1 flex-col rounded-br-xl border border-zinc-800/60 border-l-0 bg-gradient-to-br from-[#1e182c] via-[#141414] to-[#141414] px-5 py-6 transition-colors duration-200 hover:border-zinc-700 md:px-6 md:py-7">
-        <h3 className="text-base font-semibold text-white md:text-lg lg:text-xl">
+      <div className="border-l border-[#703BF7] px-5 py-4">
+        <p className="text-base font-medium text-white md:text-lg lg:text-xl">
+          {step.stepNumber}
+        </p>
+      </div>
+      <div className="flex flex-1 flex-col gap-4 border border-[#703BF7]/40 bg-gradient-to-br from-[#703BF7]/20 via-[#141414] to-[#141414] p-5 transition-colors hover:border-[#703BF7]/70 md:p-6 lg:gap-5 lg:p-10">
+        <h3 className="text-base font-semibold text-white md:text-lg lg:text-2xl">
           {step.title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-400 md:text-base">
+        <p className="text-sm leading-relaxed text-zinc-400 md:text-base">
           {step.description}
         </p>
       </div>
