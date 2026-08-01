@@ -93,7 +93,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
       {/* Note Card */}
       <div
         data-testid="pricing-note-card"
-        className="bg-[#141414] border border-[#262626] rounded-xl px-6 py-4 flex items-center gap-4 mb-8"
+        className="bg-[#141414] rounded-xl px-6 py-4 flex items-center gap-4 mb-8"
       >
         <span className="text-white text-sm font-semibold shrink-0">
           Note
@@ -118,7 +118,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           {/* CARD 1 — Additional Fees */}
           <div
             data-testid="pricing-additional-fees"
-            className="bg-[#141414] border border-[#262626] rounded-xl p-6"
+            className="bg-[#141414] rounded-xl p-6"
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Additional Fees</h3>
             <div className="border-t border-[#262626] mb-4" />
@@ -154,7 +154,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           {/* CARD 2 — Monthly Costs */}
           <div
             data-testid="pricing-monthly-costs"
-            className="bg-[#141414] border border-[#262626] rounded-xl p-6"
+            className="bg-[#141414] rounded-xl p-6"
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Monthly Costs</h3>
             <div className="border-t border-[#262626] mb-4" />
@@ -175,7 +175,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           {/* CARD 3 — Total Initial Costs */}
           <div
             data-testid="pricing-total-initial-costs"
-            className="bg-[#141414] border border-[#262626] rounded-xl p-6"
+            className="bg-[#141414] rounded-xl p-6"
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Total Initial Costs</h3>
             <div className="border-t border-[#262626] mb-4" />
@@ -205,7 +205,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           {/* CARD 4 — Monthly Expenses */}
           <div
             data-testid="pricing-monthly-expenses"
-            className="bg-[#141414] border border-[#262626] rounded-xl p-6"
+            className="bg-[#141414] rounded-xl p-6"
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Monthly Expenses</h3>
             <div className="border-t border-[#262626] mb-4" />

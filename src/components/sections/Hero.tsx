@@ -169,7 +169,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
             <div
               data-testid="hero-error"
               role="alert"
-              className="mt-6 flex w-full flex-col items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:mt-8 md:px-5 md:py-5"
+              className="mt-6 flex w-full flex-col items-center gap-3 rounded-xl bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:mt-8 md:px-5 md:py-5"
             >
               <span className="text-sm">Unable to load hero content. Showing fallback data.</span>
               {retry ? (

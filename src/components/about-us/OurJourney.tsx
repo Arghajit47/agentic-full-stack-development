@@ -38,7 +38,7 @@ export function OurJourney({ data }: OurJourneyProps) {
               <div
                 key={stat.label}
                 data-testid={`our-journey-stat-${slugify(stat.label)}`}
-                className="flex flex-col rounded-xl bg-[#1a1a1a] border border-zinc-800/50 px-4 py-4 md:px-5 md:py-5"
+                className="flex flex-col rounded-xl bg-[#1a1a1a] px-4 py-4 md:px-5 md:py-5"
               >
                 <Icon className="mb-3 h-5 w-5 text-violet-400 md:h-6 md:w-6" aria-hidden="true" />
                 <span className="text-2xl font-semibold text-white md:text-3xl">{stat.value}</span>

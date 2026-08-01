@@ -42,7 +42,7 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
     return (
       <div
         data-testid="property-gallery-empty"
-        className="flex h-96 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40"
+        className="flex h-96 items-center justify-center rounded-xl bg-zinc-900/40"
       >
         <p className="text-zinc-500">No images available</p>
       </div>

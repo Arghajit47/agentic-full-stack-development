@@ -35,7 +35,7 @@ export function OurAchievements({ data }: OurAchievementsProps) {
             <div
               key={achievement.title}
               data-testid={`our-achievements-card-${slugify(achievement.title)}`}
-              className="flex flex-col rounded-2xl bg-[#1a1a1a] border border-zinc-800/50 px-5 py-6 transition-colors hover:bg-[#222222] md:px-6 md:py-7"
+              className="flex flex-col rounded-2xl bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] md:px-6 md:py-7"
             >
               <h3 className="text-base font-medium text-white md:text-lg">{achievement.title}</h3>
               <p className="mt-2 text-sm text-zinc-400">{achievement.description}</p>

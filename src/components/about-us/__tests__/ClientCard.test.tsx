@@ -56,6 +56,6 @@ describe("ClientCard", () => {
   it("applies correct styling classes", () => {
     render(<ClientCard client={mockClient} />);
     const card = screen.getByTestId("client-card-greentech-enterprises");
-    expect(card).toHaveClass("rounded-xl", "bg-[#1a1a1a]", "border", "border-[#262626]");
+    expect(card).toHaveClass("rounded-xl", "bg-[#1a1a1a]");
   });
 });

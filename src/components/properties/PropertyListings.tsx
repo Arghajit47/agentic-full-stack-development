@@ -24,7 +24,7 @@ export function PropertyListings({
           <div
             key={`skeleton-${i}`}
             data-testid="property-skeleton"
-            className="flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/20 p-4 animate-pulse"
+            className="flex flex-col rounded-xl bg-zinc-900/20 p-4 animate-pulse"
           >
             <div className="aspect-[4/3] w-full rounded-lg bg-zinc-800" />
             <div className="mt-4 h-4 w-1/3 rounded bg-zinc-800" />
@@ -52,7 +52,7 @@ export function PropertyListings({
     return (
       <div
         data-testid="no-properties"
-        className="flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/10 py-16 text-center"
+        className="flex flex-col items-center justify-center rounded-xl bg-zinc-900/10 py-16 text-center"
       >
         <p className="text-lg font-medium text-zinc-300">No properties found</p>
         <p className="mt-1 text-sm text-zinc-500">

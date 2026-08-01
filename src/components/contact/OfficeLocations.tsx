@@ -99,7 +99,7 @@ export function OfficeLocations({ offices = DEFAULT_OFFICES }: OfficeLocationsPr
         {offices.length === 0 && (
           <div
             data-testid="office-locations-empty"
-            className="flex h-64 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900"
+            className="flex h-64 items-center justify-center rounded-lg bg-zinc-900"
           >
             <p className="text-lg text-zinc-400">No office locations available</p>
           </div>

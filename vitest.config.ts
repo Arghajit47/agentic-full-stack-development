@@ -10,6 +10,9 @@ export default defineConfig({
   test: {
     environment: "node",
     fileParallelism: false,
+    env: {
+      DATABASE_URL: "file:./prisma/test.db",
+    },
     include: [
       "src/__tests__/**/*.test.ts",
       "src/components/**/__tests__/*.test.tsx",

@@ -27,7 +27,7 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
   return (
     <div data-testid="property-details">
       {/* Description + Key Features — Two-Column Layout */}
-      <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-zinc-800 md:grid-cols-2">
+      <div className="grid grid-cols-1 overflow-hidden rounded-xl md:grid-cols-2">
         {/* Left Column — Description */}
         <div className="border-b border-zinc-800 p-6 sm:p-8 md:p-12 md:border-b-0 md:border-r">
           <h2 className="mb-4 text-2xl font-bold text-white">Description</h2>
@@ -86,7 +86,7 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
 
       {/* Agent Contact Section */}
       {property.agentName && (
-        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
+        <div className="mt-8 rounded-xl bg-zinc-900/40 p-6">
           <h2 className="mb-4 text-2xl font-bold text-white">Contact Agent</h2>
           <div data-testid="agent-contact" className="space-y-3">
             <div>

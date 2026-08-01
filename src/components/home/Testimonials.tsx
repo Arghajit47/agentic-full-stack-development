@@ -82,7 +82,7 @@ export function Testimonials({
               <div
                 key={`skeleton-${i}`}
                 data-testid="review-skeleton"
-                className="h-[260px] animate-pulse rounded-xl border border-zinc-800/60 p-6 md:h-[300px] lg:h-[340px]"
+                className="h-[260px] animate-pulse rounded-xl p-6 md:h-[300px] lg:h-[340px]"
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, j) => (

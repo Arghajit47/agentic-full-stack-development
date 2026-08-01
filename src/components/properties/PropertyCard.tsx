@@ -19,7 +19,7 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
   return (
     <article
       data-testid="property-card"
-      className="flex flex-col overflow-hidden rounded-xl border border-[#262626] bg-[#1a1a1a] transition-all duration-200 hover:border-zinc-700"
+      className="flex flex-col overflow-hidden rounded-xl bg-[#1a1a1a] transition-all duration-200"
     >
       <div data-testid="property-card-image" className="relative h-[220px] w-full shrink-0">
         <Image
