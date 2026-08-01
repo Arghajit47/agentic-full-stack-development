@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Send } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
@@ -70,8 +71,11 @@ export function Footer() {
   return (
     <footer className="w-full bg-zinc-950" data-testid="footer">
       {/* Top CTA */}
-      <div className="border-t border-zinc-900/60 px-4 py-12 sm:px-6 md:py-16 lg:px-8 xl:px-12">
-        <div className="mx-auto flex max-w-[1920px] flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+      <div className="relative overflow-hidden border-t border-zinc-900/60 px-4 py-12 sm:px-6 md:py-16 lg:px-8 xl:px-12">
+        {/* Abstract decorative corner images */}
+        <Image src="/images/abstract-design-left.png" alt="" aria-hidden="true" draggable="false" width={473} height={258} className="pointer-events-none absolute bottom-0 left-0 select-none" />
+        <Image src="/images/abstract-design-right.png" alt="" aria-hidden="true" draggable="false" width={555} height={259} className="pointer-events-none absolute bottom-0 right-0 select-none" />
+        <div className="relative mx-auto flex max-w-[1920px] flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-xl">
             {showSkeleton ? (
               <div className="space-y-3">
