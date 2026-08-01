@@ -75,8 +75,8 @@ function DiscoverBadge() {
 function HeroSkeleton() {
   return (
     <section data-testid="hero-section" className="bg-black">
-      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:gap-6 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
-        <div className="order-2 flex flex-col items-center text-center md:order-1 md:items-start md:text-left">
+      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
+        <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
           <div
             data-testid="hero-heading-skeleton"
             className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
@@ -95,12 +95,12 @@ function HeroSkeleton() {
               className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 sm:w-40"
             />
           </div>
-          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:mt-10 md:grid-cols-3 lg:gap-4">
+          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:grid-cols-3 lg:mt-10 lg:gap-4">
             {DEFAULT_STATS.map((stat) => (
               <div
                 key={stat.label}
                 data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
-                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 md:items-start md:px-5 md:py-5"
+                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 lg:items-start lg:px-5 lg:py-5"
               >
                 <div className="h-8 w-16 animate-pulse rounded bg-zinc-800 md:h-9" />
                 <div className="h-4 w-24 animate-pulse rounded bg-zinc-800" />
@@ -108,8 +108,8 @@ function HeroSkeleton() {
             ))}
           </div>
         </div>
-        <div className="relative order-1 flex items-center justify-center md:order-2 md:justify-end">
-          <div className="relative aspect-[4/3] w-full max-w-xl animate-pulse rounded-2xl bg-zinc-800 md:aspect-square md:max-w-none lg:max-w-2xl" />
+        <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
+          <div className="relative aspect-[4/3] w-full animate-pulse rounded-2xl bg-zinc-800 lg:aspect-square lg:max-w-2xl" />
         </div>
       </div>
     </section>
@@ -130,13 +130,13 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
 
   return (
     <section aria-labelledby="hero-heading" data-testid="hero-section" className="bg-black">
-      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:grid-cols-2 md:gap-6 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
+      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
         {/* Text column */}
-        <div className="order-2 flex flex-col items-center text-center md:order-1 md:items-start md:text-left">
+        <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
           <h1
             id="hero-heading"
             data-testid="hero-heading"
-            className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl md:text-[42px] lg:text-5xl"
+            className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-5xl"
           >
             {data.heading}
           </h1>
@@ -184,12 +184,12 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
             </div>
           ) : null}
 
-          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:mt-10 md:grid-cols-3 lg:gap-4">
+          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:grid-cols-3 lg:mt-10 lg:gap-4">
             {data.stats.map((stat) => (
               <div
                 key={stat.label}
                 data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className="flex flex-col items-center rounded-xl bg-[#1a1a1a] px-4 py-4 text-center md:items-start md:px-5 md:py-5 md:text-left"
+                className="flex flex-col items-center rounded-xl bg-[#1a1a1a] px-4 py-4 text-center lg:items-start lg:px-5 lg:py-5 lg:text-left"
               >
                 <span className="text-2xl font-semibold text-white md:text-3xl">{stat.value}</span>
                 <span className="mt-1 text-sm text-zinc-400">{stat.label}</span>
@@ -199,8 +199,8 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
         </div>
 
         {/* Image column */}
-        <div className="relative order-1 flex items-center justify-center md:order-2 md:justify-end">
-          <div className="relative aspect-[4/3] w-full max-w-xl md:aspect-square md:max-w-none lg:max-w-2xl">
+        <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
+          <div className="relative aspect-[4/3] w-full lg:aspect-square lg:max-w-2xl">
             <Image
               src={HERO_IMAGE}
               alt="Modern blue glass skyscrapers"
