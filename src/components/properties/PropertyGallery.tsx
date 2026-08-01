@@ -16,15 +16,11 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   const openLightbox = (index: number) => {
@@ -32,27 +28,21 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
     setIsLightboxOpen(true);
   };
 
-  const closeLightbox = () => {
-    setIsLightboxOpen(false);
-  };
+  const closeLightbox = () => setIsLightboxOpen(false);
 
   const goToPreviousLightbox = () => {
-    setLightboxIndex((prevIndex) => 
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+    setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const goToNextLightbox = () => {
-    setLightboxIndex((prevIndex) => 
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
+    setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   if (images.length === 0) {
     return (
-      <div 
+      <div
         data-testid="property-gallery-empty"
-        className="flex h-96 items-center justify-center rounded-xl bg-zinc-900/40 border border-zinc-800"
+        className="flex h-96 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40"
       >
         <p className="text-zinc-500">No images available</p>
       </div>
@@ -61,89 +51,59 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
 
   return (
     <div data-testid="property-gallery" className="w-full">
-      {/* Main Gallery */}
-      <div className="relative">
-        {/* Main Image */}
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-zinc-900/40">
-          <Image
-            src={images[currentIndex].url}
-            alt={images[currentIndex].alt}
-            fill
-            className="object-cover cursor-pointer transition-opacity hover:opacity-90"
-            onClick={() => openLightbox(currentIndex)}
-            data-testid={`gallery-main-image-${currentIndex}`}
-            priority={currentIndex === 0}
-          />
-          
-          {/* Navigation Arrows */}
-          {images.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={goToPrevious}
-                data-testid="gallery-prev-button"
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/70"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button
-                type="button"
-                onClick={goToNext}
-                data-testid="gallery-next-button"
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/70"
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </>
-          )}
+      {/* Main Image */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-xl bg-zinc-900/40">
+        <Image
+          src={images[currentIndex].url}
+          alt={images[currentIndex].alt}
+          fill
+          className="cursor-pointer object-cover transition-opacity hover:opacity-90"
+          onClick={() => openLightbox(currentIndex)}
+          data-testid={`gallery-main-image-${currentIndex}`}
+          priority={currentIndex === 0}
+        />
+      </div>
 
-          {/* Image Counter */}
-          <div className="absolute bottom-4 right-4 rounded-lg bg-black/50 px-3 py-1.5 text-sm text-white backdrop-blur-sm">
-            <span data-testid="gallery-counter">
-              {currentIndex + 1} / {images.length}
-            </span>
-          </div>
+      {/* Navigation Bar — below image */}
+      {images.length > 1 && (
+        <div className="flex items-center justify-center gap-6 rounded-b-xl border border-t-0 border-zinc-800 bg-zinc-900 px-6 py-5">
+          <button
+            type="button"
+            onClick={goToPrevious}
+            data-testid="gallery-prev-button"
+            aria-label="Previous image"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-white transition-colors hover:bg-zinc-700"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
 
-          {/* Caption */}
-          {images[currentIndex].caption && (
-            <div className="absolute bottom-4 left-4 max-w-md rounded-lg bg-black/50 px-4 py-2 text-sm text-white backdrop-blur-sm">
-              <p data-testid={`gallery-caption-${currentIndex}`}>
-                {images[currentIndex].caption}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Thumbnail Strip */}
-        {images.length > 1 && (
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-2" data-testid="gallery-thumbnails">
-            {images.map((image, index) => (
+          <div className="flex items-center gap-1.5">
+            {images.map((_, i) => (
               <button
-                key={image.id}
+                key={i}
                 type="button"
-                onClick={() => setCurrentIndex(index)}
-                data-testid={`gallery-thumbnail-${index}`}
-                className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
-                  index === currentIndex
-                    ? "border-violet-600 opacity-100"
-                    : "border-zinc-800 opacity-60 hover:opacity-100"
+                onClick={() => setCurrentIndex(i)}
+                aria-label={`Go to image ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-200 ${
+                  i === currentIndex
+                    ? "w-5 bg-violet-500"
+                    : "w-5 bg-zinc-600 hover:bg-zinc-500"
                 }`}
-                aria-label={`View image ${index + 1}`}
-              >
-                <Image
-                  src={image.url}
-                  alt={image.alt}
-                  fill
-                  className="object-cover"
-                  sizes="112px"
-                />
-              </button>
+              />
             ))}
           </div>
-        )}
-      </div>
+
+          <button
+            type="button"
+            onClick={goToNext}
+            data-testid="gallery-next-button"
+            aria-label="Next image"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-white transition-colors hover:bg-zinc-700"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      )}
 
       {/* Lightbox Modal */}
       {isLightboxOpen && (
@@ -152,7 +112,6 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95"
           onClick={closeLightbox}
         >
-          {/* Close Button */}
           <button
             type="button"
             onClick={closeLightbox}
@@ -163,15 +122,11 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
             <X className="h-6 w-6" />
           </button>
 
-          {/* Lightbox Navigation */}
           {images.length > 1 && (
             <>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToPreviousLightbox();
-                }}
+                onClick={(e) => { e.stopPropagation(); goToPreviousLightbox(); }}
                 data-testid="lightbox-prev-button"
                 className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white backdrop-blur-sm transition-all hover:bg-white/20"
                 aria-label="Previous image"
@@ -180,10 +135,7 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
               </button>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToNextLightbox();
-                }}
+                onClick={(e) => { e.stopPropagation(); goToNextLightbox(); }}
                 data-testid="lightbox-next-button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white backdrop-blur-sm transition-all hover:bg-white/20"
                 aria-label="Next image"
@@ -193,7 +145,6 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
             </>
           )}
 
-          {/* Lightbox Image */}
           <div
             className="relative mx-auto max-h-[90vh] max-w-[90vw]"
             onClick={(e) => e.stopPropagation()}
@@ -206,8 +157,6 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
               className="h-auto max-h-[90vh] w-auto max-w-[90vw] object-contain"
               data-testid={`lightbox-image-${lightboxIndex}`}
             />
-            
-            {/* Lightbox Caption */}
             {images[lightboxIndex].caption && (
               <div className="mt-4 text-center text-white">
                 <p data-testid={`lightbox-caption-${lightboxIndex}`}>
@@ -215,8 +164,6 @@ export function PropertyGallery({ images }: PropertyGalleryProps) {
                 </p>
               </div>
             )}
-
-            {/* Lightbox Counter */}
             <div className="mt-2 text-center text-sm text-zinc-400">
               <span data-testid="lightbox-counter">
                 {lightboxIndex + 1} / {images.length}

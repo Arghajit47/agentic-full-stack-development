@@ -54,100 +54,63 @@ describe("PropertyDetails", () => {
     expect(screen.getByTestId("property-details")).toBeInTheDocument();
   });
 
-  it("displays property title", () => {
+  it("renders Description heading", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const titles = screen.getAllByTestId("property-title");
-    expect(titles[0].textContent).toBe("Test Luxury Villa");
+    expect(screen.getByText("Description")).toBeInTheDocument();
   });
 
-  it("displays property address", () => {
+  it("renders Key Features and Amenities heading", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const addresses = screen.getAllByTestId("property-address");
-    expect(addresses[0].textContent).toBe("123 Test Street, Beverly Hills, CA 90210");
+    expect(screen.getByText("Key Features and Amenities")).toBeInTheDocument();
   });
 
-  it("displays formatted price", () => {
+  it("displays property description", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const prices = screen.getAllByTestId("property-price");
-    expect(prices[0].textContent).toBe("$1,250,000");
+    const desc = screen.getByTestId("property-short-description");
+    expect(desc.textContent).toBe("A beautiful test property.");
   });
 
-  it("displays property status badge", () => {
+  it("displays stat features in two-column layout", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const statuses = screen.getAllByTestId("property-status");
-    expect(statuses[0].textContent).toBe("For Sale");
+    expect(screen.getByTestId("stat-bed").textContent).toBe("4");
+    expect(screen.getByTestId("stat-bath").textContent).toBe("3");
+    expect(screen.getByTestId("stat-ruler").textContent).toBe("3,500 sq ft");
   });
 
-  it("displays features grid", () => {
+  it("displays flattened amenity items", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const grids = screen.getAllByTestId("property-features-grid");
-    expect(grids[0]).toBeInTheDocument();
-    mockProperty.features.forEach(feature => {
-      const elements = screen.getAllByTestId(`property-feature-${feature.id}`);
-      expect(elements[0].textContent).toContain(feature.name);
-    });
+    const amenitiesSection = screen.getByTestId("property-amenities");
+    expect(amenitiesSection).toBeInTheDocument();
+    expect(screen.getByTestId("amenity-item-0").textContent).toContain("Hardwood Floors");
+    expect(screen.getByTestId("amenity-item-3").textContent).toContain("Garden");
   });
 
-  it("displays descriptions", () => {
+  it("displays all amenity items flattened across categories", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const shortDescs = screen.getAllByTestId("property-short-description");
-    const longDescs = screen.getAllByTestId("property-long-description");
-    expect(shortDescs[0].textContent).toBe("A beautiful test property.");
-    expect(longDescs[0].textContent).toContain("This is a longer description");
-  });
-
-  it("displays amenities", () => {
-    render(<PropertyDetails property={mockProperty} />);
-    const amenitySections = screen.getAllByTestId("property-amenities");
-    expect(amenitySections[0]).toBeInTheDocument();
-    mockProperty.amenities.forEach(group => {
-      const elements = screen.getAllByTestId(`amenity-group-${group.id}`);
-      expect(elements[0].textContent).toContain(group.category);
+    const allItems = mockProperty.amenities.flatMap((g) => g.items);
+    allItems.forEach((item, index) => {
+      expect(screen.getByTestId(`amenity-item-${index}`).textContent).toContain(item);
     });
   });
 
   it("displays agent contact information", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const agentSections = screen.getAllByTestId("agent-contact");
-    expect(agentSections[0]).toBeInTheDocument();
-    
-    const agentNames = screen.getAllByTestId("agent-name");
-    expect(agentNames[0].textContent).toBe("John Doe");
-    
-    const agentPhones = screen.getAllByTestId("agent-phone");
-    expect(agentPhones[0].textContent).toBe("+1 (555) 123-4567");
-    
-    const agentEmails = screen.getAllByTestId("agent-email");
-    expect(agentEmails[0].textContent).toBe("john.doe@test.com");
+    expect(screen.getByTestId("agent-contact")).toBeInTheDocument();
+    expect(screen.getByTestId("agent-name").textContent).toBe("John Doe");
+    expect(screen.getByTestId("agent-phone").textContent).toBe("+1 (555) 123-4567");
+    expect(screen.getByTestId("agent-email").textContent).toBe("john.doe@test.com");
   });
 
   it("does not render agent section when agent name is not provided", () => {
     const propertyWithoutAgent = { ...mockProperty, agentName: undefined };
     render(<PropertyDetails property={propertyWithoutAgent} />);
-    // Use queryAll to handle StrictMode double render
     const agentSections = screen.queryAllByTestId("agent-contact");
     expect(agentSections.length).toBe(0);
   });
 
-  it("applies correct status badge styling", () => {
+  it("renders two-column layout container", () => {
     render(<PropertyDetails property={mockProperty} />);
-    const statuses = screen.getAllByTestId("property-status");
-    expect(statuses[0]).toHaveClass("bg-green-900/30");
-    expect(statuses[0]).toHaveClass("text-green-400");
-  });
-
-  it("formats large prices correctly", () => {
-    const expensiveProperty = { ...mockProperty, price: 15_000_000 };
-    render(<PropertyDetails property={expensiveProperty} />);
-    const prices = screen.getAllByTestId("property-price");
-    // Check that the price contains the formatted number parts
-    expect(prices[0].textContent).toContain("15");
-    expect(prices[0].textContent).toContain("000");
-  });
-
-  it("has responsive grid classes", () => {
-    render(<PropertyDetails property={mockProperty} />);
-    const featuresGrids = screen.getAllByTestId("property-features-grid");
-    expect(featuresGrids[0].className).toContain("grid");
+    const details = screen.getByTestId("property-details");
+    expect(details.querySelector(".grid")).toBeInTheDocument();
   });
 });

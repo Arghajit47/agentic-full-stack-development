@@ -2,6 +2,7 @@
 
 import { useParams, notFound } from "next/navigation";
 import useSWR from "swr";
+import { MapPin } from "lucide-react";
 import { fetcher } from "@/lib/api";
 import { PropertyGallery } from "@/components/properties/PropertyGallery";
 import { PropertyDetails } from "@/components/properties/PropertyDetails";
@@ -188,16 +189,24 @@ export default function PropertyDetailsPage() {
     <div className="min-h-screen bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Property Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white" data-testid="property-page-title">{data.title}</h1>
-          <p className="mt-2 text-lg text-zinc-400">{data.location}</p>
-          <p className="mt-4 text-3xl font-bold text-violet-500" data-testid="property-header-price">
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-              maximumFractionDigits: 0,
-            }).format(data.price)}
-          </p>
+        <div className="mb-8 flex items-start justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-bold text-white" data-testid="property-page-title">{data.title}</h1>
+            <div className="mt-2 flex items-center gap-2 text-zinc-400">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <p className="text-sm">{data.location}</p>
+            </div>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-sm uppercase tracking-wider text-zinc-500">Price</p>
+            <p className="mt-1 text-2xl font-bold text-white" data-testid="property-header-price">
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                maximumFractionDigits: 0,
+              }).format(data.price)}
+            </p>
+          </div>
         </div>
 
         {/* Gallery */}
