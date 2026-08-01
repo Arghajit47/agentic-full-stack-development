@@ -93,9 +93,9 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
       {/* Note Card */}
       <div
         data-testid="pricing-note-card"
-        className="bg-[#141414] border border-[#262626] rounded-xl px-6 py-4 flex items-start gap-4 mb-8"
+        className="bg-[#141414] border border-[#262626] rounded-xl px-6 py-4 flex items-center gap-4 mb-8"
       >
-        <span className="bg-[#1A1A1A] border border-[#262626] rounded-full px-4 py-2 text-[#999999] text-sm font-medium shrink-0">
+        <span className="text-white text-sm font-semibold shrink-0">
           Note
         </span>
         <p className="text-[#999999] text-sm leading-relaxed">
