@@ -20,11 +20,12 @@ export async function runLighthouse(options: LighthouseRunOptions): Promise<Ligh
   try {
     browser = await puppeteer.launch({
       headless: true,
-      args: ["--remote-debugging-port=9222", "--no-sandbox", "--disable-setuid-sandbox"],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+    const port = parseInt(new URL(browser.wsEndpoint()).port, 10);
     const result: RunnerResult | undefined = await lighthouse(
       url,
-      { port: 9222, output: "json", logLevel: "error" },
+      { port, output: "json", logLevel: "error" },
       config ? { extends: "lighthouse:default", settings: config } : undefined
     );
     if (!result) throw new Error(`Lighthouse returned no result for ${url}`);

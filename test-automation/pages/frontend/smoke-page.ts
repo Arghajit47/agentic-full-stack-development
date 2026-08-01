@@ -1,9 +1,9 @@
 import { type Page, type APIRequestContext, type Response } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { SMOKE_LOCATORS } from "@locators/smoke-locators";
-import { UI_ROUTES, VIEWPORTS, SMOKE_CONSTANTS } from "@constants/index";
+import { UI_ROUTES, VIEWPORTS, SMOKE_CONSTANTS, BASE_URL as DEPLOYED_BASE_URL } from "@constants/index";
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const resolvedBaseUrl = process.env.BASE_URL || DEPLOYED_BASE_URL;
 
 export class SmokeTestPage {
   private initializationPage: InitializationPage;
@@ -13,13 +13,13 @@ export class SmokeTestPage {
   }
 
   private async scrapeInternalUrls(): Promise<string[]> {
-    const baseHostname = new URL(BASE_URL).hostname;
+    const baseHostname = new URL(resolvedBaseUrl).hostname;
     const visited = new Set<string>();
-    const queue: string[] = [BASE_URL];
+    const queue: string[] = [resolvedBaseUrl];
 
     while (queue.length > 0) {
       const current = queue.shift()!;
-      const normalised = current.split("#")[0].replace(/\/$/, "") || BASE_URL;
+      const normalised = current.split("#")[0].replace(/\/$/, "") || resolvedBaseUrl;
       if (visited.has(normalised)) continue;
       visited.add(normalised);
 
@@ -39,8 +39,8 @@ export class SmokeTestPage {
             if (
               parsed.hostname === baseHostname &&
               parsed.protocol.startsWith(SMOKE_CONSTANTS.HTTP_PROTOCOL) &&
-              !clean.startsWith(`${BASE_URL}/api`) &&
-              !clean.startsWith(`${BASE_URL}/test-harness`) &&
+              !clean.startsWith(`${resolvedBaseUrl}/api`) &&
+              !clean.startsWith(`${resolvedBaseUrl}/test-harness`) &&
               !visited.has(clean) &&
               !queue.includes(clean)
             ) {
@@ -78,15 +78,29 @@ export class SmokeTestPage {
 
     for (const route of publicRoutes) {
       const failed: string[] = [];
+
       const listener = (res: Response) => {
         if (res.url().match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i) && res.status() >= 400) {
-          failed.push(`[${route}] ${res.url()}`);
+          failed.push(`[${route}] HTTP ${res.status()}: ${res.url()}`);
         }
       };
       this.initializationPage.page.on("response", listener);
-      await this.initializationPage.goto(`${BASE_URL}${route}`);
+      await this.initializationPage.goto(`${resolvedBaseUrl}${route}`);
       await this.initializationPage.waitOnlyForPageLoad();
       this.initializationPage.page.off("response", listener);
+
+      const imgLocator = this.initializationPage.page.locator(SMOKE_LOCATORS.anyImage);
+      const imgCount = await imgLocator.count();
+      for (let i = 0; i < imgCount; i++) {
+        const img = imgLocator.nth(i);
+        await this.initializationPage.scrollToElement(img);
+        const naturalWidth = await img.evaluate((el: HTMLImageElement) => el.naturalWidth);
+        if (naturalWidth === 0) {
+          const src = await img.getAttribute("src") ?? `img[${i}]`;
+          failed.push(`[${route}] naturalWidth=0: ${src}`);
+        }
+      }
+
       brokenImages.push(...failed);
     }
 
@@ -106,7 +120,7 @@ export class SmokeTestPage {
     for (const [, viewport] of viewportEntries) {
       await this.initializationPage.setViewport(viewport);
       for (const route of publicRoutes) {
-        await this.initializationPage.goto(`${BASE_URL}${route}`);
+        await this.initializationPage.goto(`${resolvedBaseUrl}${route}`);
         await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.navbar, 0, 10000);
         await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.footer, 0, 10000);
       }

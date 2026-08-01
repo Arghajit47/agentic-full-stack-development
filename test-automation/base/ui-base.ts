@@ -1357,14 +1357,14 @@ export default class InitializationPage {
     async expectAttached(selector: string | Locator, index = 0): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).toBeAttached();
     }
 
     async expectHasClass(selector: string | Locator, pattern: string | RegExp, index = 0): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).toHaveClass(pattern);
     }
 
@@ -1376,28 +1376,28 @@ export default class InitializationPage {
     ): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).toHaveAttribute(attr, regex);
     }
 
     async expectHasNotAttribute(selector: string | Locator, attr: string, index = 0): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).not.toHaveAttribute(attr);
     }
 
     async expectLocatorHasText(selector: string | Locator, text: string, index = 0): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).toHaveText(text);
     }
 
     async expectVisibleWithTimeout(selector: string | Locator, index = 0, timeout = 5000): Promise<void> {
         const ele = typeof selector === "string"
             ? this.page.locator(selector).nth(index)
-            : selector;
+            : selector.nth(index);
         await expect(ele).toBeVisible({ timeout });
     }
 }

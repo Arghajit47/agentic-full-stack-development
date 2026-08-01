@@ -316,6 +316,7 @@ Script: `npm run test:lighthouse`
 Still exists and is **separate** from the Lighthouse audit suite. It uses `LighthousePage` (`pages/frontend/lighthouse-page.ts`) and validates robots.txt, sitemap, skip links, security headers, structured data — NOT performance scores.
 
 ### Updated Path Aliases (`tsconfig.json`)
+
 ```json
 "@lighthouse/*": ["./lighthouse/*"]
 ```
