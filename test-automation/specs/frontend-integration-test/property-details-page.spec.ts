@@ -19,3 +19,7 @@ test("Property details page is responsive at all breakpoints", async ({ property
 test("Property details page has no console or image errors", async ({ propertyDetailsPage }) => {
   await propertyDetailsPage.assertNoConsoleOrImageErrors();
 });
+
+test("KAN-120: Note card label is white and container is center-aligned (no border pill)", async ({ propertyDetailsPage }) => {
+  await propertyDetailsPage.assertNoteCardAlignment();
+});

@@ -1,4 +1,4 @@
-import { type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { ApiHelper } from "@base/api-base";
 import { PROPERTY_DETAILS_LOCATORS } from "@locators/propertydetails-locators";
@@ -126,6 +126,38 @@ export class PropertyDetailsPage {
       await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyGallery);
       await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyInquiryForm);
     }
+  }
+
+  async assertNoteCardAlignment(): Promise<void> {
+    // Use modern-luxury-villa (exists in DB); mock its pricing API so PricingBreakdown renders
+    const slug = "modern-luxury-villa";
+    await this.initializationPage.mockJsonResponse(
+      API_PATHS.PROPERTY_PRICING(slug),
+      {
+        success: true,
+        data: {
+          propertySlug: slug,
+          additionalFees: { propertyTransferTax: 5000, legalFees: 2000, homeInspection: 500, propertyInsurance: 1200, mortgageFees: "Varies" },
+          monthlyCosts: { propertyTaxesMonthly: 800, hoaFeeMonthly: 300 },
+          totalInitialCosts: { downPayment: 100000, downPaymentPct: 20, mortgageAmount: 400000 },
+        },
+      }
+    );
+    await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(slug));
+    const noteCard = this.initializationPage.page.locator('[data-testid="pricing-note-card"]');
+    await expect(noteCard).toBeVisible({ timeout: 10000 });
+    // Note label must be plain white text — no border, no background pill
+    const noteLabel = noteCard.locator("span").first();
+    await expect(noteLabel).toHaveText("Note");
+    const color = await noteLabel.evaluate((el) => getComputedStyle(el).color);
+    expect(color).toBe("rgb(255, 255, 255)");
+    // Must not have a visible border
+    const borderWidth = await noteLabel.evaluate((el) => getComputedStyle(el).borderTopWidth);
+    expect(borderWidth).toBe("0px");
+    // Container must use items-center (align-items: center)
+    const alignItems = await noteCard.evaluate((el) => getComputedStyle(el).alignItems);
+    expect(alignItems).toBe("center");
+    await this.initializationPage.clearNetworkLogs();
   }
 
   async assertNoConsoleOrImageErrors(): Promise<void> {
