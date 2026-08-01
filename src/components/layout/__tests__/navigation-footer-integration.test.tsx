@@ -76,7 +76,7 @@ afterEach(() => {
 describe("navigation and footer integration", () => {
   it("Navbar renders live API banner and links", () => {
     render(<Navbar />);
-    expect(screen.getByText(/Live banner text/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Live banner text/i)[0]).toBeInTheDocument();
     const bannerCta = screen.getByRole("link", { name: /Click me/i });
     expect(bannerCta).toHaveAttribute("href", "/live");
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();

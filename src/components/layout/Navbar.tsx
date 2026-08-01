@@ -77,6 +77,7 @@ export function Navbar() {
               className="font-medium text-white underline underline-offset-2 hover:text-violet-300"
             >
               {banner.cta}
+              <span className="sr-only"> — {banner.text}</span>
             </Link>
           </span>
         ) : (
