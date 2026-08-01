@@ -38,7 +38,7 @@ export function OurValues({ data }: OurValuesProps) {
               <div
                 key={value.title}
                 data-testid={`our-values-card-${slugify(value.title)}`}
-                className="flex flex-col rounded-xl border border-[#262626] bg-[#1a1a1a] p-6"
+                className="flex flex-col rounded-xl bg-[#1a1a1a] p-6"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#703BF7]">

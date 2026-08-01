@@ -26,7 +26,7 @@ export function TeamMember({ member }: TeamMemberProps) {
   return (
     <li
       data-testid={`team-member-${slugify(member.name)}`}
-      className="flex h-full flex-col rounded-xl border border-[#262626] bg-[#1a1a1a] p-4 md:p-5"
+      className="flex h-full flex-col rounded-xl bg-[#1a1a1a] p-4 md:p-5"
     >
       <div className="relative">
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg sm:aspect-square md:aspect-[4/5]">

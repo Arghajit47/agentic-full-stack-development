@@ -8,7 +8,7 @@ export function ClientCard({ client }: ClientCardProps) {
   return (
     <article
       data-testid={`client-card-${client.company.toLowerCase().replace(/\s+/g, "-")}`}
-      className="relative rounded-xl border border-[#262626] bg-[#1a1a1a] p-6"
+      className="relative rounded-xl bg-[#1a1a1a] p-6"
     >
       {/* Since Label */}
       <p

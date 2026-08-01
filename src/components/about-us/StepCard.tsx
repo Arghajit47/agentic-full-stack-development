@@ -19,7 +19,7 @@ export function StepCard({ step }: StepCardProps) {
           {step.stepNumber}
         </p>
       </div>
-      <div className="flex flex-1 flex-col gap-4 border border-[#703BF7]/40 bg-gradient-to-br from-[#703BF7]/20 via-[#141414] to-[#141414] p-5 transition-colors hover:border-[#703BF7]/70 md:p-6 lg:gap-5 lg:p-10">
+      <div className="flex flex-1 flex-col gap-4 bg-gradient-to-br from-[#703BF7]/20 via-[#141414] to-[#141414] p-5 md:p-6 lg:gap-5 lg:p-10">
         <h3 className="text-base font-semibold text-white md:text-lg lg:text-2xl">
           {step.title}
         </h3>

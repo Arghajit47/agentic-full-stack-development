@@ -113,7 +113,7 @@ export function FeaturedProperties({
               <div
                 key={`skeleton-${i}`}
                 data-testid="property-skeleton"
-                className="h-[480px] animate-pulse rounded-xl border border-zinc-800/60 p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
+                className="h-[480px] animate-pulse rounded-xl p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
               >
                 <div className="aspect-[4/3] w-full bg-zinc-800" />
                 <div className="mt-4 h-5 w-32 rounded bg-zinc-800" />
@@ -136,7 +136,7 @@ export function FeaturedProperties({
               <article
                 key={property.id}
                 data-testid="property-card"
-                className="flex h-[480px] flex-col rounded-xl border border-zinc-800/60 p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
+                className="flex h-[480px] flex-col rounded-xl p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
               >
                 <img
                   src={property.imageUrl}

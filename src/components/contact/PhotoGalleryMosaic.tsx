@@ -112,7 +112,7 @@ export function PhotoGalleryMosaic({
         className="w-full bg-zinc-950 px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="flex h-64 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900">
+          <div className="flex h-64 items-center justify-center rounded-lg bg-zinc-900">
             <p className="text-lg text-zinc-400">No gallery images available</p>
           </div>
         </div>

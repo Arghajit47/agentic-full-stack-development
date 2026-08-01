@@ -107,7 +107,7 @@ function PricingErrorState({ message, onRetry }: { message: string; onRetry: () 
 
 function PricingEmptyState() {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6" data-testid="pricing-empty-state">
+    <div className="rounded-xl bg-zinc-900/50 p-6" data-testid="pricing-empty-state">
       <p className="text-zinc-400">Pricing breakdown is not available for this property.</p>
     </div>
   );

@@ -213,7 +213,7 @@ function ServicesError({ retry, message }: { retry?: () => void; message?: strin
   return (
     <section data-testid="services-error" aria-live="polite" className="bg-zinc-950">
       <div className="mx-auto max-w-[1920px] px-4 py-12 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
-        <div className="flex flex-col items-center gap-4 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-8 text-center md:px-8 md:py-10">
+        <div className="flex flex-col items-center gap-4 rounded-2xl bg-[#1a1a1a] px-5 py-8 text-center md:px-8 md:py-10">
           <p className="text-zinc-300">{message ?? "Unable to load services content."}</p>
           {retry ? (
             <button
@@ -324,7 +324,7 @@ function ServiceSection({ service }: { service: Service }) {
                 key={category.title}
                 href={service.ctaHref}
                 data-testid={`services-${service.testId}-card-${slugify(category.title)}`}
-                className="group flex flex-col rounded-2xl border border-[#262626] bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
+                className="group flex flex-col rounded-2xl bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
               >
                 <IconRing icon={Icon} />
                 <h3 className="text-base font-medium text-white md:text-lg">{category.title}</h3>
@@ -336,7 +336,7 @@ function ServiceSection({ service }: { service: Service }) {
 
         <div
           data-testid={`services-${service.testId}-cta`}
-          className="mt-8 flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-6 md:mt-10 md:flex-row md:items-center md:justify-between md:px-8 md:py-8"
+          className="mt-8 flex flex-col gap-5 rounded-2xl bg-[#1a1a1a] px-5 py-6 md:mt-10 md:flex-row md:items-center md:justify-between md:px-8 md:py-8"
         >
           <div className="max-w-2xl">
             <a
@@ -391,7 +391,7 @@ function InvestmentAdvisorySection({ service }: { service?: Service }) {
 
             <div
               data-testid="services-investment-advisory-left-cta"
-              className="mt-8 flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-6 md:px-8 md:py-8"
+              className="mt-8 flex flex-col gap-5 rounded-2xl bg-[#1a1a1a] px-5 py-6 md:px-8 md:py-8"
             >
               <div className="max-w-2xl">
                 <a
@@ -421,7 +421,7 @@ function InvestmentAdvisorySection({ service }: { service?: Service }) {
                   key={category.title}
                   href={displayService.ctaHref}
                   data-testid={`services-${displayService.testId}-card-${slugify(category.title)}`}
-                  className="group flex flex-col rounded-2xl border border-[#262626] bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
+                  className="group flex flex-col rounded-2xl bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
                 >
                   <IconRing icon={Icon} />
                   <h3 className="text-base font-medium text-white md:text-lg">{category.title}</h3>
@@ -441,7 +441,7 @@ function ServicesBottomCta({ bottomCta }: { bottomCta?: ServicesData["bottomCta"
   return (
     <section aria-labelledby="services-bottom-cta-heading" data-testid="services-bottom-cta-section" className="bg-zinc-950">
       <div className="mx-auto max-w-[1920px] px-4 py-12 md:px-6 md:py-16 lg:px-8 lg:py-20 xl:px-12">
-        <div className="flex flex-col gap-8 rounded-2xl border border-zinc-800 bg-[#1a1a1a] px-5 py-8 md:flex-row md:items-end md:justify-between md:px-8 md:py-10">
+        <div className="flex flex-col gap-8 rounded-2xl bg-[#1a1a1a] px-5 py-8 md:flex-row md:items-end md:justify-between md:px-8 md:py-10">
           <div className="max-w-3xl">
             <h2
               id="services-bottom-cta-heading"

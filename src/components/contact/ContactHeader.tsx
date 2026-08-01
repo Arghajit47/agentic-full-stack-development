@@ -92,7 +92,7 @@ export function ContactHeader({ contactInfo }: { contactInfo?: ContactInfo }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {DEFAULT_CARDS.map((card) => {
             const CardInner = (
-              <div className="group relative flex flex-col items-center rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-8 text-center transition hover:border-zinc-700 hover:bg-zinc-900 sm:py-10">
+              <div className="group relative flex flex-col items-center rounded-2xl bg-zinc-900/80 px-4 py-8 text-center transition hover:bg-zinc-900 sm:py-10">
                 <ArrowUpRight
                   className="absolute right-4 top-4 h-5 w-5 text-zinc-500 transition group-hover:text-violet-500"
                   aria-hidden="true"
@@ -120,7 +120,7 @@ export function ContactHeader({ contactInfo }: { contactInfo?: ContactInfo }) {
                 key={card.id}
                 data-testid={`contact-info-${card.id}`}
                 aria-label={card.ariaLabel}
-                className="group relative flex flex-col items-center rounded-2xl border border-zinc-800 bg-zinc-900/80 px-4 py-8 text-center transition hover:border-zinc-700 hover:bg-zinc-900 sm:py-10"
+                className="group relative flex flex-col items-center rounded-2xl bg-zinc-900/80 px-4 py-8 text-center transition hover:bg-zinc-900 sm:py-10"
               >
                 <ArrowUpRight
                   className="absolute right-4 top-4 h-5 w-5 text-zinc-500 transition group-hover:text-violet-500"

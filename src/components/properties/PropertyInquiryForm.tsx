@@ -188,7 +188,7 @@ export function PropertyInquiryForm({
         data-testid="inquiry-form-success"
         role="status"
         aria-live="polite"
-        className={`w-full bg-[#1A1A1A] rounded-lg border border-zinc-800 p-8 text-center ${className}`}
+        className={`w-full bg-[#1A1A1A] rounded-lg p-8 text-center ${className}`}
       >
         <h3 className="text-2xl font-semibold text-white mb-4">
           Thank You!
@@ -208,7 +208,7 @@ export function PropertyInquiryForm({
   return (
     <div
       data-testid="property-inquiry-form"
-      className={`w-full bg-[#1A1A1A] rounded-lg border border-zinc-800 p-6 ${className}`}
+      className={`w-full bg-[#1A1A1A] rounded-lg p-6 ${className}`}
     >
       {/* Heading */}
       <h3
