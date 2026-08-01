@@ -76,6 +76,8 @@ export const REQUIRED_SETTING_KEYS = [
 
 // ── UI test harness ──────────────────────────────────────────────
 // Route paths for component test fixtures rendered under /test-harness/.
+export const SMOKE_ROUTES = ["/", "/properties", "/services", "/about-us", "/contact"] as const;
+
 export const UI_ROUTES = {
   HOME: "/",
   EMPTY_PROPERTIES: "/test-harness/empty-properties",
