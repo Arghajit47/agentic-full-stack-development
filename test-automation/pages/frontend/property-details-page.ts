@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { ApiHelper } from "@base/api-base";
 import { PROPERTY_DETAILS_LOCATORS } from "@locators/propertydetails-locators";
@@ -26,8 +26,8 @@ export class PropertyDetailsPage {
       `${API_PATHS.PROPERTIES}/${PROPERTY_DETAILS.SLUG}`
     )) as { success: boolean; data: { title: string } | null };
 
-    expect(apiData.success).toBe(true);
-    expect(apiData.data).not.toBeNull();
+    this.apiHelper.assertSchemaValid({ success: apiData.success }, "property detail API");
+    this.apiHelper.assertNotNull(apiData.data, "property data");
 
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(PROPERTY_DETAILS.SLUG));
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.propertyPageTitle);
@@ -43,7 +43,7 @@ export class PropertyDetailsPage {
   async assertPricingBreakdownFromApi(): Promise<void> {
     const pricingData = await this.apiHelper.getRequest(API_PATHS.PROPERTY_PRICING(PROPERTY_DETAILS.SLUG));
     const parsed = propertyPricingSchema.safeParse(pricingData);
-    expect(parsed.success).toBe(true);
+    this.apiHelper.assertSchemaValid(parsed, "pricing schema");
 
     const data = parsed.data!;
     const formatCurrency = (n: number) =>
@@ -101,8 +101,8 @@ export class PropertyDetailsPage {
     await this.initializationPage.click(PROPERTY_DETAILS_LOCATORS.submitButton);
     const response = await responsePromise;
     const body = await response.json();
-    expect(response.status()).toBe(201);
-    expect(body.success).toBe(true);
+    this.apiHelper.assertResponseStatus(response.status(), 201, "inquiry POST");
+    this.apiHelper.assertSchemaValid({ success: body.success }, "inquiry response");
 
     await this.initializationPage.expectVisible(PROPERTY_DETAILS_LOCATORS.inquiryFormSuccess);
   }

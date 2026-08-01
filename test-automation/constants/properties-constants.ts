@@ -6,6 +6,21 @@ export const PROPERTIES_TEXT = {
   SEARCH_SUBMIT_TEXT: "Find Property",
   NO_PROPERTIES_TEXT: "No properties found",
   SEARCH_TEST_QUERY: "Seawide",
+  FIRST_PROPERTY_TITLE: "Seawide Serenity Villa",
+  SECOND_PROPERTY_TITLE: "Metropolitan House",
+  DISCOVER_HEADING: "Discover a World of Possibilities",
+} as const;
+
+export const PROPERTIES_PAGE_ONE_CARD_COUNT = 3;
+
+export const PROPERTIES_CARD_STYLES = {
+  BG_COLOR: "rgb(26, 26, 26)",
+  BORDER_COLOR: "rgb(38, 38, 38)",
+  IMAGE_HEIGHT_PX: 220,
+} as const;
+
+export const PROPERTIES_BANNER_STYLES = {
+  BG_COLOR: "rgb(20, 20, 20)",
 } as const;
 
 export const PROPERTIES_GRID_COLS = {
@@ -17,7 +32,7 @@ export const PROPERTIES_GRID_COLS = {
 } as const;
 
 export const PROPERTY_DETAILS = {
-  SLUG: "modern-villa-in-sunset-hills",
+  SLUG: "seawide-serenity-villa",
   INQUIRY_NAME: "Automation SDET",
   INQUIRY_EMAIL: "sdet+automation@example.com",
   INQUIRY_PHONE: "+1 555 000 1234",

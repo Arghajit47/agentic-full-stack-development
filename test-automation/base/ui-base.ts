@@ -580,7 +580,8 @@ export default class InitializationPage {
         } else {
             element = this.page.locator(locator);
         }
-        expect(number).toBeGreaterThan(await this.getElementsCount(element));
+        const count = await this.getElementsCount(element);
+        expect(count, `element count ${count} should be > ${number}`).toBeGreaterThan(number);
     }
 
     /**
@@ -1301,5 +1302,15 @@ export default class InitializationPage {
         } else {
             await locator.nth(index).check();
         }
+    }
+
+    async expectNotPresent(selector: string | Locator): Promise<void> {
+        let element: Locator;
+        if (typeof selector !== "string") {
+            element = selector;
+        } else {
+            element = this.page.locator(selector);
+        }
+        await expect(element).toHaveCount(0);
     }
 }

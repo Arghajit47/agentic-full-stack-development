@@ -9,7 +9,7 @@ import {
   UI_ROUTES,
 } from "@constants/index";
 import { CONTACT_LOCATORS } from "@locators/contact-locators";
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 
 export interface OfficeApiData {
@@ -67,16 +67,15 @@ export class ContactPage {
 
     await this.navigateToContact();
 
-    const page = this.initializationPage.page;
-    await expect(page.locator(CONTACT_LOCATORS.officeCard)).toHaveCount(offices.length);
-    await expect(page.locator(CONTACT_LOCATORS.galleryImage)).toHaveCount(gallery.length);
+    await this.initializationPage.expectCount(CONTACT_LOCATORS.officeCard, offices.length);
+    await this.initializationPage.expectCount(CONTACT_LOCATORS.galleryImage, gallery.length);
 
     for (let i = 0; i < offices.length; i++) {
-      await expect(page.locator(CONTACT_LOCATORS.officeCard).nth(i)).toContainText(offices[i].title);
+      await this.initializationPage.expectTextContains(CONTACT_LOCATORS.officeCard, offices[i].title, i);
     }
 
     for (let i = 0; i < gallery.length; i++) {
-      await expect(page.locator(CONTACT_LOCATORS.galleryImage).nth(i)).toBeVisible();
+      await this.initializationPage.expectVisible(CONTACT_LOCATORS.galleryImage, i);
     }
   }
 
@@ -104,7 +103,8 @@ export class ContactPage {
     await this.initializationPage.selectOption(CONTACT_LOCATORS.hearAboutSelect, data.hearAbout);
     await this.initializationPage.checkCheckbox(CONTACT_LOCATORS.termsCheckbox);
 
-    await this.initializationPage.clickOnElement(CONTACT_LOCATORS.submitButton);
+    await this.initializationPage.click(CONTACT_LOCATORS.submitButton);
+    await this.initializationPage.waitForSomeTime(2000);
     await this.initializationPage.expectVisible(CONTACT_LOCATORS.formSuccess, 0);
   }
 }
