@@ -234,8 +234,8 @@ function ServicesError({ retry, message }: { retry?: () => void; message?: strin
 
 function IconRing({ icon: Icon }: { icon: LucideIcon }) {
   return (
-    <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-violet-500/40 bg-zinc-900 md:h-14 md:w-14">
-      <Icon className="h-5 w-5 text-violet-400 md:h-6 md:w-6" aria-hidden="true" />
+    <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[#703BF7]/40 bg-zinc-900 md:h-14 md:w-14">
+      <Icon className="h-5 w-5 text-[#703BF7] md:h-6 md:w-6" aria-hidden="true" />
     </div>
   );
 }
@@ -324,7 +324,7 @@ function ServiceSection({ service }: { service: Service }) {
                 key={category.title}
                 href={service.ctaHref}
                 data-testid={`services-${service.testId}-card-${slugify(category.title)}`}
-                className="group flex flex-col rounded-2xl bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
+                className="group flex flex-col rounded-2xl border border-[#262626] bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
               >
                 <IconRing icon={Icon} />
                 <h3 className="text-base font-medium text-white md:text-lg">{category.title}</h3>
@@ -421,7 +421,7 @@ function InvestmentAdvisorySection({ service }: { service?: Service }) {
                   key={category.title}
                   href={displayService.ctaHref}
                   data-testid={`services-${displayService.testId}-card-${slugify(category.title)}`}
-                  className="group flex flex-col rounded-2xl bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
+                  className="group flex flex-col rounded-2xl border border-[#262626] bg-[#1a1a1a] px-5 py-6 transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:px-6 md:py-7"
                 >
                   <IconRing icon={Icon} />
                   <h3 className="text-base font-medium text-white md:text-lg">{category.title}</h3>
