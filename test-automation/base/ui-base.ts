@@ -1313,4 +1313,91 @@ export default class InitializationPage {
         }
         await expect(element).toHaveCount(0);
     }
+
+    // ── Value-level assertion helpers ────────────────────────────────────────
+
+    async expectStringContains(actual: string | null | undefined, expected: string): Promise<void> {
+        expect(actual ?? "").toContain(expected);
+    }
+
+    async expectStringNotContains(actual: string | null | undefined, notExpected: string): Promise<void> {
+        expect(actual ?? "").not.toContain(notExpected);
+    }
+
+    async expectStringEquals(actual: string | null | undefined, expected: string): Promise<void> {
+        expect(actual ?? "").toBe(expected);
+    }
+
+    async expectStringMatchesRegex(actual: string, regex: RegExp): Promise<void> {
+        expect(actual).toMatch(regex);
+    }
+
+    async expectNumberGreaterThan(actual: number, min: number): Promise<void> {
+        expect(actual).toBeGreaterThan(min);
+    }
+
+    async expectNumberLessThan(actual: number, max: number): Promise<void> {
+        expect(actual).toBeLessThan(max);
+    }
+
+    async expectNumberEquals(actual: number, expected: number): Promise<void> {
+        expect(actual).toBe(expected);
+    }
+
+    async expectValueNotNull(value: unknown): Promise<void> {
+        expect(value).not.toBeNull();
+    }
+
+    async expectValueTruthy(value: unknown): Promise<void> {
+        expect(value).toBeTruthy();
+    }
+
+    // ── Locator-level assertion helpers ──────────────────────────────────────
+
+    async expectAttached(selector: string | Locator, index = 0): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).toBeAttached();
+    }
+
+    async expectHasClass(selector: string | Locator, pattern: string | RegExp, index = 0): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).toHaveClass(pattern);
+    }
+
+    async expectAttributeMatchesRegex(
+        selector: string | Locator,
+        attr: string,
+        regex: RegExp,
+        index = 0
+    ): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).toHaveAttribute(attr, regex);
+    }
+
+    async expectHasNotAttribute(selector: string | Locator, attr: string, index = 0): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).not.toHaveAttribute(attr);
+    }
+
+    async expectLocatorHasText(selector: string | Locator, text: string, index = 0): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).toHaveText(text);
+    }
+
+    async expectVisibleWithTimeout(selector: string | Locator, index = 0, timeout = 5000): Promise<void> {
+        const ele = typeof selector === "string"
+            ? this.page.locator(selector).nth(index)
+            : selector;
+        await expect(ele).toBeVisible({ timeout });
+    }
 }

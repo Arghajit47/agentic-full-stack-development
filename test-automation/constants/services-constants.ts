@@ -28,3 +28,12 @@ export const RESPONSIVE_SERVICE_IDS = [
   "property-selling",
   "property-management",
 ] as const;
+
+export const SERVICES_STYLE = {
+  CTA_LINK_TAG: "a",
+  GHOST_BTN_CLASS: "bg-transparent",
+  BORDER_CLASS: "border",
+  FILLED_PURPLE_CLASS: "bg-[#703BF7]",
+  ICON_RING_COLOR_FRAGMENT: "703BF7",
+  ICON_COLOR_RGB: "rgb(112, 59, 247)",
+} as const;

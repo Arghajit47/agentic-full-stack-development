@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { ApiHelper } from "@base/api-base";
 import { HOMEPAGE_LOCATORS } from "@locators/homepage-locators";
@@ -13,6 +13,7 @@ import {
   API_PATHS,
   HOMEPAGE_CONSTANTS,
   UI_TEXT,
+  HOMEPAGE_ASSET_NAMES,
   type Property,
   type Review,
 } from "@constants/index";
@@ -211,23 +212,23 @@ export class HomePage {
   async assertNavbarBannerAbstractDesign(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     const banner = this.initializationPage.page.locator('[data-testid="navbar"] > div').first();
-    await expect(banner).toBeVisible();
+    await this.initializationPage.expectVisible(banner);
     const bgImage = await banner.evaluate((el) => getComputedStyle(el).backgroundImage);
-    expect(bgImage).toContain("abstract-design.png");
+    await this.initializationPage.expectStringContains(bgImage, HOMEPAGE_ASSET_NAMES.NAVBAR_BANNER_BG_IMAGE);
   }
 
   async assertFooterCtaAbstractDesign(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     const ctaSection = this.initializationPage.page.locator('[data-testid="footer"] > div').first();
-    await expect(ctaSection).toBeVisible();
+    await this.initializationPage.expectVisible(ctaSection);
     const leftImg = ctaSection.locator('img[src*="abstract-design-left"]');
     const rightImg = ctaSection.locator('img[src*="abstract-design-right"]');
-    await expect(leftImg).toBeAttached();
-    await expect(rightImg).toBeAttached();
+    await this.initializationPage.expectAttached(leftImg);
+    await this.initializationPage.expectAttached(rightImg);
     const leftSrc = await leftImg.getAttribute("src");
     const rightSrc = await rightImg.getAttribute("src");
-    expect(leftSrc).toContain("abstract-design-left");
-    expect(rightSrc).toContain("abstract-design-right");
+    await this.initializationPage.expectStringContains(leftSrc, HOMEPAGE_ASSET_NAMES.FOOTER_LEFT_IMAGE);
+    await this.initializationPage.expectStringContains(rightSrc, HOMEPAGE_ASSET_NAMES.FOOTER_RIGHT_IMAGE);
   }
 
   async assertDiscoverBadgePosition(): Promise<void> {
@@ -237,25 +238,25 @@ export class HomePage {
     await this.initializationPage.setViewport({ width: 375, height: 812 });
     const badge375 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.discoverBadge);
     const image375 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.heroImage);
-    await expect(badge375).toBeVisible();
+    await this.initializationPage.expectVisible(badge375);
     const badgeBox375 = await badge375.boundingBox();
     const imageBox375 = await image375.boundingBox();
-    expect(badgeBox375).not.toBeNull();
-    expect(imageBox375).not.toBeNull();
+    await this.initializationPage.expectValueNotNull(badgeBox375);
+    await this.initializationPage.expectValueNotNull(imageBox375);
     // Badge should be in the left half of the image
-    expect(badgeBox375!.x).toBeLessThan(imageBox375!.x + imageBox375!.width / 2);
+    await this.initializationPage.expectNumberLessThan(badgeBox375!.x, imageBox375!.x + imageBox375!.width / 2);
 
     // Desktop (1440px): badge must be on the RIGHT side of the hero image
     await this.initializationPage.setViewport({ width: 1440, height: 900 });
     const badge1440 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.discoverBadge);
     const image1440 = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.heroImage);
-    await expect(badge1440).toBeVisible();
+    await this.initializationPage.expectVisible(badge1440);
     const badgeBox1440 = await badge1440.boundingBox();
     const imageBox1440 = await image1440.boundingBox();
-    expect(badgeBox1440).not.toBeNull();
-    expect(imageBox1440).not.toBeNull();
+    await this.initializationPage.expectValueNotNull(badgeBox1440);
+    await this.initializationPage.expectValueNotNull(imageBox1440);
     // Badge should be in the right half of the image
-    expect(badgeBox1440!.x).toBeGreaterThan(imageBox1440!.x + imageBox1440!.width / 2);
+    await this.initializationPage.expectNumberGreaterThan(badgeBox1440!.x, imageBox1440!.x + imageBox1440!.width / 2);
   }
 
   async assertFeaturedNavDots(): Promise<void> {
@@ -273,6 +274,6 @@ export class HomePage {
     await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.viewAllMobileCta);
     // First dot must be active (bg-[#703BF7])
     const activeDot = await this.initializationPage.page.locator('[data-testid="nav-dot-0"]');
-    await expect(activeDot).toHaveClass(/bg-\[#703BF7\]/);
+    await this.initializationPage.expectHasClass(activeDot, /bg-\[#703BF7\]/);
   }
 }

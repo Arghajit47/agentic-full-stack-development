@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { ApiHelper } from "@base/api-base";
 import { PROPERTY_DETAILS_LOCATORS } from "@locators/propertydetails-locators";
@@ -8,6 +8,7 @@ import {
   API_PATHS,
   PROPERTY_DETAILS,
   propertyPricingSchema,
+  PROPERTY_DETAILS_CONSTANTS,
 } from "@constants/index";
 
 type ViewportKey = keyof typeof VIEWPORTS;
@@ -145,18 +146,18 @@ export class PropertyDetailsPage {
     );
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS(slug));
     const noteCard = this.initializationPage.page.locator('[data-testid="pricing-note-card"]');
-    await expect(noteCard).toBeVisible({ timeout: 10000 });
+    await this.initializationPage.expectVisibleWithTimeout(noteCard, 0, 10000);
     // Note label must be plain white text — no border, no background pill
     const noteLabel = noteCard.locator("span").first();
-    await expect(noteLabel).toHaveText("Note");
+    await this.initializationPage.expectLocatorHasText(noteLabel, PROPERTY_DETAILS_CONSTANTS.NOTE_LABEL_TEXT);
     const color = await noteLabel.evaluate((el) => getComputedStyle(el).color);
-    expect(color).toBe("rgb(255, 255, 255)");
+    await this.initializationPage.expectStringEquals(color, PROPERTY_DETAILS_CONSTANTS.NOTE_LABEL_COLOR);
     // Must not have a visible border
     const borderWidth = await noteLabel.evaluate((el) => getComputedStyle(el).borderTopWidth);
-    expect(borderWidth).toBe("0px");
+    await this.initializationPage.expectStringEquals(borderWidth, PROPERTY_DETAILS_CONSTANTS.NOTE_LABEL_BORDER_WIDTH);
     // Container must use items-center (align-items: center)
     const alignItems = await noteCard.evaluate((el) => getComputedStyle(el).alignItems);
-    expect(alignItems).toBe("center");
+    await this.initializationPage.expectStringEquals(alignItems, PROPERTY_DETAILS_CONSTANTS.NOTE_CARD_ALIGN);
     await this.initializationPage.clearNetworkLogs();
   }
 

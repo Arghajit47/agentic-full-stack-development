@@ -42,27 +42,27 @@ test.describe("About Us Page Suite", () => {
     await aboutUsPage.assertNoImage404s();
   });
 
-  test("KAN-97: Team member order matches API", async ({ aboutUsPage }) => {
+  test("Team member order matches API", async ({ aboutUsPage }) => {
     await aboutUsPage.assertTeamMemberOrderMatchesApi();
   });
 
-  test("KAN-97: Team card styling", async ({ aboutUsPage }) => {
+  test("Team card styling", async ({ aboutUsPage }) => {
     await aboutUsPage.assertTeamCardStyling();
   });
 
-  test("KAN-97: Team photos load", async ({ aboutUsPage }) => {
+  test("Team photos load", async ({ aboutUsPage }) => {
     await aboutUsPage.assertTeamPhotosLoad();
   });
 
-  test("KAN-98: Client card order matches API (ABC first)", async ({ aboutUsPage }) => {
+  test("Client card order matches API (ABC first)", async ({ aboutUsPage }) => {
     await aboutUsPage.assertClientCardOrder();
   });
 
-  test("KAN-98: Client card styling (bg #1A1A1A, border #262626, label #8C8C8C)", async ({ aboutUsPage }) => {
+  test("Client card styling (bg #1A1A1A, border #262626, label #8C8C8C)", async ({ aboutUsPage }) => {
     await aboutUsPage.assertClientCardStyling();
   });
 
-  test("KAN-103: Step card content has full border; step label has left-border only", async ({ aboutUsPage }) => {
+  test("Step card content has full border; step label has left-border only", async ({ aboutUsPage }) => {
     await aboutUsPage.assertStepCardStyling();
   });
 });

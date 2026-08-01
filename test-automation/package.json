@@ -6,11 +6,16 @@
     "test:api": "npx playwright test --project=backend-test",
     "test:ui": "npx playwright test --project=frontend-integration-test",
     "test": "npm run test:api && npm run test:ui",
-    "test:report": "npx playwright show-report /tmp/playwright-report"
+    "test:report": "npx playwright show-report /tmp/playwright-report",
+    "test:lighthouse": "npx playwright test --project=lighthouse-test",
+    "test:smoke": "npx playwright test --project=smoke-test"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "@types/node": "^20",
+    "lighthouse": "^12.0.0",
+    "@arghajit/playwright-pulse-report": "latest",
+    "puppeteer": "^23.0.0",
     "typescript": "^5",
     "zod": "^4.4.3"
   }
