@@ -315,7 +315,7 @@ export function PropertyInquiryForm({
               id="inquiry-selected-property"
               name="selectedProperty"
               data-testid="input-selected-property"
-              value={propertyLocation ? `${propertyTitle} — ${propertyLocation}` : propertyTitle}
+              value={propertyLocation ? `${propertyTitle}, ${propertyLocation}` : propertyTitle}
               readOnly
               className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-zinc-400 text-base outline-none cursor-not-allowed"
             />
