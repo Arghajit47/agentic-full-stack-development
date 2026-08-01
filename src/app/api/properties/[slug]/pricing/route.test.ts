@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import prisma from "@/lib/prisma";
 
 describe("GET /api/properties/[slug]/pricing", () => {
-  const testSlug = "modern-villa-in-sunset-hills";
+  const testSlug = "seawide-serenity-villa";
 
   beforeAll(async () => {
     // Ensure test data exists (seed should have run)
@@ -81,8 +81,8 @@ describe("GET /api/properties/[slug]/pricing", () => {
   });
 
   it("returns different pricing for different properties", async () => {
-    const slug1 = "modern-villa-in-sunset-hills";
-    const slug2 = "downtown-loft-penthouse";
+    const slug1 = "seawide-serenity-villa";
+    const slug2 = "metropolitan-house";
 
     const response1 = await fetch(`http://localhost:3000/api/properties/${slug1}/pricing`);
     const response2 = await fetch(`http://localhost:3000/api/properties/${slug2}/pricing`);
