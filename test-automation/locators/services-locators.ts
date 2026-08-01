@@ -26,4 +26,8 @@ export const SERVICES_LOCATORS = {
   error: '[data-testid="services-error"]',
   errorRetry: '[data-testid="services-error-retry"]',
   empty: '[data-testid="services-empty"]',
+  investmentAdvisoryCards: '[data-testid^="services-investment-advisory-card-"]',
+  investmentAdvisoryIconRing: '[data-testid^="services-investment-advisory-card-"] div.rounded-full',
+  propertySellingCards: '[data-testid^="services-property-selling-card-"]',
+  propertyManagementCards: '[data-testid^="services-property-management-card-"]',
 } as const;

@@ -50,4 +50,8 @@ test.describe("Services Page Suite", () => {
   test("KAN-101: Service feature cards render as 4 columns at 1920px", async ({ servicesPage }) => {
     await servicesPage.assertServiceGridColumnsAtDesktop();
   });
+
+  test("KAN-105: Investment advisory section has no form element; cards have border #262626; icon ring and color use #703BF7", async ({ servicesPage }) => {
+    await servicesPage.assertKan105ServiceCardStyling();
+  });
 });

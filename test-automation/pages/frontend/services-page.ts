@@ -179,4 +179,43 @@ export class ServicesPage {
   async assertNoImage404s(): Promise<void> {
     await this.initializationPage.assertNoImage404s(UI_ROUTES.SERVICES);
   }
+
+  async assertKan105ServiceCardStyling(): Promise<void> {
+    await this.initializationPage.setViewport({ width: 1920, height: 1080 });
+    await this.navigateToServices();
+
+    // No form or input elements in investment advisory section
+    const formCount = await this.initializationPage.page
+      .locator('[data-testid="services-investment-advisory-section"] form, [data-testid="services-investment-advisory-section"] textarea, [data-testid="services-investment-advisory-section"] input')
+      .count();
+    expect(formCount).toBe(0);
+
+    // Feature cards in all service sections have a visible border (#262626)
+    for (const cardLocator of [
+      SERVICES_LOCATORS.investmentAdvisoryCards,
+      SERVICES_LOCATORS.propertySellingCards,
+      SERVICES_LOCATORS.propertyManagementCards,
+    ]) {
+      const firstCard = this.initializationPage.page.locator(cardLocator).first();
+      await expect(firstCard).toBeVisible();
+      const cls = await firstCard.getAttribute("class");
+      expect(cls).toContain("border");
+    }
+
+    // Icon ring uses #703BF7 border color
+    const iconRing = this.initializationPage.page
+      .locator(SERVICES_LOCATORS.investmentAdvisoryIconRing)
+      .first();
+    await expect(iconRing).toBeVisible();
+    const ringCls = await iconRing.getAttribute("class");
+    expect(ringCls).toContain("703BF7");
+
+    // Icon color is #703BF7 (rgb(112, 59, 247))
+    const icon = iconRing.locator("svg").first();
+    await expect(icon).toBeVisible();
+    const iconColor = await icon.evaluate(
+      (el) => window.getComputedStyle(el).color
+    );
+    expect(iconColor).toBe("rgb(112, 59, 247)");
+  }
 }
