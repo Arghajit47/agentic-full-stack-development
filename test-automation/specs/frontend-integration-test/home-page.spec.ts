@@ -33,7 +33,7 @@ test("Home Page components, responsive layout", async ({ homepage }) => {
   });
 });
 
-test("KAN-102: Hero section grid columns at all breakpoints", async ({ homepage }) => {
+test("Hero section grid columns at all breakpoints", async ({ homepage }) => {
   await homepage.navigateHomePage();
   await test.step("WIDE (1920px): hero is two-column", async () => {
     await homepage.setViewport("WIDE");
@@ -57,7 +57,7 @@ test("KAN-102: Hero section grid columns at all breakpoints", async ({ homepage 
   });
 });
 
-test("KAN-104: Featured Properties nav dots visible at 375px mobile; arrows below card; mobile CTA present", async ({ homepage }) => {
+test("Featured Properties nav dots visible at 375px mobile; arrows below card; mobile CTA present", async ({ homepage }) => {
   await homepage.assertFeaturedNavDots();
 });
 
@@ -74,14 +74,14 @@ test("Home page console error handling and image error handling", async ({ homep
   await homepage.assertNoImage404s();
 });
 
-test("KAN-118: Navbar banner strip has abstract design background image", async ({ homepage }) => {
+test("Navbar banner strip has abstract design background image", async ({ homepage }) => {
   await homepage.assertNavbarBannerAbstractDesign();
 });
 
-test("KAN-119: Footer CTA section has abstract design left and right corner images", async ({ homepage }) => {
+test("Footer CTA section has abstract design left and right corner images", async ({ homepage }) => {
   await homepage.assertFooterCtaAbstractDesign();
 });
 
-test("KAN-122: Hero discover badge is on the left at mobile and right at desktop", async ({ homepage }) => {
+test("Hero discover badge is on the left at mobile and right at desktop", async ({ homepage }) => {
   await homepage.assertDiscoverBadgePosition();
 });

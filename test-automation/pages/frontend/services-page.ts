@@ -10,8 +10,9 @@ import {
   type ServicesApiResponse,
 } from "@constants/index";
 import { SERVICES_LOCATORS } from "@locators/services-locators";
-import { expect, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
+import { SERVICES_STYLE } from "@constants/index";
 
 type ViewportKey = (typeof VIEWPORT_ORDER)[number];
 
@@ -130,13 +131,13 @@ export class ServicesPage {
       SERVICES_LOCATORS.investmentAdvisoryCtaLink,
     ]) {
       const link = this.initializationPage.page.locator(locator).first();
-      await expect(link).toBeVisible();
+      await this.initializationPage.expectVisible(link);
       // Tag must be <a>, not <h3>
       const tag = await link.evaluate((el) => el.tagName.toLowerCase());
-      expect(tag).toBe("a");
+      await this.initializationPage.expectStringEquals(tag, SERVICES_STYLE.CTA_LINK_TAG);
       // Must contain an SVG (ArrowUpRight icon)
       const svgCount = await link.locator("svg").count();
-      expect(svgCount).toBeGreaterThan(0);
+      await this.initializationPage.expectNumberGreaterThan(svgCount, 0);
     }
   }
 
@@ -147,13 +148,13 @@ export class ServicesPage {
       SERVICES_LOCATORS.investmentAdvisoryCtaButton,
     ]) {
       const btn = this.initializationPage.page.locator(locator).first();
-      await expect(btn).toBeVisible();
+      await this.initializationPage.expectVisible(btn);
       const cls = await btn.getAttribute("class");
       // Ghost: transparent background + border
-      expect(cls).toContain("bg-transparent");
-      expect(cls).toContain("border");
+      await this.initializationPage.expectStringContains(cls, SERVICES_STYLE.GHOST_BTN_CLASS);
+      await this.initializationPage.expectStringContains(cls, SERVICES_STYLE.BORDER_CLASS);
       // Must NOT be filled purple
-      expect(cls).not.toContain("bg-[#703BF7]");
+      await this.initializationPage.expectStringNotContains(cls, SERVICES_STYLE.FILLED_PURPLE_CLASS);
     }
   }
 
@@ -188,7 +189,7 @@ export class ServicesPage {
     const formCount = await this.initializationPage.page
       .locator('[data-testid="services-investment-advisory-section"] form, [data-testid="services-investment-advisory-section"] textarea, [data-testid="services-investment-advisory-section"] input')
       .count();
-    expect(formCount).toBe(0);
+    await this.initializationPage.expectNumberEquals(formCount, 0);
 
     // Feature cards in all service sections have a visible border (#262626)
     for (const cardLocator of [
@@ -197,25 +198,25 @@ export class ServicesPage {
       SERVICES_LOCATORS.propertyManagementCards,
     ]) {
       const firstCard = this.initializationPage.page.locator(cardLocator).first();
-      await expect(firstCard).toBeVisible();
+      await this.initializationPage.expectVisible(firstCard);
       const cls = await firstCard.getAttribute("class");
-      expect(cls).toContain("border");
+      await this.initializationPage.expectStringContains(cls, SERVICES_STYLE.BORDER_CLASS);
     }
 
     // Icon ring uses #703BF7 border color
     const iconRing = this.initializationPage.page
       .locator(SERVICES_LOCATORS.investmentAdvisoryIconRing)
       .first();
-    await expect(iconRing).toBeVisible();
+    await this.initializationPage.expectVisible(iconRing);
     const ringCls = await iconRing.getAttribute("class");
-    expect(ringCls).toContain("703BF7");
+    await this.initializationPage.expectStringContains(ringCls, SERVICES_STYLE.ICON_RING_COLOR_FRAGMENT);
 
     // Icon color is #703BF7 (rgb(112, 59, 247))
     const icon = iconRing.locator("svg").first();
-    await expect(icon).toBeVisible();
+    await this.initializationPage.expectVisible(icon);
     const iconColor = await icon.evaluate(
       (el) => window.getComputedStyle(el).color
     );
-    expect(iconColor).toBe("rgb(112, 59, 247)");
+    await this.initializationPage.expectStringEquals(iconColor, SERVICES_STYLE.ICON_COLOR_RGB);
   }
 }

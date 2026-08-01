@@ -1,6 +1,6 @@
-import { expect, type Page, type APIRequestContext } from "@playwright/test";
+import { type Page, type APIRequestContext } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
-import { UI_ROUTES } from "@constants/index";
+import { UI_ROUTES, LIGHTHOUSE_CONSTANTS } from "@constants/index";
 
 export class LighthousePage {
   private initializationPage: InitializationPage;
@@ -16,29 +16,29 @@ export class LighthousePage {
   async assertRobotsTxt(request: APIRequestContext): Promise<void> {
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
     const res = await request.get(`${baseUrl}/robots.txt`);
-    expect(res.status()).toBe(200);
+    await this.initializationPage.expectNumberEquals(res.status(), LIGHTHOUSE_CONSTANTS.HTTP_OK);
     const body = await res.text();
-    expect(body).toMatch(/User-[Aa]gent:/);
-    expect(body).toContain("Disallow: /api/");
-    expect(body).toContain("Allow: /");
+    await this.initializationPage.expectStringMatchesRegex(body, LIGHTHOUSE_CONSTANTS.ROBOTS_USER_AGENT_REGEX);
+    await this.initializationPage.expectStringContains(body, LIGHTHOUSE_CONSTANTS.ROBOTS_DISALLOW_API);
+    await this.initializationPage.expectStringContains(body, LIGHTHOUSE_CONSTANTS.ROBOTS_ALLOW_ROOT);
   }
 
   async assertSitemapXml(request: APIRequestContext): Promise<void> {
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
     const res = await request.get(`${baseUrl}/sitemap.xml`);
-    expect(res.status()).toBe(200);
+    await this.initializationPage.expectNumberEquals(res.status(), LIGHTHOUSE_CONSTANTS.HTTP_OK);
     const body = await res.text();
-    for (const route of ["/services", "/about-us", "/contact", "/properties"]) {
-      expect(body).toContain(route);
+    for (const route of LIGHTHOUSE_CONSTANTS.SITEMAP_ROUTES) {
+      await this.initializationPage.expectStringContains(body, route);
     }
   }
 
   async assertSkipToContentLink(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
-    const skipLink = this.page.locator('a[href="#main-content"]');
-    await expect(skipLink).toHaveCount(1);
+    const skipLink = this.page.locator(LIGHTHOUSE_CONSTANTS.SKIP_LINK_SELECTOR);
+    await this.initializationPage.expectCount(skipLink, 1);
     const cls = await skipLink.getAttribute("class");
-    expect(cls).toContain("sr-only");
+    await this.initializationPage.expectStringContains(cls, LIGHTHOUSE_CONSTANTS.SKIP_LINK_CLASS);
   }
 
   async assertPerRoutePageTitles(): Promise<void> {
@@ -53,17 +53,17 @@ export class LighthousePage {
     for (const route of routes) {
       await this.initializationPage.goto(route.path);
       const title = await this.page.title();
-      expect(title).toContain(route.expect);
+      await this.initializationPage.expectStringContains(title, route.expect);
       titles.add(title);
     }
-    expect(titles.size).toBe(routes.length);
+    await this.initializationPage.expectNumberEquals(titles.size, routes.length);
   }
 
   async assertPropertyDetailTitle(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS("seawide-serenity-villa"));
     await this.page.waitForSelector('[data-testid="property-page-title"]');
     const title = await this.page.title();
-    expect(title.toLowerCase()).toContain("seawide");
+    await this.initializationPage.expectStringContains(title.toLowerCase(), LIGHTHOUSE_CONSTANTS.PROPERTY_DETAIL_SLUG_FRAGMENT);
   }
 
   async assertLoadingSkeletonAriaRole(): Promise<void> {
@@ -72,16 +72,16 @@ export class LighthousePage {
       await route.continue();
     });
     await this.initializationPage.goto(UI_ROUTES.PROPERTY_DETAILS("seawide-serenity-villa"));
-    await expect(this.page.locator('[role="status"]').first()).toBeVisible();
+    await this.initializationPage.expectVisible(this.page.locator('[role="status"]').first());
   }
 
   async assertSecurityHeaders(request: APIRequestContext): Promise<void> {
     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
     const res = await request.get(`${baseUrl}/`);
     const headers = res.headers();
-    expect(headers["x-frame-options"]).toBe("DENY");
-    expect(headers["x-content-type-options"]).toBe("nosniff");
-    expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+    await this.initializationPage.expectStringEquals(headers["x-frame-options"], LIGHTHOUSE_CONSTANTS.SECURITY_HEADERS.X_FRAME_OPTIONS);
+    await this.initializationPage.expectStringEquals(headers["x-content-type-options"], LIGHTHOUSE_CONSTANTS.SECURITY_HEADERS.X_CONTENT_TYPE_OPTIONS);
+    await this.initializationPage.expectStringEquals(headers["referrer-policy"], LIGHTHOUSE_CONSTANTS.SECURITY_HEADERS.REFERRER_POLICY);
   }
 
   async assertGalleryAriaLabels(): Promise<void> {
@@ -89,22 +89,22 @@ export class LighthousePage {
     await this.page.waitForSelector('[data-testid="property-gallery"]');
     const dots = this.page.locator('[role="tablist"] button');
     const count = await dots.count();
-    expect(count).toBeGreaterThan(0);
+    await this.initializationPage.expectNumberGreaterThan(count, 0);
     const firstDot = dots.first();
-    await expect(firstDot).toHaveAttribute("aria-label", /Image 1 of/);
-    await expect(firstDot).toHaveAttribute("aria-current", "true");
+    await this.initializationPage.expectAttributeMatchesRegex(firstDot, "aria-label", /Image 1 of/);
+    await this.initializationPage.expectAttribute(firstDot, "aria-current", "true");
     if (count > 1) {
-      await expect(dots.nth(1)).not.toHaveAttribute("aria-current");
+      await this.initializationPage.expectHasNotAttribute(dots.nth(1), "aria-current");
     }
   }
 
   async assertJsonLdStructuredData(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     const jsonLdScript = this.page.locator('script[type="application/ld+json"]');
-    await expect(jsonLdScript).toHaveCount(1);
+    await this.initializationPage.expectCount(jsonLdScript, 1);
     const content = await jsonLdScript.textContent();
-    expect(content).toBeTruthy();
+    await this.initializationPage.expectValueTruthy(content);
     const parsed = JSON.parse(content!);
-    expect(parsed["@type"]).toBe("RealEstateAgent");
+    await this.initializationPage.expectStringEquals(parsed["@type"], LIGHTHOUSE_CONSTANTS.JSON_LD_TYPE);
   }
 }

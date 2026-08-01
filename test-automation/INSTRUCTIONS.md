@@ -281,3 +281,64 @@ Every single change to this test automation framework MUST satisfy the following
 3. **UI Tests Pass**: `npm run test:ui` passes **100% (11/11 passed)**.
 4. **Full Test Suite Passes**: `npm run test` passes **100% (15/15 passed)**.
 5. **Zero Linter/Import Violations**: No relative imports (`../`), no bare locators, no inline magic strings.
+
+---
+
+## 7. EXTENDED ARCHITECTURE — ADDED IN KAN-123
+
+### New Test Suites
+
+#### Smoke Test Suite (`specs/smoke-test/`)
+Runs after every Netlify deploy. Validates the deployed site is healthy with 3 checks:
+1. All public routes return HTTP 200
+2. No broken images on any page
+3. Navbar and footer are visible at all VIEWPORTS
+
+**Pattern**: `SmokeTestPage` (`pages/frontend/smoke-page.ts`) owns all logic. `smoke.spec.ts` is a 3-line thin wrapper using `{ smokePage, request }` fixtures.
+
+Locators: `locators/smoke-locators.ts` (`SMOKE_LOCATORS.navbar`, `SMOKE_LOCATORS.footer`).
+Routes constant: `SMOKE_ROUTES` in `constants/index.ts`.
+
+Script: `npm run test:smoke`
+
+#### Lighthouse Audit Suite (`specs/lighthouse-test/`)
+Runs puppeteer + lighthouse to assert performance/accessibility/best-practices/SEO scores.
+
+**Pattern**: `LighthouseAuditPage` (`pages/frontend/lighthouse-audit-page.ts`) owns all logic. `lighthouse.spec.ts` has one test per page (5 tests), each calling `lighthouseAuditPage.assertScoresForPage(name, path)` which internally iterates all 5 RESOLUTIONS.
+
+Helpers: `lighthouse/lighthouse-runner.ts` (puppeteer+lighthouse wrapper) and `lighthouse/lighthouse-thresholds.ts` (score thresholds and page/resolution lists).
+
+Path alias: `@lighthouse/*` maps to `./lighthouse/*` (declared in `tsconfig.json`).
+
+Script: `npm run test:lighthouse`
+
+#### Existing Playwright SEO/A11y Suite (`specs/frontend-integration-test/lighthouse-seo-a11y.spec.ts`)
+Still exists and is **separate** from the Lighthouse audit suite. It uses `LighthousePage` (`pages/frontend/lighthouse-page.ts`) and validates robots.txt, sitemap, skip links, security headers, structured data — NOT performance scores.
+
+### Updated Path Aliases (`tsconfig.json`)
+
+```json
+"@lighthouse/*": ["./lighthouse/*"]
+```
+
+### Reporter
+`playwright-pulse-report` replaces the default HTML reporter (`@arghajit/playwright-pulse-report` is the correct scoped package name).
+
+### CI/CD: `automation.yml`
+Location: `.github/workflows/automation.yml` (repo root, not inside test-automation/).
+Trigger: `workflow_run` on `"Deploy to Netlify"` completion (`conclusion == 'success'`).
+Runs all 4 projects: `backend-test`, `frontend-integration-test`, `smoke-test`, `lighthouse-test`.
+Requires GitHub secret `NETLIFY_SITE_URL` for the deployed URL.
+
+### New Constants
+- `SMOKE_ROUTES` — array of all public-facing routes for smoke testing
+- `LIGHTHOUSE_CONSTANTS` — security headers, robots.txt strings, JSON-LD type, etc. (in `constants/lighthouse-constants.ts`)
+- `PROPERTY_DETAILS_CONSTANTS` — note card style values (in `constants/property-details-constants.ts`)
+- `HOMEPAGE_ASSET_NAMES` — abstract design image name fragments (added to `constants/homepage-constants.ts`)
+- `SERVICES_STYLE` — ghost button classes, icon colors (added to `constants/services-constants.ts`)
+- `ABOUT_US_STYLE` — team/client card colors, border widths (added to `constants/about-us-constants.ts`)
+
+### New Modular Assertion Methods in `ui-base.ts`
+Value-level (no locator): `expectStringContains`, `expectStringNotContains`, `expectStringEquals`, `expectStringMatchesRegex`, `expectNumberGreaterThan`, `expectNumberLessThan`, `expectNumberEquals`, `expectValueNotNull`, `expectValueTruthy`.
+
+Locator-level: `expectAttached`, `expectHasClass`, `expectAttributeMatchesRegex`, `expectHasNotAttribute`, `expectLocatorHasText`, `expectVisibleWithTimeout`.

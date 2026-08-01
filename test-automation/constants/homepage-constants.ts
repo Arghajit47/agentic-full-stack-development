@@ -1,3 +1,9 @@
+export const HOMEPAGE_ASSET_NAMES = {
+  NAVBAR_BANNER_BG_IMAGE: "abstract-design.png",
+  FOOTER_LEFT_IMAGE: "abstract-design-left",
+  FOOTER_RIGHT_IMAGE: "abstract-design-right",
+} as const;
+
 export const HOMEPAGE_CONSTANTS = {
   NO_PROPERTIES_TEXT: "No properties found",
   NO_REVIEWS_TEXT: "No reviews yet",

@@ -3,6 +3,7 @@ import {
   ABOUT_US_TEXT,
   ABOUT_US_COUNTS,
   ABOUT_US_ERROR_MESSAGES,
+  ABOUT_US_STYLE,
   UI_ROUTES,
   API_PATHS,
 } from "@constants/index";
@@ -146,13 +147,13 @@ export class AboutUsPage {
   async assertTeamCardStyling(): Promise<void> {
     await this.navigateToAboutUs();
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.teamMember, 0, "background-color", "rgb(26, 26, 26)"
+      ABOUT_US_LOCATORS.teamMember, 0, "background-color", ABOUT_US_STYLE.TEAM_CARD_BG
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.teamMember, 0, "border-color", "rgb(38, 38, 38)"
+      ABOUT_US_LOCATORS.teamMember, 0, "border-color", ABOUT_US_STYLE.TEAM_CARD_BORDER
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.teamMemberRole, 0, "color", "rgb(140, 140, 140)"
+      ABOUT_US_LOCATORS.teamMemberRole, 0, "color", ABOUT_US_STYLE.TEAM_CARD_ROLE_COLOR
     );
   }
 
@@ -220,13 +221,13 @@ export class AboutUsPage {
   async assertClientCardStyling(): Promise<void> {
     await this.navigateToAboutUs();
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.clientCard, 0, "background-color", "rgb(26, 26, 26)"
+      ABOUT_US_LOCATORS.clientCard, 0, "background-color", ABOUT_US_STYLE.TEAM_CARD_BG
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.clientCard, 0, "border-color", "rgb(38, 38, 38)"
+      ABOUT_US_LOCATORS.clientCard, 0, "border-color", ABOUT_US_STYLE.TEAM_CARD_BORDER
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.clientSince, 0, "color", "rgb(140, 140, 140)"
+      ABOUT_US_LOCATORS.clientSince, 0, "color", ABOUT_US_STYLE.TEAM_CARD_ROLE_COLOR
     );
     await this.initializationPage.checkCSSProperty(
       ABOUT_US_LOCATORS.clientSince, 0, "font-size", "12px"
@@ -298,26 +299,26 @@ export class AboutUsPage {
     await this.initializationPage.expectCount(ABOUT_US_LOCATORS.stepCard, 6);
     // Content div must have a full border on all 4 sides (purple border per Figma)
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardContent, 0, "border-top-width", "1px"
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-top-width", ABOUT_US_STYLE.STEP_CARD_BORDER_WIDTH
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardContent, 0, "border-right-width", "1px"
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-right-width", ABOUT_US_STYLE.STEP_CARD_BORDER_WIDTH
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardContent, 0, "border-bottom-width", "1px"
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-bottom-width", ABOUT_US_STYLE.STEP_CARD_BORDER_WIDTH
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardContent, 0, "border-left-width", "1px"
+      ABOUT_US_LOCATORS.stepCardContent, 0, "border-left-width", ABOUT_US_STYLE.STEP_CARD_BORDER_WIDTH
     );
     // Step label div must have only a left border
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-left-width", "1px"
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-left-width", ABOUT_US_STYLE.STEP_CARD_BORDER_WIDTH
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-top-width", "0px"
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-top-width", ABOUT_US_STYLE.STEP_LABEL_NO_BORDER
     );
     await this.initializationPage.checkCSSProperty(
-      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-right-width", "0px"
+      ABOUT_US_LOCATORS.stepCardLabel, 0, "border-right-width", ABOUT_US_STYLE.STEP_LABEL_NO_BORDER
     );
   }
 }

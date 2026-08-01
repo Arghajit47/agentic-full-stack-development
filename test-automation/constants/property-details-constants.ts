@@ -1,0 +1,6 @@
+export const PROPERTY_DETAILS_CONSTANTS = {
+  NOTE_LABEL_TEXT: "Note",
+  NOTE_LABEL_COLOR: "rgb(255, 255, 255)",
+  NOTE_LABEL_BORDER_WIDTH: "0px",
+  NOTE_CARD_ALIGN: "center",
+} as const;

@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 30_000,
   fullyParallel: true,
   workers: undefined,
-  reporter: [["html"], ["list"]],
+  reporter: [["@arghajit/playwright-pulse-report", { outputDir: "pulse-report" }], ["list"]],
   use: {
     baseURL: process.env.BASE_URL || BASE_URL,
     screenshot: "only-on-failure",
@@ -21,6 +21,20 @@ export default defineConfig({
       name: 'backend-test',
       testDir: "./specs/backend-test",
       testMatch: /.*\.spec\.ts$/,
-    }
+    },
+    {
+      name: 'lighthouse-test',
+      testDir: "./specs/lighthouse-test",
+      testMatch: /.*\.spec\.ts$/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 120_000,
+    },
+    {
+      name: 'smoke-test',
+      testDir: "./specs/smoke-test",
+      testMatch: /.*\.spec\.ts$/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 60_000,
+    },
   ],
 });

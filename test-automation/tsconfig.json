@@ -18,7 +18,8 @@
       "@fixtures/*": ["./fixtures/*"],
       "@constants/*": ["./constants/*"],
       "@locators/*": ["./locators/*"],
-      "@src/*": ["../src/*"]
+      "@src/*": ["../src/*"],
+      "@lighthouse/*": ["./lighthouse/*"]
     }
   },
   "include": ["./**/*.ts"],
