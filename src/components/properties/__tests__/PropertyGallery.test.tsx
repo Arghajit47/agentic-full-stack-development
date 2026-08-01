@@ -1,10 +1,14 @@
-import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, afterEach } from "vitest";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { PropertyGallery } from "../PropertyGallery";
 import { type PropertyImage } from "@/lib/schemas";
 
 describe("PropertyGallery", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   const mockImages: PropertyImage[] = [
     {
       id: 1,
@@ -28,66 +32,73 @@ describe("PropertyGallery", () => {
 
   it("renders the gallery with images", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    expect(screen.getByTestId("property-gallery")).toBeInTheDocument();
+    expect(screen.getAllByTestId("property-gallery")[0]).toBeInTheDocument();
   });
 
   it("shows empty state when no images provided", () => {
     render(<PropertyGallery images={[]} title="Test Property" />);
-    expect(screen.getByTestId("property-gallery-empty")).toBeInTheDocument();
+    expect(screen.getAllByTestId("property-gallery-empty")[0]).toBeInTheDocument();
   });
 
-  it("displays image counter correctly", () => {
+  it("renders the first image initially", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    const counters = screen.getAllByTestId("gallery-counter");
-    expect(counters[0].textContent).toContain("1");
-    expect(counters[0].textContent).toContain("3");
+    expect(screen.getAllByTestId("gallery-main-image-0")[0]).toBeInTheDocument();
   });
 
   it("navigates to next image when next button clicked", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
     const nextButton = screen.getAllByTestId("gallery-next-button")[0];
-    
     fireEvent.click(nextButton);
-    const counters = screen.getAllByTestId("gallery-counter");
-    expect(counters[0].textContent).toContain("2");
+    expect(screen.getAllByTestId("gallery-main-image-1")[0]).toBeInTheDocument();
   });
 
-  it("navigates when thumbnail clicked", () => {
+  it("navigates to previous image when previous button clicked", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    const thumbnail2 = screen.getAllByTestId("gallery-thumbnail-1")[0];
-    
-    fireEvent.click(thumbnail2);
-    const counters = screen.getAllByTestId("gallery-counter");
-    expect(counters[0].textContent).toContain("2");
+    expect(screen.getAllByTestId("gallery-main-image-0").length).toBeGreaterThan(0);
+    const prevButton = screen.getAllByTestId("gallery-prev-button")[0];
+    fireEvent.click(prevButton);
+    // After clicking prev from index 0, the main image should no longer be image 0
+    expect(screen.queryAllByTestId("gallery-main-image-0").length).toBe(0);
+  });
+
+  it("renders indicator pills for navigation", () => {
+    render(<PropertyGallery images={mockImages} title="Test Property" />);
+    const indicators = screen.getAllByLabelText(/Go to image/);
+    expect(indicators.length).toBeGreaterThanOrEqual(mockImages.length);
+  });
+
+  it("navigates via indicator pill click", () => {
+    render(<PropertyGallery images={mockImages} title="Test Property" />);
+    const indicator2s = screen.getAllByLabelText("Go to image 2");
+    fireEvent.click(indicator2s[0]);
+    expect(screen.getAllByTestId("gallery-main-image-1")[0]).toBeInTheDocument();
   });
 
   it("opens lightbox when main image clicked", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
     const mainImage = screen.getAllByTestId("gallery-main-image-0")[0];
-    
     fireEvent.click(mainImage);
     expect(screen.getAllByTestId("gallery-lightbox")[0]).toBeInTheDocument();
   });
 
   it("closes lightbox when close button clicked", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    
-    // Open lightbox
     const mainImage = screen.getAllByTestId("gallery-main-image-0")[0];
     fireEvent.click(mainImage);
-    
-    // Close lightbox
     const closeButton = screen.getAllByTestId("lightbox-close-button")[0];
     fireEvent.click(closeButton);
-    
     expect(screen.queryByTestId("gallery-lightbox")).not.toBeInTheDocument();
   });
 
-  it("has proper accessibility labels", () => {
+  it("has proper accessibility labels on nav buttons", () => {
     render(<PropertyGallery images={mockImages} title="Test Property" />);
-    const prevButtons = screen.getAllByLabelText("Previous image");
-    const nextButtons = screen.getAllByLabelText("Next image");
-    expect(prevButtons.length).toBeGreaterThan(0);
-    expect(nextButtons.length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText("Previous image")[0]).toBeInTheDocument();
+    expect(screen.getAllByLabelText("Next image")[0]).toBeInTheDocument();
+  });
+
+  it("does not render nav bar for single image", () => {
+    render(<PropertyGallery images={[mockImages[0]]} title="Test Property" />);
+    expect(screen.queryAllByTestId("gallery-prev-button").length).toBe(0);
+    expect(screen.queryAllByTestId("gallery-next-button").length).toBe(0);
   });
 });
