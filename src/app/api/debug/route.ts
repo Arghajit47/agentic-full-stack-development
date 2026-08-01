@@ -4,21 +4,30 @@ import fs from "fs";
 
 export const dynamic = "force-dynamic";
 
+function findFiles(dir: string, pattern: string, depth = 0): string[] {
+  if (depth > 2 || !fs.existsSync(dir)) return [];
+  try {
+    return fs.readdirSync(dir).flatMap((f) => {
+      const full = path.join(dir, f);
+      if (f === pattern) return [full];
+      if (depth < 2) {
+        try {
+          if (fs.statSync(full).isDirectory()) return findFiles(full, pattern, depth + 1);
+        } catch { return []; }
+      }
+      return [];
+    });
+  } catch { return []; }
+}
+
 export async function GET() {
-  const databaseUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";
-  const relativePath = databaseUrl.replace("file:", "");
   const cwd = process.cwd();
-  const candidates = [
-    path.isAbsolute(relativePath) ? relativePath : path.resolve(cwd, relativePath),
-    path.resolve("/var/task", relativePath),
-    path.resolve("/var/task", "prisma/dev.db"),
-    path.resolve("/opt/nodejs", "prisma/dev.db"),
-  ];
   return NextResponse.json({
     cwd,
-    databaseUrl,
     NODE_ENV: process.env.NODE_ENV,
-    checked: candidates.map((p) => ({ path: p, exists: fs.existsSync(p) })),
+    DATABASE_URL: process.env.DATABASE_URL,
+    varTaskContents: fs.existsSync("/var/task") ? fs.readdirSync("/var/task").slice(0, 20) : "no /var/task",
+    devDbLocations: findFiles("/var/task", "dev.db"),
     tmp: fs.existsSync("/tmp") ? fs.readdirSync("/tmp").slice(0, 10) : "no /tmp",
   });
 }
