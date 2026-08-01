@@ -1,7 +1,7 @@
 import { type Page, type APIRequestContext, type Response } from "@playwright/test";
 import InitializationPage from "@base/ui-base";
 import { SMOKE_LOCATORS } from "@locators/smoke-locators";
-import { UI_ROUTES, VIEWPORTS } from "@constants/index";
+import { UI_ROUTES, VIEWPORTS, SMOKE_CONSTANTS } from "@constants/index";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
@@ -25,10 +25,12 @@ export class SmokeTestPage {
 
       try {
         await this.initializationPage.goto(normalised);
-        const hrefs: string[] = await this.initializationPage.page.evaluate(() =>
-          Array.from(document.querySelectorAll("a[href]")).map(
+        const selector = SMOKE_LOCATORS.anchorWithHref;
+        const hrefs: string[] = await this.initializationPage.page.evaluate((sel) =>
+          Array.from(document.querySelectorAll(sel)).map(
             (a) => (a as HTMLAnchorElement).href
-          )
+          ),
+          selector
         );
         for (const href of hrefs) {
           try {
@@ -36,7 +38,7 @@ export class SmokeTestPage {
             const clean = parsed.href.split("#")[0].replace(/\/$/, "");
             if (
               parsed.hostname === baseHostname &&
-              parsed.protocol.startsWith("http") &&
+              parsed.protocol.startsWith(SMOKE_CONSTANTS.HTTP_PROTOCOL) &&
               !clean.startsWith(`${BASE_URL}/api`) &&
               !clean.startsWith(`${BASE_URL}/test-harness`) &&
               !visited.has(clean) &&

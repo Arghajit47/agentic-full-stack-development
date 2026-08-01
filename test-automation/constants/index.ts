@@ -7,6 +7,7 @@ export * from "./about-us-constants";
 export * from "./contact-constants";
 export * from "./lighthouse-constants";
 export * from "./property-details-constants";
+export * from "./smoke-constants";
 
 // ── API ──────────────────────────────────────────────────────────
 export const BASE_URL = "https://real-estates-estatein.netlify.app";
