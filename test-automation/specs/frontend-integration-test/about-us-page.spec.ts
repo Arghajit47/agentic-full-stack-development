@@ -61,4 +61,8 @@ test.describe("About Us Page Suite", () => {
   test("KAN-98: Client card styling (bg #1A1A1A, border #262626, label #8C8C8C)", async ({ aboutUsPage }) => {
     await aboutUsPage.assertClientCardStyling();
   });
+
+  test("KAN-103: Step card content has full border; step label has left-border only", async ({ aboutUsPage }) => {
+    await aboutUsPage.assertStepCardStyling();
+  });
 });

@@ -27,6 +27,11 @@ export const ABOUT_US_LOCATORS = {
   teamMemberTwitter: '[data-testid^="team-member-twitter-"]',
   teamMemberRole: 'li[data-testid^="team-member-"] p',
   clientSince: '[data-testid="client-since"]',
+  howItWorksSection: '[data-testid="how-it-works-section"]',
+  howItWorksGrid: '[data-testid="how-it-works-grid"]',
+  stepCard: '[data-testid^="step-card-"]',
+  stepCardLabel: '[data-testid^="step-card-"] > div:first-child',
+  stepCardContent: '[data-testid^="step-card-"] > div:last-child',
 } as const;
 
 // ponytail: no separate responsive grid locators; component uses Tailwind classes, so we count cards per breakpoint instead of parsing grid-template-columns. Upgrade if Figma requires exact column asserts.
