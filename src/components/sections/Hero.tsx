@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
 import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
 
-const HERO_IMAGE = "/images/hero-building.png";
+const HERO_IMAGE = "/images/hero-building.svg";
 
 const DEFAULT_FEATURES: HeroFeature[] = [
   { title: "Find Your Dream Home", description: "" },
@@ -224,7 +224,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               alt=""
               aria-hidden="true"
               fill
-              className="object-cover"
+              className="object-cover opacity-0"
             />
             <Image
               src={HERO_IMAGE}
@@ -233,7 +233,6 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover mix-blend-screen"
               data-testid="hero-image"
             />
             <div className="absolute left-4 top-4 lg:left-auto lg:right-8 lg:top-8">
