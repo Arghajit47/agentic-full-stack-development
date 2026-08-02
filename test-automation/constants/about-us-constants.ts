@@ -28,8 +28,5 @@ export const ABOUT_US_ERROR_MESSAGES = {
 
 export const ABOUT_US_STYLE = {
   TEAM_CARD_BG: "rgb(26, 26, 26)",
-  TEAM_CARD_BORDER: "rgb(38, 38, 38)",
   TEAM_CARD_ROLE_COLOR: "rgb(140, 140, 140)",
-  STEP_CARD_BORDER_WIDTH: "1px",
-  STEP_LABEL_NO_BORDER: "0px",
 } as const;

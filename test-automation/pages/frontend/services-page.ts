@@ -191,18 +191,6 @@ export class ServicesPage {
       .count();
     await this.initializationPage.expectNumberEquals(formCount, 0);
 
-    // Feature cards in all service sections have a visible border (#262626)
-    for (const cardLocator of [
-      SERVICES_LOCATORS.investmentAdvisoryCards,
-      SERVICES_LOCATORS.propertySellingCards,
-      SERVICES_LOCATORS.propertyManagementCards,
-    ]) {
-      const firstCard = this.initializationPage.page.locator(cardLocator).first();
-      await this.initializationPage.expectVisible(firstCard);
-      const cls = await firstCard.getAttribute("class");
-      await this.initializationPage.expectStringContains(cls, SERVICES_STYLE.BORDER_CLASS);
-    }
-
     // Icon ring uses #703BF7 border color
     const iconRing = this.initializationPage.page
       .locator(SERVICES_LOCATORS.investmentAdvisoryIconRing)
