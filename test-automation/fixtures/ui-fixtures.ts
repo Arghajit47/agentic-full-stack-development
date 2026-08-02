@@ -8,6 +8,7 @@ import { PropertyDetailsPage } from "@pages/frontend/property-details-page";
 import { LighthousePage } from "@pages/frontend/lighthouse-page";
 import { SmokeTestPage } from "@pages/frontend/smoke-page";
 import { LighthouseAuditPage } from "@pages/frontend/lighthouse-audit-page";
+import { TermsPage } from "@pages/frontend/terms-page";
 
 type MyFixtures = {
   homepage: HomePage;
@@ -19,6 +20,7 @@ type MyFixtures = {
   lighthousePage: LighthousePage;
   smokePage: SmokeTestPage;
   lighthouseAuditPage: LighthouseAuditPage;
+  termsPage: TermsPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -56,6 +58,10 @@ export const test = base.extend<MyFixtures>({
 
   lighthouseAuditPage: async ({ page }: { page: Page }, use) => {
     await use(new LighthouseAuditPage(page));
+  },
+
+  termsPage: async ({ page }: { page: Page }, use) => {
+    await use(new TermsPage(page));
   },
 });
 
