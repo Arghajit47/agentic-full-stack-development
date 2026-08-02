@@ -20,6 +20,9 @@ function findBundledDb(relativePath: string): string | null {
     path.resolve(process.cwd(), relativePath),
     path.resolve("/var/task", relativePath),
     path.resolve("/var/task", "prisma/dev.db"),
+    // Prisma resolves file: paths relative to schema.prisma location (/var/task/prisma/),
+    // so the actual bundled path becomes /var/task/prisma/prisma/dev.db on Netlify.
+    path.resolve("/var/task", "prisma/prisma/dev.db"),
     path.resolve("/tmp", "prisma/dev.db"),
     // When bundled by Next.js, __dirname is inside .next/server/chunks.
     path.resolve(__dirname, "../../..", "prisma/dev.db"),
