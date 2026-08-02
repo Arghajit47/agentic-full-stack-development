@@ -94,6 +94,17 @@ export class SmokeTestPage {
       for (let i = 0; i < imgCount; i++) {
         const img = imgLocator.nth(i);
         await this.initializationPage.scrollToElement(img);
+        // Wait for lazy-loaded image to decode before checking naturalWidth (CI timing fix).
+        await img.evaluate((el: HTMLImageElement) =>
+          el.complete && el.naturalWidth > 0
+            ? Promise.resolve()
+            : new Promise<void>((resolve) => {
+                el.onload = () => resolve();
+                el.onerror = () => resolve();
+                // Fallback timeout: resolve after 3s regardless
+                setTimeout(resolve, 3000);
+              })
+        );
         const naturalWidth = await img.evaluate((el: HTMLImageElement) => el.naturalWidth);
         if (naturalWidth === 0) {
           const src = await img.getAttribute("src") ?? `img[${i}]`;
