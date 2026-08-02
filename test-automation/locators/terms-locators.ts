@@ -1,0 +1,15 @@
+export const TERMS_LOCATORS = {
+  termsPage: '[data-testid="terms-page"]',
+  termsHeader: '[data-testid="terms-header"]',
+  termsHeading: '[data-testid="terms-heading"]',
+  termsSubheading: '[data-testid="terms-subheading"]',
+  termsContent: '[data-testid="terms-content"]',
+  termsSectionAcceptance: '[data-testid="terms-section-acceptance"]',
+  termsSectionServices: '[data-testid="terms-section-services"]',
+  termsSectionUserConduct: '[data-testid="terms-section-user-conduct"]',
+  termsSectionData: '[data-testid="terms-section-data"]',
+  termsSectionLiability: '[data-testid="terms-section-liability"]',
+  termsSectionChanges: '[data-testid="terms-section-changes"]',
+  termsSectionContact: '[data-testid="terms-section-contact"]',
+  termsLastUpdated: '[data-testid="terms-last-updated"]',
+} as const;
