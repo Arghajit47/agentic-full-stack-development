@@ -161,6 +161,7 @@ export class ServicesPage {
   async assertServiceGridColumnsAtDesktop(): Promise<void> {
     await this.initializationPage.setViewport({ width: 1920, height: 1080 });
     await this.navigateToServices();
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.propertySellingSection);
     await this.initializationPage.assertGridTrackCount(
       SERVICES_LOCATORS.propertySellingGrid,
       SERVICES_GRID_COLS.WIDE,
@@ -184,6 +185,7 @@ export class ServicesPage {
   async assertKan105ServiceCardStyling(): Promise<void> {
     await this.initializationPage.setViewport({ width: 1920, height: 1080 });
     await this.navigateToServices();
+    await this.initializationPage.expectVisible(SERVICES_LOCATORS.investmentAdvisorySection);
 
     // No form or input elements in investment advisory section
     const formCount = await this.initializationPage.page

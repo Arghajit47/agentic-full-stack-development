@@ -93,6 +93,7 @@ export class ContactPage {
   async submitGeneralContactForm(): Promise<void> {
     const data = CONTACT_FORM_TEST_DATA;
     await this.navigateToContact();
+    await this.initializationPage.expectVisible(CONTACT_LOCATORS.firstNameInput);
 
     await this.initializationPage.fill(CONTACT_LOCATORS.firstNameInput, data.firstName);
     await this.initializationPage.fill(CONTACT_LOCATORS.lastNameInput, data.lastName);

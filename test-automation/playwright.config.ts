@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 30_000,
   fullyParallel: true,
   workers: undefined,
-  reporter: [["@arghajit/playwright-pulse-report", { outputDir: "pulse-report" }], ["list"]],
+  reporter: [["@arghajit/playwright-pulse-report", { outputDir: process.env.PULSE_REPORT_DIR ?? "pulse-report" }], ["list"]],
   use: {
     baseURL: process.env.BASE_URL || BASE_URL,
     screenshot: "only-on-failure",

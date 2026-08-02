@@ -40,6 +40,7 @@ export class PropertiesPage {
 
   async assertGridColumns(key: ViewportKey): Promise<void> {
     const expected = PROPERTIES_GRID_COLS[key];
+    await this.initializationPage.expectVisible(PROPERTIESPAGE_LOCATORS.propertyGrid);
     await this.initializationPage.assertGridTrackCount(
       PROPERTIESPAGE_LOCATORS.propertyGrid,
       expected,
