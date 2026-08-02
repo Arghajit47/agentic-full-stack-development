@@ -9,6 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-urbanist);
+  --breakpoint-desktop: 90rem; /* 1440px — named so it cascades after lg/xl */
 }
 
 @media (prefers-color-scheme: dark) {
