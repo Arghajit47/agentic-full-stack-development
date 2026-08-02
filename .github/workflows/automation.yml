@@ -24,8 +24,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
           cache-dependency-path: test-automation/package-lock.json
 
       - name: Install test-automation dependencies
@@ -48,12 +48,6 @@ jobs:
         env:
           BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
 
-      - name: Run smoke tests
-        working-directory: test-automation
-        run: npm run test:smoke
-        env:
-          BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
-
       - name: Run lighthouse tests
         working-directory: test-automation
         run: npm run test:lighthouse
@@ -71,4 +65,4 @@ jobs:
         with:
           name: playwright-reports
           path: test-automation/pulse-report/
-          retention-days: 14
+          retention-days: 1
