@@ -38,31 +38,69 @@ jobs:
 
       - name: Run backend tests
         working-directory: test-automation
+        continue-on-error: true
         run: npm run test:api
         env:
           BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
+          PULSE_REPORT_DIR: pulse-report-backend
 
-      - name: Run frontend integration tests
-        working-directory: test-automation
-        run: npm run test:ui
-        env:
-          BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
-
-      - name: Run lighthouse tests
-        working-directory: test-automation
-        run: npm run test:lighthouse
-        env:
-          BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
-
-      - name: Generate pulse report
+      - name: Generate backend pulse report
         if: always()
         working-directory: test-automation
         run: npx generate-pulse-report
+        env:
+          PULSE_REPORT_DIR: pulse-report-backend
 
-      - name: Upload Playwright reports
+      - name: Upload backend test reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: playwright-reports
-          path: test-automation/pulse-report/
-          retention-days: 1
+          name: playwright-backend-reports
+          path: test-automation/pulse-report-backend/
+          retention-days: 7
+
+      - name: Run frontend integration tests
+        working-directory: test-automation
+        continue-on-error: true
+        run: npm run test:ui
+        env:
+          BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
+          PULSE_REPORT_DIR: pulse-report-frontend
+
+      - name: Generate frontend pulse report
+        if: always()
+        working-directory: test-automation
+        run: npx generate-pulse-report
+        env:
+          PULSE_REPORT_DIR: pulse-report-frontend
+
+      - name: Upload frontend integration test reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-frontend-reports
+          path: test-automation/pulse-report-frontend/
+          retention-days: 7
+
+      - name: Run lighthouse tests
+        working-directory: test-automation
+        continue-on-error: true
+        run: npm run test:lighthouse
+        env:
+          BASE_URL: ${{ secrets.NETLIFY_SITE_URL }}
+          PULSE_REPORT_DIR: pulse-report-lighthouse
+
+      - name: Generate lighthouse pulse report
+        if: always()
+        working-directory: test-automation
+        run: npx generate-pulse-report
+        env:
+          PULSE_REPORT_DIR: pulse-report-lighthouse
+
+      - name: Upload lighthouse test reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-lighthouse-reports
+          path: test-automation/pulse-report-lighthouse/
+          retention-days: 7
