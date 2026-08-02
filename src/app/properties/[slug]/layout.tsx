@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
+import prisma from "@/lib/prisma";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://estatein.vercel.app";
   try {
-    const res = await fetch(`${baseUrl}/api/properties/${encodeURIComponent(slug)}`, { next: { revalidate: 3600 } });
-    if (res.ok) {
-      const json = await res.json();
-      const property = json?.data;
-      if (property) {
-        return {
-          title: property.title,
-          description: (property.description as string)?.slice(0, 155) || `View ${property.title} on Estatein.`,
-          openGraph: {
-            title: `${property.title} | Estatein`,
-            description: (property.description as string)?.slice(0, 155),
-            url: `https://estatein.vercel.app/properties/${slug}`,
-            images: property.imageUrl ? [{ url: property.imageUrl as string, alt: property.title as string }] : [],
-          },
-        };
-      }
+    const property = await prisma.property.findUnique({
+      where: { slug },
+      select: { title: true, description: true, imageUrl: true },
+    });
+    if (property) {
+      return {
+        title: property.title,
+        description: property.description?.slice(0, 155) || `View ${property.title} on Estatein.`,
+        openGraph: {
+          title: `${property.title} | Estatein`,
+          description: property.description?.slice(0, 155) ?? undefined,
+          images: property.imageUrl ? [{ url: property.imageUrl, alt: property.title }] : [],
+        },
+      };
     }
   } catch {
     // fallback below
