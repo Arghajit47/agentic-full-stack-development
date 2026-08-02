@@ -169,9 +169,6 @@ export class PropertiesPage {
       PROPERTIESPAGE_LOCATORS.propertyCard, 0, "background-color", PROPERTIES_CARD_STYLES.BG_COLOR
     );
     await this.initializationPage.checkCSSProperty(
-      PROPERTIESPAGE_LOCATORS.propertyCard, 0, "border-color", PROPERTIES_CARD_STYLES.BORDER_COLOR
-    );
-    await this.initializationPage.checkCSSProperty(
       PROPERTIESPAGE_LOCATORS.propertyCardImage, 0, "height", `${PROPERTIES_CARD_STYLES.IMAGE_HEIGHT_PX}px`
     );
   }

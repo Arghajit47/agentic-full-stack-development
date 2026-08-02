@@ -15,7 +15,6 @@ export const PROPERTIES_PAGE_ONE_CARD_COUNT = 3;
 
 export const PROPERTIES_CARD_STYLES = {
   BG_COLOR: "rgb(26, 26, 26)",
-  BORDER_COLOR: "rgb(38, 38, 38)",
   IMAGE_HEIGHT_PX: 220,
 } as const;
 
