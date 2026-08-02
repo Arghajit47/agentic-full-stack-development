@@ -23,5 +23,5 @@ export const CONTACT_LOCATORS = {
   messageTextarea: '[data-testid="input-message"]',
   termsCheckbox: '[data-testid="input-termsAccepted"]',
   submitButton: '[data-testid="submit-button"]',
-  formSuccess: '[data-testid="general-contact-form-success"]',
+  formSuccess: '[data-testid="submission-success-modal"]',
 } as const;

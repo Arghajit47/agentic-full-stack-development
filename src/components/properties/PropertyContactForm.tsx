@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
+import { SubmissionSuccessModal } from "@/components/ui/SubmissionSuccessModal";
 
 export interface PropertyContactFormData {
   firstName: string;
@@ -182,15 +183,6 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
         }
 
         setIsSubmitted(true);
-
-        // Reset form after 3 seconds
-        resetTimerRef.current = setTimeout(() => {
-          setFormData(initialFormData);
-          setErrors({});
-          setTouched({});
-          setIsSubmitted(false);
-          setIsSubmitting(false);
-        }, 3000);
       } catch (error) {
         setSubmitError(error instanceof Error ? error.message : "Submission failed");
         setIsSubmitting(false);
@@ -198,27 +190,21 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
     }
   };
 
-  if (isSubmitted) {
-    return (
-      <section
-        data-testid="contact-form-success"
-        role="status"
-        aria-live="polite"
-        className="w-full bg-[#141414] px-4 py-16 sm:px-6 lg:px-8"
-      >
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-semibold text-white sm:text-4xl lg:text-[48px]">
-            Thank You!
-          </h2>
-          <p className="mt-4 text-lg text-[#999999]">
-            Your inquiry has been submitted successfully. We&apos;ll get back to you soon.
-          </p>
-        </div>
-      </section>
-    );
-  }
+  const handleModalClose = () => {
+    setFormData(initialFormData);
+    setErrors({});
+    setTouched({});
+    setIsSubmitted(false);
+    setIsSubmitting(false);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = null;
+    }
+  };
 
   return (
+    <>
+      {isSubmitted && <SubmissionSuccessModal onClose={handleModalClose} />}
     <section
       data-testid="property-contact-form"
       className="w-full bg-[#141414] px-4 py-16 sm:px-6 lg:px-8"
@@ -673,5 +659,6 @@ export function PropertyContactForm({ onSubmit }: PropertyContactFormProps) {
         </form>
       </div>
     </section>
+    </>
   );
 }

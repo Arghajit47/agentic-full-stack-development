@@ -2,6 +2,7 @@
 
 import { useState, useCallback, FormEvent, ChangeEvent } from "react";
 import { INQUIRY_TYPES, HEAR_ABOUT_TYPES, type InquiryType, type HearAboutType } from "@/types/contact";
+import { SubmissionSuccessModal } from "@/components/ui/SubmissionSuccessModal";
 
 export interface GeneralContactFormData {
   inquiryType: InquiryType;
@@ -187,31 +188,24 @@ export function GeneralContactForm({ onSubmit }: GeneralContactFormProps) {
         throw new Error(data?.message ?? data?.error ?? "Submission failed. Please try again.");
       }
       setStatus("success");
-      setTimeout(() => {
-        setForm(initialState);
-        setTouched({});
-        setErrors({});
-        setStatus("idle");
-      }, 3000);
     } catch (err) {
       setStatus("error");
       setSubmitError(err instanceof Error ? err.message : "Submission failed. Please try again.");
     }
   };
 
-  if (status === "success") {
-    return (
-      <section
-        data-testid="general-contact-form-success"
-        className="bg-[#141414] px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8"
-      >
-        <h2 className="text-2xl font-semibold text-white sm:text-3xl">Thank You!</h2>
-        <p className="mt-3 text-zinc-400">Your message has been sent. We&apos;ll get back to you soon.</p>
-      </section>
-    );
-  }
+  const handleModalClose = () => {
+    setForm(initialState);
+    setTouched({});
+    setErrors({});
+    setStatus("idle");
+  };
 
   return (
+    <>
+      {status === "success" && (
+        <SubmissionSuccessModal onClose={handleModalClose} />
+      )}
     <section
       data-testid="general-contact-form"
       className="bg-[#141414] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
@@ -415,5 +409,6 @@ export function GeneralContactForm({ onSubmit }: GeneralContactFormProps) {
         </form>
       </div>
     </section>
+    </>
   );
 }

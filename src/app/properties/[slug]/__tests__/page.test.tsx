@@ -221,7 +221,7 @@ describe("Property Details Page integration", () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId("inquiry-form-success")).toBeInTheDocument();
+      expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
     });
   });
 
