@@ -44,6 +44,7 @@ prisma/*.db
 # playwright
 playwright-report
 test-results/
+pulse-report
 
 # Local Netlify folder
 .netlify
