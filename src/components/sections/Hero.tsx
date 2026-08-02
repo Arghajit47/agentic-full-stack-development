@@ -38,14 +38,11 @@ const FEATURE_ICONS: Record<string, typeof Home> = {
 
 function DiscoverBadge() {
   const text = "Discover Your Dream Property · ";
-  const chars = text.split("");
   const radius = 48;
-  // ponytail: radius drives the circular path; angle math unused because textPath handles layout
-  void chars;
 
   return (
     <div
-      className="relative flex h-28 w-28 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900/90 md:h-32 md:w-32"
+      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] md:h-[129px] md:w-[129px] xl:h-[175px] xl:w-[175px]"
       aria-hidden="true"
       data-testid="hero-discover-badge"
     >
@@ -59,14 +56,14 @@ function DiscoverBadge() {
             d={`M 60, 60 m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius * 2},0 a ${radius},${radius} 0 1,1 -${radius * 2},0`}
           />
         </defs>
-        <text fill="#a1a1aa" fontSize="10" letterSpacing="2">
+        <text fill="white" fontSize="10" letterSpacing="2">
           <textPath href="#circlePath" startOffset="0%">
             {text}
           </textPath>
         </text>
       </svg>
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 md:h-12 md:w-12">
-        <ArrowUpRight className="h-5 w-5 text-white md:h-6 md:w-6" />
+      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] md:h-[59px] md:w-[59px] xl:h-20 xl:w-20">
+        <ArrowUpRight className="h-[22px] w-[22px] text-white md:h-6 md:w-6 xl:h-[34px] xl:w-[34px]" />
       </div>
     </div>
   );
@@ -74,7 +71,7 @@ function DiscoverBadge() {
 
 function HeroSkeleton() {
   return (
-    <section data-testid="hero-section" className="bg-black">
+    <section data-testid="hero-section" className="bg-[#141414]">
       <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
         <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
           <div
@@ -129,8 +126,27 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
   const data = hero ?? DEFAULT_DATA;
 
   return (
-    <section aria-labelledby="hero-heading" data-testid="hero-section" className="bg-black">
-      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
+    <section aria-labelledby="hero-heading" data-testid="hero-section" className="relative overflow-hidden bg-[#141414]">
+      {/* Abstract design corner decorations */}
+      <Image
+        src="/images/abstract-design-left.png"
+        alt=""
+        aria-hidden="true"
+        width={473}
+        height={258}
+        className="pointer-events-none absolute bottom-0 left-0 select-none opacity-40"
+        priority={false}
+      />
+      <Image
+        src="/images/abstract-design-right.png"
+        alt=""
+        aria-hidden="true"
+        width={555}
+        height={259}
+        className="pointer-events-none absolute bottom-0 right-0 select-none opacity-40"
+        priority={false}
+      />
+      <div className="relative mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
         {/* Text column */}
         <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
           <h1
@@ -202,7 +218,16 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
 
         {/* Image column */}
         <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
-          <div className="relative aspect-[4/3] w-full lg:aspect-square lg:max-w-2xl">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:aspect-square lg:max-w-2xl">
+            {/* Abstract wavy design behind the hero building image */}
+            <Image
+              src="/images/abstract-design.png"
+              alt=""
+              aria-hidden="true"
+              fill
+              className="object-cover opacity-20"
+              priority={false}
+            />
             <Image
               src={HERO_IMAGE}
               alt="Modern blue glass skyscrapers"
@@ -210,7 +235,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="rounded-2xl object-cover"
+              className="object-cover"
               data-testid="hero-image"
             />
             <div className="absolute left-4 top-4 lg:left-auto lg:right-8 lg:top-8">

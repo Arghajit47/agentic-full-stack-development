@@ -85,3 +85,7 @@ test("Footer CTA section has abstract design left and right corner images", asyn
 test("Hero discover badge is on the left at mobile and right at desktop", async ({ homepage }) => {
   await homepage.assertDiscoverBadgePosition();
 });
+
+test("Hero section has abstract design corner decorations", async ({ homepage }) => {
+  await homepage.assertHeroAbstractDecorations();
+});

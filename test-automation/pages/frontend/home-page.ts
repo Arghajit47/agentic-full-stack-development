@@ -259,6 +259,13 @@ export class HomePage {
     await this.initializationPage.expectNumberGreaterThan(badgeBox1440!.x, imageBox1440!.x + imageBox1440!.width / 2);
   }
 
+  async assertHeroAbstractDecorations(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.heroSection);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.heroAbstractLeft);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.heroAbstractRight);
+  }
+
   async assertFeaturedNavDots(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     await this.initializationPage.setViewport({ width: 375, height: 812 });
