@@ -42,7 +42,7 @@ function DiscoverBadge() {
 
   return (
     <div
-      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] lg:h-[129px] lg:w-[129px] min-[1440px]:h-[175px] min-[1440px]:w-[175px]"
+      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] lg:h-[129px] lg:w-[129px] desktop:h-[175px] desktop:w-[175px]"
       aria-hidden="true"
       data-testid="hero-discover-badge"
     >
@@ -62,8 +62,8 @@ function DiscoverBadge() {
           </textPath>
         </text>
       </svg>
-      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] lg:h-[59px] lg:w-[59px] min-[1440px]:h-20 min-[1440px]:w-20">
-        <ArrowUpRight className="h-[22px] w-[22px] text-white lg:h-6 lg:w-6 min-[1440px]:h-[34px] min-[1440px]:w-[34px]" />
+      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] lg:h-[59px] lg:w-[59px] desktop:h-20 desktop:w-20">
+        <ArrowUpRight className="h-[22px] w-[22px] text-white lg:h-6 lg:w-6 desktop:h-[34px] desktop:w-[34px]" />
       </div>
     </div>
   );
