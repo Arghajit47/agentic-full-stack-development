@@ -195,18 +195,18 @@ describe("GeneralContactForm", () => {
       });
     });
 
-    it("displays success message and resets form", async () => {
+    it("displays success modal and closes on dismiss", async () => {
       render(<GeneralContactForm />);
       fillValidForm();
       fireEvent.click(screen.getByTestId("submit-button"));
 
       await waitFor(() => {
-        expect(screen.getByTestId("general-contact-form-success")).toBeInTheDocument();
+        expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
       });
 
-      vi.advanceTimersByTime(3000);
+      fireEvent.click(screen.getByTestId("modal-close-button"));
       await waitFor(() => {
-        expect(screen.queryByTestId("general-contact-form-success")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("submission-success-modal")).not.toBeInTheDocument();
         expect(screen.getByTestId("general-contact-form")).toBeInTheDocument();
       });
     });

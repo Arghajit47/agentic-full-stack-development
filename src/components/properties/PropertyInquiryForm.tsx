@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
+import { SubmissionSuccessModal } from "@/components/ui/SubmissionSuccessModal";
 
 export interface PropertyInquiryFormData {
   firstName: string;
@@ -167,14 +168,6 @@ export function PropertyInquiryForm({
         }
 
         setIsSubmitted(true);
-
-        resetTimerRef.current = setTimeout(() => {
-          setFormData(initialFormData);
-          setErrors({});
-          setTouched({});
-          setIsSubmitted(false);
-          setIsSubmitting(false);
-        }, 3000);
       } catch (error) {
         setSubmitError(error instanceof Error ? error.message : "Submission failed");
         setIsSubmitting(false);
@@ -182,23 +175,17 @@ export function PropertyInquiryForm({
     }
   };
 
-  if (isSubmitted) {
-    return (
-      <div
-        data-testid="inquiry-form-success"
-        role="status"
-        aria-live="polite"
-        className={`w-full bg-[#1A1A1A] rounded-lg p-8 text-center ${className}`}
-      >
-        <h3 className="text-2xl font-semibold text-white mb-4">
-          Thank You!
-        </h3>
-        <p className="text-lg text-[#999999]">
-          Your inquiry about <span className="text-white font-medium">{propertyTitle}</span> has been submitted successfully. We&apos;ll get back to you soon.
-        </p>
-      </div>
-    );
-  }
+  const handleModalClose = () => {
+    setFormData(initialFormData);
+    setErrors({});
+    setTouched({});
+    setIsSubmitted(false);
+    setIsSubmitting(false);
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = null;
+    }
+  };
 
   const inputClass = (field: keyof FormErrors) =>
     `w-full rounded-lg border ${
@@ -206,6 +193,8 @@ export function PropertyInquiryForm({
     } bg-zinc-900 px-4 py-3 text-white placeholder-[#666666] text-base outline-none transition-colors focus:border-violet-600 focus:ring-2 focus:ring-violet-600/50`;
 
   return (
+    <>
+      {isSubmitted && <SubmissionSuccessModal onClose={handleModalClose} />}
     <div
       data-testid="property-inquiry-form"
       className={`w-full bg-[#1A1A1A] rounded-lg p-6 ${className}`}
@@ -457,5 +446,6 @@ export function PropertyInquiryForm({
         </button>
       </form>
     </div>
+    </>
   );
 }

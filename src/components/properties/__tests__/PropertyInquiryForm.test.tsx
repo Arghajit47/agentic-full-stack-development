@@ -215,11 +215,7 @@ describe("PropertyInquiryForm", () => {
     await user.click(screen.getByTestId("submit-button"));
 
     await waitFor(() => {
-      expect(screen.getByTestId("inquiry-form-success")).toBeInTheDocument();
-      expect(screen.getByTestId("inquiry-form-success")).toHaveTextContent("Thank You!");
-      expect(screen.getByTestId("inquiry-form-success")).toHaveTextContent(
-        mockProps.propertyTitle
-      );
+      expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
     });
   });
 

@@ -308,7 +308,7 @@ describe("PropertyContactForm", () => {
       consoleSpy.mockRestore();
     });
 
-    it("should show success message after submission", async () => {
+    it("should show success modal after submission", async () => {
       render(<PropertyContactForm />);
 
       fillValidForm();
@@ -317,11 +317,7 @@ describe("PropertyContactForm", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId("contact-form-success")).toBeInTheDocument();
-        expect(screen.getByText("Thank You!")).toBeInTheDocument();
-        expect(
-          screen.getByText(/Your inquiry has been submitted successfully/)
-        ).toBeInTheDocument();
+        expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
       });
     });
 
@@ -334,23 +330,22 @@ describe("PropertyContactForm", () => {
       fireEvent.click(screen.getByTestId("submit-button"));
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
-      expect(screen.queryByTestId("contact-form-success")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("submission-success-modal")).not.toBeInTheDocument();
     });
 
-    it("should reset the form after 3 seconds on successful submit", async () => {
+    it("should reset the form after modal is closed", async () => {
       render(<PropertyContactForm />);
-      
+
       fillValidForm();
-      
+
       const submitButton = screen.getByTestId("submit-button");
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId("contact-form-success")).toBeInTheDocument();
+        expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
       });
 
-      // Advance timer by 3 seconds
-      vi.advanceTimersByTime(3000);
+      fireEvent.click(screen.getByTestId("modal-close-button"));
 
       await waitFor(() => {
         expect(screen.getByTestId("property-contact-form")).toBeInTheDocument();
@@ -363,9 +358,9 @@ describe("PropertyContactForm", () => {
     it("should show loading state during submission", async () => {
       const slowSubmit = vi.fn(() => new Promise<void>(resolve => setTimeout(resolve, 100)));
       render(<PropertyContactForm onSubmit={slowSubmit} />);
-      
+
       fillValidForm();
-      
+
       const submitButton = screen.getByTestId("submit-button");
       fireEvent.click(submitButton);
 
@@ -374,16 +369,16 @@ describe("PropertyContactForm", () => {
       expect(submitButton).toBeDisabled();
 
       await waitFor(() => {
-        expect(screen.getByTestId("contact-form-success")).toBeInTheDocument();
+        expect(screen.getByTestId("submission-success-modal")).toBeInTheDocument();
       });
     });
 
     it("should handle submission errors", async () => {
       const errorSubmit = vi.fn(() => Promise.reject(new Error("Network error")));
       render(<PropertyContactForm onSubmit={errorSubmit} />);
-      
+
       fillValidForm();
-      
+
       const submitButton = screen.getByTestId("submit-button");
       fireEvent.click(submitButton);
 
@@ -391,7 +386,7 @@ describe("PropertyContactForm", () => {
         expect(screen.getByRole("alert")).toHaveTextContent("Network error");
       });
 
-      expect(screen.queryByTestId("contact-form-success")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("submission-success-modal")).not.toBeInTheDocument();
     });
   });
 
