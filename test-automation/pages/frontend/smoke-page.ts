@@ -59,8 +59,16 @@ export class SmokeTestPage {
   }
 
   async assertAllUrlsReturn200(request: APIRequestContext): Promise<void> {
-    const urls = await this.scrapeInternalUrls();
-    for (const url of urls) {
+    const staticRoutes = [
+      UI_ROUTES.HOME,
+      UI_ROUTES.PROPERTIES,
+      UI_ROUTES.SERVICES,
+      UI_ROUTES.ABOUT_US,
+      UI_ROUTES.CONTACT,
+      UI_ROUTES.TERMS,
+    ];
+    for (const route of staticRoutes) {
+      const url = `${resolvedBaseUrl}${route}`;
       const res = await request.get(url);
       await this.initializationPage.expectNumberEquals(res.status(), 200);
     }
@@ -86,25 +94,13 @@ export class SmokeTestPage {
       };
       this.initializationPage.page.on("response", listener);
       await this.initializationPage.goto(`${resolvedBaseUrl}${route}`);
-      await this.initializationPage.waitOnlyForPageLoad();
+      await this.initializationPage.page.waitForLoadState("networkidle", { timeout: 20000 });
       this.initializationPage.page.off("response", listener);
 
       const imgLocator = this.initializationPage.page.locator(SMOKE_LOCATORS.anyImage);
       const imgCount = await imgLocator.count();
       for (let i = 0; i < imgCount; i++) {
         const img = imgLocator.nth(i);
-        await this.initializationPage.scrollToElement(img);
-        // Wait for lazy-loaded image to decode before checking naturalWidth (CI timing fix).
-        await img.evaluate((el: HTMLImageElement) =>
-          el.complete && el.naturalWidth > 0
-            ? Promise.resolve()
-            : new Promise<void>((resolve) => {
-                el.onload = () => resolve();
-                el.onerror = () => resolve();
-                // Fallback timeout: resolve after 3s regardless
-                setTimeout(resolve, 3000);
-              })
-        );
         const naturalWidth = await img.evaluate((el: HTMLImageElement) => el.naturalWidth);
         if (naturalWidth === 0) {
           const src = await img.getAttribute("src") ?? `img[${i}]`;

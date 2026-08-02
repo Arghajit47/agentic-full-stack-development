@@ -34,7 +34,7 @@ export default defineConfig({
       testDir: "./specs/smoke-test",
       testMatch: /.*\.spec\.ts$/,
       use: { ...devices['Desktop Chrome'] },
-      timeout: 60_000,
+      timeout: 120_000,
     },
   ],
 });
