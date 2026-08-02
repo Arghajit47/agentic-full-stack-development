@@ -220,6 +220,13 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
         <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
           <div className="relative isolate aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#2A213F] lg:aspect-square lg:max-w-2xl">
             <Image
+              src="/images/abstract-design-hero.png"
+              alt=""
+              aria-hidden="true"
+              fill
+              className="object-cover"
+            />
+            <Image
               src={HERO_IMAGE}
               alt="Modern blue glass skyscrapers"
               fill
