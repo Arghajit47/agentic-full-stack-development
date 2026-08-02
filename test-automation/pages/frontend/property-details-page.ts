@@ -130,8 +130,7 @@ export class PropertyDetailsPage {
   }
 
   async assertNoteCardAlignment(): Promise<void> {
-    // Use modern-luxury-villa (exists in DB); mock its pricing API so PricingBreakdown renders
-    const slug = "modern-luxury-villa";
+    const slug = PROPERTY_DETAILS.SLUG;
     await this.initializationPage.mockJsonResponse(
       API_PATHS.PROPERTY_PRICING(slug),
       {
