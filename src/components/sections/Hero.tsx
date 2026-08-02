@@ -42,7 +42,7 @@ function DiscoverBadge() {
 
   return (
     <div
-      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] md:h-[129px] md:w-[129px] xl:h-[175px] xl:w-[175px]"
+      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] lg:h-[129px] lg:w-[129px] min-[1440px]:h-[175px] min-[1440px]:w-[175px]"
       aria-hidden="true"
       data-testid="hero-discover-badge"
     >
@@ -62,8 +62,8 @@ function DiscoverBadge() {
           </textPath>
         </text>
       </svg>
-      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] md:h-[59px] md:w-[59px] xl:h-20 xl:w-20">
-        <ArrowUpRight className="h-[22px] w-[22px] text-white md:h-6 md:w-6 xl:h-[34px] xl:w-[34px]" />
+      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] lg:h-[59px] lg:w-[59px] min-[1440px]:h-20 min-[1440px]:w-20">
+        <ArrowUpRight className="h-[22px] w-[22px] text-white lg:h-6 lg:w-6 min-[1440px]:h-[34px] min-[1440px]:w-[34px]" />
       </div>
     </div>
   );
@@ -218,16 +218,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
 
         {/* Image column */}
         <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:aspect-square lg:max-w-2xl">
-            {/* Abstract wavy design behind the hero building image */}
-            <Image
-              src="/images/abstract-design.png"
-              alt=""
-              aria-hidden="true"
-              fill
-              className="object-cover opacity-20"
-              priority={false}
-            />
+          <div className="relative isolate aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#2A213F] lg:aspect-square lg:max-w-2xl">
             <Image
               src={HERO_IMAGE}
               alt="Modern blue glass skyscrapers"
@@ -235,7 +226,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover mix-blend-screen"
               data-testid="hero-image"
             />
             <div className="absolute left-4 top-4 lg:left-auto lg:right-8 lg:top-8">
