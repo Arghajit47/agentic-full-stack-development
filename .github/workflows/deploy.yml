@@ -38,6 +38,14 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           DATABASE_URL: "file:./prisma/dev.db"
 
+      - name: Install test-automation dependencies
+        working-directory: test-automation
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: test-automation
+        run: npx playwright install --with-deps chromium
+
       - name: Run smoke tests
         working-directory: test-automation
         run: npm run test:smoke
