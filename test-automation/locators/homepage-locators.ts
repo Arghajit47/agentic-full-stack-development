@@ -26,4 +26,6 @@ export const HOMEPAGE_LOCATORS = {
     viewAllMobileCta: '[data-testid="view-all-properties-mobile-cta"]',
     discoverBadge: '[data-testid="hero-discover-badge"]',
     heroImage: '[data-testid="hero-image"]',
+    heroAbstractLeft: '[data-testid="hero-section"] img[src*="abstract-design-left"]',
+    heroAbstractRight: '[data-testid="hero-section"] img[src*="abstract-design-right"]',
 } as const;
