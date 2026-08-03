@@ -38,7 +38,7 @@ const FEATURE_ICONS: Record<string, typeof Home> = {
 
 function HeroSkeleton() {
   return (
-    <section data-testid="hero-section" className="-mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]">
+    <section data-testid="hero-section" className="flex flex-col overflow-hidden">
       <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
         <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
           <div className="flex flex-col gap-6">
@@ -96,7 +96,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
     <section
       aria-labelledby="hero-heading"
       data-testid="hero-section"
-      className="relative -mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]"
+      className="relative flex flex-col overflow-hidden"
     >
       {/* Abstract design corner decorations */}
       <Image
