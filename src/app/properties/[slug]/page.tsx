@@ -194,15 +194,15 @@ export default function PropertyDetailsPage() {
     <div className="min-h-screen bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Property Header */}
-        <div className="mb-8 flex items-start justify-between gap-6">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div>
-            <h1 className="text-4xl font-bold text-white" data-testid="property-page-title">{data.title}</h1>
+            <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl" data-testid="property-page-title">{data.title}</h1>
             <div className="mt-2 flex items-center gap-2 text-zinc-400">
               <MapPin className="h-4 w-4 shrink-0" />
               <p className="text-sm">{data.location}</p>
             </div>
           </div>
-          <div className="shrink-0 text-right">
+          <div className="sm:shrink-0 sm:text-right">
             <p className="text-sm uppercase tracking-wider text-zinc-500">Price</p>
             <p className="mt-1 text-2xl font-bold text-white" data-testid="property-header-price">
               {new Intl.NumberFormat("en-US", {
