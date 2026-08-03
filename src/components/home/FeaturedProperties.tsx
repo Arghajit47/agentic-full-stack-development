@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { Bed, Bath, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFeaturedProperties, type FeaturedProperty } from "@/lib/api";
@@ -50,6 +50,7 @@ export function FeaturedProperties({
 
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
+  const isPausedRef = useRef(false);
 
   const visibleCards = useMemo(
     () => properties.slice(startIndex, startIndex + cardsVisible),
@@ -62,6 +63,19 @@ export function FeaturedProperties({
   const goLeft = () => canGoLeft && setStartIndex((i) => Math.max(0, i - cardsVisible));
   const goRight = () =>
     canGoRight && setStartIndex((i) => Math.min(properties.length - cardsVisible, i + cardsVisible));
+
+  // Auto-advance every 4s; wraps to the beginning when at the last page
+  useEffect(() => {
+    if (isLoading || properties.length === 0) return;
+    const interval = setInterval(() => {
+      if (isPausedRef.current) return;
+      setStartIndex((i) => {
+        const next = i + cardsVisible;
+        return next >= properties.length ? 0 : next;
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isLoading, properties.length, cardsVisible]);
 
   const totalPages = useMemo(
     () => (properties.length > 0 ? Math.ceil(properties.length / cardsVisible) : 0),
@@ -77,6 +91,8 @@ export function FeaturedProperties({
       aria-labelledby="featured-properties-heading"
       data-testid="featured-properties-section"
       className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 text-zinc-100 sm:px-6 lg:px-8"
+      onMouseEnter={() => { isPausedRef.current = true; }}
+      onMouseLeave={() => { isPausedRef.current = false; }}
     >
       <div className="mb-10 flex items-end justify-between gap-4">
         <div className="text-left">
