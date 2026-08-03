@@ -255,8 +255,8 @@ export class HomePage {
     const imageBox1440 = await image1440.boundingBox();
     await this.initializationPage.expectValueNotNull(badgeBox1440);
     await this.initializationPage.expectValueNotNull(imageBox1440);
-    // Badge should be in the right half of the image
-    await this.initializationPage.expectNumberGreaterThan(badgeBox1440!.x, imageBox1440!.x + imageBox1440!.width / 2);
+    // Badge should overlap the image column (badge right edge past image left edge)
+    await this.initializationPage.expectNumberGreaterThan(badgeBox1440!.x + badgeBox1440!.width, imageBox1440!.x);
   }
 
   async assertHeroAbstractDecorations(): Promise<void> {

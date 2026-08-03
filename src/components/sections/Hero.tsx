@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
 import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
 
-const HERO_IMAGE = "/images/hero-building.svg";
+const HERO_IMAGE = "/images/hero-building.png";
 
 const DEFAULT_FEATURES: HeroFeature[] = [
   { title: "Find Your Dream Home", description: "" },
@@ -36,68 +36,37 @@ const FEATURE_ICONS: Record<string, typeof Home> = {
   "Smart Investments. Informed Decisions": Lightbulb,
 };
 
-function DiscoverBadge() {
-  const text = "Discover Your Dream Property · ";
-  const radius = 48;
-
-  return (
-    <div
-      className="relative flex h-[117px] w-[117px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#141414] lg:h-[129px] lg:w-[129px] desktop:h-[175px] desktop:w-[175px]"
-      aria-hidden="true"
-      data-testid="hero-discover-badge"
-    >
-      <svg
-        className="absolute inset-0 h-full w-full animate-[spin_20s_linear_infinite]"
-        viewBox="0 0 120 120"
-      >
-        <defs>
-          <path
-            id="circlePath"
-            d={`M 60, 60 m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius * 2},0 a ${radius},${radius} 0 1,1 -${radius * 2},0`}
-          />
-        </defs>
-        <text fill="white" fontSize="10" letterSpacing="2">
-          <textPath href="#circlePath" startOffset="0%">
-            {text}
-          </textPath>
-        </text>
-      </svg>
-      <div className="flex h-[53px] w-[53px] items-center justify-center rounded-full border border-[#1e1c1c]/80 bg-[#1a1a1a] lg:h-[59px] lg:w-[59px] desktop:h-20 desktop:w-20">
-        <ArrowUpRight className="h-[22px] w-[22px] text-white lg:h-6 lg:w-6 desktop:h-[34px] desktop:w-[34px]" />
-      </div>
-    </div>
-  );
-}
-
 function HeroSkeleton() {
   return (
-    <section data-testid="hero-section" className="bg-[#141414]">
-      <div className="mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
-        <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
-          <div
-            data-testid="hero-heading-skeleton"
-            className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
-          />
-          <div
-            data-testid="hero-subheading-skeleton"
-            className="mt-4 h-16 w-full max-w-xl animate-pulse rounded-lg bg-zinc-800 md:mt-5"
-          />
-          <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row md:mt-8 md:gap-4">
+    <section data-testid="hero-section" className="-mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]">
+      <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
+        <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
+          <div className="flex flex-col gap-6">
+            <div
+              data-testid="hero-heading-skeleton"
+              className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
+            />
+            <div
+              data-testid="hero-subheading-skeleton"
+              className="h-16 w-full max-w-xl animate-pulse rounded-lg bg-zinc-800"
+            />
+          </div>
+          <div className="flex w-full flex-col items-center gap-4 md:flex-row">
             <div
               data-testid="hero-primary-cta-skeleton"
-              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 sm:w-40"
+              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
             />
             <div
               data-testid="hero-secondary-cta-skeleton"
-              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 sm:w-40"
+              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
             />
           </div>
-          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:grid-cols-3 lg:mt-10 lg:gap-4">
+          <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
             {DEFAULT_STATS.map((stat) => (
               <div
                 key={stat.label}
                 data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
-                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 lg:items-start lg:px-5 lg:py-5"
+                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 md:items-start md:px-3.5 md:py-3.5"
               >
                 <div className="h-8 w-16 animate-pulse rounded bg-zinc-800 md:h-9" />
                 <div className="h-4 w-24 animate-pulse rounded bg-zinc-800" />
@@ -105,9 +74,7 @@ function HeroSkeleton() {
             ))}
           </div>
         </div>
-        <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
-          <div className="relative aspect-[4/3] w-full animate-pulse rounded-2xl bg-zinc-800 lg:aspect-square lg:max-w-2xl" />
-        </div>
+        <div className="relative order-1 mb-[72px] h-[302px] animate-pulse overflow-hidden rounded-xl bg-zinc-800 md:order-2 md:mb-0 md:min-h-[622px]" data-testid="property-gallery-skeleton" />
       </div>
     </section>
   );
@@ -126,7 +93,11 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
   const data = hero ?? DEFAULT_DATA;
 
   return (
-    <section aria-labelledby="hero-heading" data-testid="hero-section" className="relative overflow-hidden bg-[#141414]">
+    <section
+      aria-labelledby="hero-heading"
+      data-testid="hero-section"
+      className="relative -mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]"
+    >
       {/* Abstract design corner decorations */}
       <Image
         src="/images/abstract-design-left.png"
@@ -146,36 +117,38 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
         className="pointer-events-none absolute bottom-0 right-0 select-none opacity-40"
         priority={false}
       />
-      <div className="relative mx-auto grid max-w-[1920px] items-center gap-8 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:py-20 xl:px-12">
+      <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
         {/* Text column */}
-        <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
-          <h1
-            id="hero-heading"
-            data-testid="hero-heading"
-            className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-5xl"
-          >
-            {data.heading}
-          </h1>
-          <p
-            data-testid="hero-subheading"
-            className="mt-4 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base md:mt-5"
-          >
-            {data.subheading}
-          </p>
+        <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
+          <div className="flex flex-col gap-6">
+            <h1
+              id="hero-heading"
+              data-testid="hero-heading"
+              className="text-[28px] font-semibold leading-[1.2] sm:text-[36px] xl:text-[46px] desktop:text-6xl"
+            >
+              {data.heading}
+            </h1>
+            <p
+              data-testid="hero-subheading"
+              className="text-[14px] font-medium text-[#999999] xl:text-base desktop:text-lg"
+            >
+              {data.subheading}
+            </p>
+          </div>
 
-          <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row md:mt-8 md:gap-4">
+          <div className="flex w-full flex-col items-center gap-4 md:flex-row desktop:gap-5">
             <a
               href={data.secondaryCta.href}
               data-testid="hero-learn-more"
               aria-label={`${data.secondaryCta.text} about Estatein properties`}
-              className="inline-flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-zinc-500 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="w-full rounded-[8px] border border-[#262626] bg-[#141414] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:bg-zinc-950 md:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
             >
               {data.secondaryCta.text}
             </a>
             <a
               href={data.primaryCta.href}
               data-testid="hero-browse-properties"
-              className="inline-flex items-center justify-center rounded-xl bg-[#703BF7] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="w-full rounded-[8px] border border-[#262626] bg-[#703BF7] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:opacity-80 sm:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
             >
               {data.primaryCta.text}
             </a>
@@ -185,7 +158,7 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
             <div
               data-testid="hero-error"
               role="alert"
-              className="mt-6 flex w-full flex-col items-center gap-3 rounded-xl bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:mt-8 md:px-5 md:py-5"
+              className="flex w-full flex-col items-center gap-3 rounded-xl bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:px-5 md:py-5"
             >
               <span className="text-sm">Unable to load hero content. Showing fallback data.</span>
               {retry ? (
@@ -202,30 +175,23 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
             </div>
           ) : null}
 
-          <div className="mt-8 grid w-full grid-cols-2 gap-3 md:grid-cols-3 lg:mt-10 lg:gap-4">
-            {data.stats.map((stat) => (
+          <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 desktop:gap-5">
+            {data.stats.map((stat, i) => (
               <div
                 key={stat.label}
                 data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className="flex flex-col items-center rounded-xl bg-[#1a1a1a] px-4 py-4 text-center lg:items-start lg:px-5 lg:py-5 lg:text-left"
+                className={`flex flex-col items-center gap-[2px] rounded-xl border border-[#262626] bg-[#141414] p-4 md:items-start md:p-3.5 desktop:p-4${i === data.stats.length - 1 ? " col-span-2 md:col-span-1" : ""}`}
               >
-                <span className="text-2xl font-semibold text-white md:text-3xl">{stat.value}</span>
-                <span className="mt-1 text-sm text-zinc-400">{stat.label}</span>
+                <span className="text-2xl font-bold leading-normal text-white md:text-[30px] desktop:text-[40px]">{stat.value}</span>
+                <span className="text-center text-[14px] font-medium leading-normal text-[#999999] md:text-left xl:text-base desktop:text-lg">{stat.label}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Image column */}
-        <div className="relative order-1 flex items-center justify-center lg:order-2 lg:justify-end">
-          <div className="relative isolate aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#2A213F] lg:aspect-square lg:max-w-2xl">
-            <Image
-              src="/images/abstract-design-hero.png"
-              alt=""
-              aria-hidden="true"
-              fill
-              className="object-cover opacity-0"
-            />
+        <div className="relative order-1 mb-[72px] h-[302px] overflow-hidden rounded-xl border border-[#262626] md:order-2 md:mb-0 md:min-h-[622px] md:overflow-visible md:rounded-none md:border-none desktop:min-h-[814px]">
+          <div className="absolute left-0 right-0 z-30 h-full translate-x-0 md:w-[calc(50vw-30px)]">
             <Image
               src={HERO_IMAGE}
               alt="Modern blue glass skyscrapers"
@@ -233,12 +199,24 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
+              className="z-20 object-cover"
               data-testid="hero-image"
             />
-            <div className="absolute left-4 top-4 lg:left-auto lg:right-8 lg:top-8">
-              <DiscoverBadge />
-            </div>
           </div>
+        </div>
+
+        {/* Badge — positioned at column boundary */}
+        <div
+          className="absolute top-[250px] z-40 ml-4 md:left-[calc(50%+30px)] md:top-24 md:ml-0 md:-translate-x-1/2 desktop:top-36"
+          data-testid="hero-discover-badge"
+        >
+          <Image
+            src="/images/badge.png"
+            alt="badge"
+            width={175}
+            height={175}
+            className="h-[116px] w-[116px] object-cover md:h-32 md:w-32 desktop:h-[175px] desktop:w-[175px]"
+          />
         </div>
       </div>
     </section>
@@ -253,19 +231,17 @@ export interface FeatureCardsProps {
 export function FeatureCards({ features, isLoading }: FeatureCardsProps) {
   if (isLoading) {
     return (
-      <section data-testid="feature-cards-section" className="bg-zinc-950">
-        <div className="mx-auto grid max-w-[1920px] grid-cols-2 gap-3 px-4 pb-12 sm:gap-4 md:grid-cols-4 md:gap-5 md:px-6 md:pb-16 lg:px-8 lg:pb-20 xl:gap-6 xl:px-12">
-          {DEFAULT_FEATURES.map((feature) => (
-            <div
-              key={feature.title}
-              data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
-              className="flex flex-col items-center gap-3 rounded-2xl bg-[#1a1a1a] px-4 py-6 md:items-start md:px-5 md:py-7 lg:px-6 lg:py-8"
-            >
-              <div className="h-12 w-12 animate-pulse rounded-full bg-zinc-800 md:h-14 md:w-14" />
-              <div className="h-5 w-32 animate-pulse rounded bg-zinc-800" />
-            </div>
-          ))}
-        </div>
+      <section data-testid="feature-cards-section" className="my-2 grid grid-cols-2 gap-[10px] border border-[#262626] bg-zinc-950 p-[10px] outline outline-8 outline-[#141414] md:grid-cols-4 desktop:gap-5 desktop:p-5">
+        {DEFAULT_FEATURES.map((feature) => (
+          <div
+            key={feature.title}
+            data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
+            className="flex flex-col items-center gap-5 rounded-xl border border-[#262626] bg-[#141414] px-4 py-[30px] text-center desktop:px-5 desktop:py-10"
+          >
+            <div className="h-[60px] w-[60px] animate-pulse rounded-full bg-zinc-800" />
+            <div className="h-5 w-32 animate-pulse rounded bg-zinc-800" />
+          </div>
+        ))}
       </section>
     );
   }
@@ -273,26 +249,30 @@ export function FeatureCards({ features, isLoading }: FeatureCardsProps) {
   const displayFeatures = features ?? DEFAULT_FEATURES;
 
   return (
-    <section aria-label="Feature cards" data-testid="feature-cards-section" className="bg-zinc-950">
-      <div className="mx-auto grid max-w-[1920px] grid-cols-2 gap-3 px-4 pb-12 sm:gap-4 md:grid-cols-4 md:gap-5 md:px-6 md:pb-16 lg:px-8 lg:pb-20 xl:gap-6 xl:px-12">
-        {displayFeatures.map((feature) => {
-          const Icon = FEATURE_ICONS[feature.title] ?? Home;
-          return (
-            <a
-              key={feature.title}
-              href="#"
-              data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}`}
-              className="group flex flex-col items-center rounded-2xl bg-[#1a1a1a] px-4 py-6 text-center transition-colors hover:bg-[#222222] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 md:items-start md:px-5 md:py-7 md:text-left lg:px-6 lg:py-8"
-            >
-              <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-violet-500/40 bg-zinc-900 md:h-14 md:w-14">
-                <Icon className="h-5 w-5 text-violet-400 md:h-6 md:w-6" aria-hidden="true" />
-                <ArrowUpRight className="absolute right-0 top-0 h-3.5 w-3.5 -translate-y-1/2 translate-x-1/2 text-zinc-500 transition-colors group-hover:text-white md:h-4 md:w-4" />
+    <section
+      aria-label="Feature cards"
+      data-testid="feature-cards-section"
+      className="my-2 grid grid-cols-2 gap-[10px] border border-[#262626] bg-zinc-950 p-[10px] outline outline-8 outline-[#141414] md:grid-cols-4 desktop:gap-5 desktop:p-5"
+    >
+      {displayFeatures.map((feature) => {
+        const Icon = FEATURE_ICONS[feature.title] ?? Home;
+        return (
+          <a
+            key={feature.title}
+            href="#"
+            data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}`}
+            className="group relative flex cursor-pointer items-center justify-center rounded-xl border border-[#262626] bg-[#141414] px-4 py-[30px] text-center transition-colors hover:bg-[#1e1e1e] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 desktop:px-5 desktop:py-10"
+          >
+            <div className="flex flex-col items-center gap-5">
+              <div className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full border border-violet-500/40 bg-zinc-900 desktop:h-[82px] desktop:w-[82px]">
+                <Icon className="h-6 w-6 text-violet-400 desktop:h-8 desktop:w-8" aria-hidden="true" />
+                <ArrowUpRight className="absolute right-0 top-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-zinc-500 transition-colors group-hover:text-white" />
               </div>
               <span className="text-sm font-medium text-white md:text-base">{feature.title}</span>
-            </a>
-          );
-        })}
-      </div>
+            </div>
+          </a>
+        );
+      })}
     </section>
   );
 }
