@@ -259,7 +259,6 @@ export function FeatureCards({ features, isLoading }: FeatureCardsProps) {
         return (
           <a
             key={feature.title}
-            href="#"
             data-testid={`feature-card-${feature.title.toLowerCase().replace(/\s+/g, "-")}`}
             className="group relative flex cursor-pointer items-center justify-center rounded-xl border border-[#262626] bg-[#141414] px-4 py-[30px] text-center transition-colors hover:bg-[#1e1e1e] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-zinc-950 desktop:px-5 desktop:py-10"
           >

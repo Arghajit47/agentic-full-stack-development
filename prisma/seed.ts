@@ -225,33 +225,33 @@ async function main() {
     await prisma.footerSection.create({ data: section });
   }
 
-  const properties = PROPERTY_TITLES.map((title, i) => {
-    // For the first 6 properties, create a gallery with multiple images
-    // For others, just use a single image
-    const mainImageIndex = (i % 6) + 1;
-    const galleryUrls = i < 6
-      ? [
-          `/images/properties/property-${mainImageIndex}.jpg`,
-          `/images/properties/property-${((mainImageIndex) % 6) + 1}.jpg`,
-          `/images/properties/property-${((mainImageIndex + 1) % 6) + 1}.jpg`,
-          `/images/properties/property-${((mainImageIndex + 2) % 6) + 1}.jpg`,
-        ]
-      : [`/images/properties/property-${mainImageIndex}.jpg`];
+  const properties = Array.from({ length: 220 }, (_, i) => {
+    const titleIndex = i % PROPERTY_TITLES.length;
+    const suffix = i >= PROPERTY_TITLES.length ? ` ${Math.floor(i / PROPERTY_TITLES.length) + 1}` : "";
+    const title = `${PROPERTY_TITLES[titleIndex]}${suffix}`;
+    const imageIndex = i + 1; // 1 to 220
+    const featureList = FEATURES[i % FEATURES.length];
+    const galleryUrls = [
+      `/images/properties/property-${imageIndex}.jpg`,
+      `/images/properties/property-${((imageIndex) % 220) + 1}.jpg`,
+      `/images/properties/property-${((imageIndex + 1) % 220) + 1}.jpg`,
+      `/images/properties/property-${((imageIndex + 2) % 220) + 1}.jpg`,
+    ];
 
     return {
       slug: slugify(title),
       title,
-      description: `${title} — ${FEATURES[i].join(", ")}. A beautiful home waiting for the right buyer.`,
-      price: i === 0 ? 1250000 : i === 1 ? 600000 : i === 2 ? 350000 : 250000 + i * 75000 + (i % 3) * 25000,
-      location: LOCATIONS[i],
+      description: `${title} — ${featureList.join(", ")}. A beautiful home waiting for the right buyer.`,
+      price: i === 0 ? 1250000 : i === 1 ? 600000 : i === 2 ? 350000 : 250000 + i * 25000 + (i % 5) * 15000,
+      location: LOCATIONS[i % LOCATIONS.length],
       bedrooms: 1 + (i % 6),
       bathrooms: 1 + (i % 4),
-      areaSqft: 800 + i * 250,
-      propertyType: PROPERTY_TYPES[i],
-      imageUrl: `/images/properties/property-${mainImageIndex}.jpg`,
-      isFeatured: true,
+      areaSqft: 800 + i * 120,
+      propertyType: PROPERTY_TYPES[i % PROPERTY_TYPES.length],
+      imageUrl: `/images/properties/property-${imageIndex}.jpg`,
+      isFeatured: i < 6 || i % 10 === 0,
       galleryUrls: JSON.stringify(galleryUrls),
-      features: JSON.stringify(FEATURES[i]),
+      features: JSON.stringify(featureList),
     };
   });
 

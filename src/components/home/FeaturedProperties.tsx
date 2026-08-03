@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Bed, Bath, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFeaturedProperties, type FeaturedProperty } from "@/lib/api";
 import { useMounted } from "@/lib/use-mounted";
@@ -154,11 +155,12 @@ export function FeaturedProperties({
                 data-testid="property-card"
                 className="flex h-[480px] flex-col rounded-xl p-4 md:h-[520px] lg:h-[580px] xl:h-[620px]"
               >
-                <img
+                <Image
                   src={property.imageUrl}
                   alt={property.title}
+                  width={400}
+                  height={300}
                   className="aspect-[4/3] w-full rounded-lg object-cover"
-                  loading="lazy"
                 />
                 <div className="mt-4 flex flex-col">
                   <h3
