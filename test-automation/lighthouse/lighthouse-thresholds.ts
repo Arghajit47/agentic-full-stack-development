@@ -1,8 +1,8 @@
 export const LIGHTHOUSE_THRESHOLDS = {
-  performance: 70,
-  accessibility: 90,
-  bestPractices: 90,
-  seo: 90,
+  performance: 100,
+  accessibility: 100,
+  bestPractices: 100,
+  seo: 100,
 } as const;
 
 export const PAGES_TO_TEST = [

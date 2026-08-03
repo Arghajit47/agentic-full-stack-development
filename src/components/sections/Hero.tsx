@@ -101,50 +101,6 @@ const FEATURE_ICONS: Record<string, typeof Home> = {
   "Smart Investments. Informed Decisions": Lightbulb,
 };
 
-function HeroSkeleton() {
-  return (
-    <section data-testid="hero-section" className="flex flex-col overflow-hidden">
-      <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
-        <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
-          <div className="flex flex-col gap-6">
-            <div
-              data-testid="hero-heading-skeleton"
-              className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
-            />
-            <div
-              data-testid="hero-subheading-skeleton"
-              className="h-16 w-full max-w-xl animate-pulse rounded-lg bg-zinc-800"
-            />
-          </div>
-          <div className="flex w-full flex-col items-center gap-4 md:flex-row">
-            <div
-              data-testid="hero-primary-cta-skeleton"
-              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
-            />
-            <div
-              data-testid="hero-secondary-cta-skeleton"
-              className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
-            />
-          </div>
-          <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-            {DEFAULT_STATS.map((stat) => (
-              <div
-                key={stat.label}
-                data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
-                className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 md:items-start md:px-3.5 md:py-3.5"
-              >
-                <div className="h-8 w-16 animate-pulse rounded bg-zinc-800 md:h-9" />
-                <div className="h-4 w-24 animate-pulse rounded bg-zinc-800" />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative order-1 mb-[72px] h-[302px] animate-pulse overflow-hidden rounded-xl bg-zinc-800 md:order-2 md:mb-0 md:min-h-[622px]" data-testid="property-gallery-skeleton" />
-      </div>
-    </section>
-  );
-}
-
 export interface HeroProps {
   hero?: HeroContentData | null;
   isLoading?: boolean;
@@ -153,107 +109,148 @@ export interface HeroProps {
 }
 
 export function Hero({ hero, isLoading, error, retry }: HeroProps) {
-  if (isLoading) return <HeroSkeleton />;
-
   const data = hero ?? DEFAULT_DATA;
 
   return (
     <section
-      aria-labelledby="hero-heading"
+      aria-labelledby={isLoading ? undefined : "hero-heading"}
       data-testid="hero-section"
       className="relative flex flex-col overflow-hidden"
     >
-      {/* Abstract design corner decorations */}
-      <Image
-        src="/images/abstract-design-left.png"
-        alt=""
-        aria-hidden="true"
-        width={473}
-        height={258}
-        className="pointer-events-none absolute bottom-0 left-0 select-none opacity-40"
-        priority={false}
-      />
-      <Image
-        src="/images/abstract-design-right.png"
-        alt=""
-        aria-hidden="true"
-        width={555}
-        height={259}
-        className="pointer-events-none absolute bottom-0 right-0 select-none opacity-40"
-        priority={false}
-      />
+      {/* Abstract design corner decorations — only in loaded state */}
+      {!isLoading && (
+        <>
+          <Image
+            src="/images/abstract-design-left.png"
+            alt=""
+            aria-hidden="true"
+            width={473}
+            height={258}
+            className="pointer-events-none absolute bottom-0 left-0 select-none opacity-40"
+            priority={false}
+          />
+          <Image
+            src="/images/abstract-design-right.png"
+            alt=""
+            aria-hidden="true"
+            width={555}
+            height={259}
+            className="pointer-events-none absolute bottom-0 right-0 select-none opacity-40"
+            priority={false}
+          />
+        </>
+      )}
       <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
         {/* Text column */}
         <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
-          <div className="flex flex-col gap-6">
-            <h1
-              id="hero-heading"
-              data-testid="hero-heading"
-              className="text-[28px] font-semibold leading-[1.2] sm:text-[36px] xl:text-[46px] desktop:text-6xl"
-            >
-              {data.heading}
-            </h1>
-            <p
-              data-testid="hero-subheading"
-              className="text-[14px] font-medium text-[#999999] xl:text-base desktop:text-lg"
-            >
-              {data.subheading}
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col items-center gap-4 md:flex-row desktop:gap-5">
-            <a
-              href={data.secondaryCta.href}
-              data-testid="hero-learn-more"
-              aria-label={`${data.secondaryCta.text} about Estatein properties`}
-              className="w-full rounded-[8px] border border-[#262626] bg-[#141414] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:bg-zinc-950 md:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
-            >
-              {data.secondaryCta.text}
-            </a>
-            <a
-              href={data.primaryCta.href}
-              data-testid="hero-browse-properties"
-              className="w-full rounded-[8px] border border-[#262626] bg-[#703BF7] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:opacity-80 sm:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
-            >
-              {data.primaryCta.text}
-            </a>
-          </div>
-
-          {error ? (
-            <div
-              data-testid="hero-error"
-              role="alert"
-              className="flex w-full flex-col items-center gap-3 rounded-xl bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:px-5 md:py-5"
-            >
-              <span className="text-sm">Unable to load hero content. Showing fallback data.</span>
-              {retry ? (
-                <button
-                  type="button"
-                  onClick={retry}
-                  data-testid="hero-retry"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
+          {isLoading ? (
+            <>
+              <div className="flex flex-col gap-6">
+                <div
+                  data-testid="hero-heading-skeleton"
+                  className="h-10 w-full max-w-2xl animate-pulse rounded-lg bg-zinc-800 sm:h-12 md:h-14"
+                />
+                <div
+                  data-testid="hero-subheading-skeleton"
+                  className="h-16 w-full max-w-xl animate-pulse rounded-lg bg-zinc-800"
+                />
+              </div>
+              <div className="flex w-full flex-col items-center gap-4 md:flex-row">
+                <div
+                  data-testid="hero-primary-cta-skeleton"
+                  className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
+                />
+                <div
+                  data-testid="hero-secondary-cta-skeleton"
+                  className="h-12 w-full animate-pulse rounded-xl bg-zinc-800 md:w-40"
+                />
+              </div>
+              <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+                {DEFAULT_STATS.map((stat) => (
+                  <div
+                    key={stat.label}
+                    data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}-skeleton`}
+                    className="flex flex-col items-center gap-2 rounded-xl bg-[#1a1a1a] px-4 py-4 md:items-start md:px-3.5 md:py-3.5"
+                  >
+                    <div className="h-8 w-16 animate-pulse rounded bg-zinc-800 md:h-9" />
+                    <div className="h-4 w-24 animate-pulse rounded bg-zinc-800" />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col gap-6">
+                <h1
+                  id="hero-heading"
+                  data-testid="hero-heading"
+                  className="text-[28px] font-semibold leading-[1.2] sm:text-[36px] xl:text-[46px] desktop:text-6xl"
                 >
-                  <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                  Retry
-                </button>
-              ) : null}
-            </div>
-          ) : null}
+                  {data.heading}
+                </h1>
+                <p
+                  data-testid="hero-subheading"
+                  className="text-[14px] font-medium text-[#999999] xl:text-base desktop:text-lg"
+                >
+                  {data.subheading}
+                </p>
+              </div>
 
-          <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 desktop:gap-5">
-            {data.stats.map((stat, i) => (
-              <AnimatedStat
-                key={stat.label}
-                value={stat.value}
-                label={stat.label}
-                testId={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className={`flex flex-col items-center gap-[2px] rounded-xl border border-[#262626] bg-[#141414] p-4 md:items-start md:p-3.5 desktop:p-4${i === data.stats.length - 1 ? " col-span-2 md:col-span-1" : ""}`}
-              />
-            ))}
-          </div>
+              <div className="flex w-full flex-col items-center gap-4 md:flex-row desktop:gap-5">
+                <a
+                  href={data.secondaryCta.href}
+                  data-testid="hero-learn-more"
+                  aria-label={`${data.secondaryCta.text} about Estatein properties`}
+                  className="w-full rounded-[8px] border border-[#262626] bg-[#141414] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:bg-zinc-950 md:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
+                >
+                  {data.secondaryCta.text}
+                </a>
+                <a
+                  href={data.primaryCta.href}
+                  data-testid="hero-browse-properties"
+                  className="w-full rounded-[8px] border border-[#262626] bg-[#703BF7] px-[20px] py-[14px] text-center text-[14px] font-medium text-white transition hover:opacity-80 sm:w-fit desktop:rounded-[10px] desktop:px-[24px] desktop:py-[18px] desktop:text-[18px]"
+                >
+                  {data.primaryCta.text}
+                </a>
+              </div>
+
+              {error ? (
+                <div
+                  data-testid="hero-error"
+                  role="alert"
+                  className="flex w-full flex-col items-center gap-3 rounded-xl bg-zinc-950 px-4 py-4 text-center text-zinc-300 sm:flex-row sm:justify-between sm:text-left md:px-5 md:py-5"
+                >
+                  <span className="text-sm">Unable to load hero content. Showing fallback data.</span>
+                  {retry ? (
+                    <button
+                      type="button"
+                      onClick={retry}
+                      data-testid="hero-retry"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 focus:ring-offset-zinc-950"
+                    >
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                      Retry
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 desktop:gap-5">
+                {data.stats.map((stat, i) => (
+                  <AnimatedStat
+                    key={stat.label}
+                    value={stat.value}
+                    label={stat.label}
+                    testId={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                    className={`flex flex-col items-center gap-[2px] rounded-xl border border-[#262626] bg-[#141414] p-4 md:items-start md:p-3.5 desktop:p-4${i === data.stats.length - 1 ? " col-span-2 md:col-span-1" : ""}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Image column */}
+        {/* Image column — always rendered for LCP */}
         <div className="relative order-1 mb-[72px] h-[302px] overflow-hidden rounded-xl border border-[#262626] md:order-2 md:mb-0 md:min-h-[622px] md:overflow-visible md:rounded-none md:border-none desktop:min-h-[814px]">
           <div className="absolute left-0 right-0 z-30 h-full translate-x-0 md:w-[calc(50vw-30px)]">
             <Image

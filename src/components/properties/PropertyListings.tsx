@@ -67,10 +67,11 @@ export function PropertyListings({
       data-testid="property-grid"
       className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
     >
-      {properties.map((property) => (
+      {properties.map((property, index) => (
         <PropertyCard
           key={property.id}
           property={property}
+          priority={index === 0}
           onPropertyClick={onPropertyClick}
         />
       ))}

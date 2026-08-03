@@ -160,7 +160,8 @@ export function PhotoGalleryMosaic({
               >
                 <Image
                   src={image.url}
-                  alt={image.alt}
+                  alt=""
+                  aria-hidden="true"
                   fill
                   className="object-cover transition-opacity group-hover:opacity-80"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

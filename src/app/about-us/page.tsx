@@ -21,9 +21,8 @@ export default function AboutUsPage() {
   const isClient = useIsClient();
   const { data, error, isLoading, mutate } = useAboutUs();
 
-  // Hydration guard: SSR and the first client paint share the same loading
-  // skeleton. After hydration, SWR drives the real fetch/loading/error/data states.
-  const showLoading = !isClient || isLoading;
+  // With fallbackData, data is always defined — no skeleton needed on first paint.
+  const showLoading = isClient && isLoading && !data;
 
   if (showLoading) {
     return (

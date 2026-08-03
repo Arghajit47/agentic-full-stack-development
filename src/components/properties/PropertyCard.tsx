@@ -12,10 +12,11 @@ const priceFormatter = new Intl.NumberFormat("en-US", {
 
 interface PropertyCardProps {
   property: Property;
+  priority?: boolean;
   onPropertyClick?: (slug: string) => void;
 }
 
-export function PropertyCard({ property, onPropertyClick = (slug) => console.log(slug) }: PropertyCardProps) {
+export function PropertyCard({ property, priority = false, onPropertyClick = (slug) => console.log(slug) }: PropertyCardProps) {
   return (
     <article
       data-testid="property-card"
@@ -26,6 +27,7 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
           src={property.imageUrl}
           alt={property.title}
           fill
+          priority={priority}
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
@@ -71,7 +73,7 @@ export function PropertyCard({ property, onPropertyClick = (slug) => console.log
 
         <div className="mt-6 flex items-center justify-between border-t border-zinc-800/80 pt-4" data-testid={`property-price-${property.id}`}>
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500" data-testid={`price-label-${property.id}`}>
+            <p className="text-[10px] uppercase tracking-wider text-zinc-400" data-testid={`price-label-${property.id}`}>
               Price
             </p>
             <p className="text-lg font-bold text-white">

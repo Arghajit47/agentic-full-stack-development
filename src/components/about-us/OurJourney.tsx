@@ -54,6 +54,7 @@ export function OurJourney({ data }: OurJourneyProps) {
             alt={data.heading}
             width={680}
             height={540}
+            priority
             sizes="(max-width: 768px) 100vw, 50vw"
             className="w-full max-w-[680px] object-contain"
             data-testid="our-journey-image"

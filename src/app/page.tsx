@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FeaturedProperties } from "@/components/home/FeaturedProperties";
-import { Testimonials } from "@/components/home/Testimonials";
+import dynamic from "next/dynamic";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
+
+const FeaturedProperties = dynamic(
+  () => import("@/components/home/FeaturedProperties").then((m) => ({ default: m.FeaturedProperties })),
+  { ssr: false }
+);
+const Testimonials = dynamic(
+  () => import("@/components/home/Testimonials").then((m) => ({ default: m.Testimonials })),
+  { ssr: false }
+);
 import { useHero } from "@/lib/api";
 import { useMounted } from "@/lib/use-mounted";
 
