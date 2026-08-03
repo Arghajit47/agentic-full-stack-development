@@ -307,7 +307,7 @@ async function main() {
     { key: "primary_cta_text", value: "Browse Properties" },
     { key: "primary_cta_href", value: "/properties" },
     { key: "secondary_cta_text", value: "Learn More" },
-    { key: "secondary_cta_href", value: "#learn-more" },
+    { key: "secondary_cta_href", value: "/learn-more" },
     { key: "stat_happy_customers", value: "200+" },
     { key: "stat_properties", value: "10k+" },
     { key: "stat_years", value: "16+" },

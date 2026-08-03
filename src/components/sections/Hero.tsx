@@ -89,7 +89,7 @@ const DEFAULT_DATA: HeroContentData = {
   subheading:
     "Your journey to finding the perfect property begins here. Explore our listings to find the home that matches your dreams.",
   primaryCta: { text: "Browse Properties", href: "/properties" },
-  secondaryCta: { text: "Learn More", href: "#learn-more" },
+  secondaryCta: { text: "Learn More", href: "/learn-more" },
   stats: DEFAULT_STATS,
   features: DEFAULT_FEATURES,
 };

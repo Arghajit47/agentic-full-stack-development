@@ -95,7 +95,7 @@ describe("Hero default fallback", () => {
     );
     expect(screen.getByTestId("hero-browse-properties")).toHaveAttribute("href", "/properties");
     expect(screen.getByTestId("hero-browse-properties")).toHaveTextContent("Browse Properties");
-    expect(screen.getByTestId("hero-learn-more")).toHaveAttribute("href", "#learn-more");
+    expect(screen.getByTestId("hero-learn-more")).toHaveAttribute("href", "/learn-more");
     expect(screen.getByTestId("hero-learn-more")).toHaveTextContent("Learn More");
     expect(screen.getByTestId("hero-stat-happy-customers")).toHaveTextContent("200+");
     expect(screen.getByTestId("hero-stat-properties-for-clients")).toHaveTextContent("10k+");

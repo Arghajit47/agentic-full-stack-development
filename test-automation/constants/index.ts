@@ -88,6 +88,7 @@ export const UI_ROUTES = {
   ABOUT_US: "/about-us",
   CONTACT: "/contact",
   TERMS: "/terms",
+  LEARN_MORE: "/learn-more",
 } as const;
 
 // Responsive breakpoints (px). Match Tailwind: sm=640, md=768, lg=1024, xl=1280.

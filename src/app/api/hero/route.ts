@@ -7,7 +7,7 @@ const FALLBACK = {
   heading: "Discover Your Dream Property with Estatein",
   subheading: "Your journey to finding the perfect property begins here. Explore our listings to find the home that matches your dreams.",
   primaryCta: { text: "Browse Properties", href: "/properties" },
-  secondaryCta: { text: "Learn More", href: "#learn-more" },
+  secondaryCta: { text: "Learn More", href: "/learn-more" },
   stats: [
     { value: "200+", label: "Happy Customers" },
     { value: "10k+", label: "Properties For Clients" },
