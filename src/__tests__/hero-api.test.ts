@@ -24,7 +24,7 @@ describe("GET /api/hero (KAN-47)", () => {
       { key: "primary_cta_text", value: "Browse Properties" },
       { key: "primary_cta_href", value: "/properties" },
       { key: "secondary_cta_text", value: "Learn More" },
-      { key: "secondary_cta_href", value: "#learn-more" },
+      { key: "secondary_cta_href", value: "/learn-more" },
       { key: "stat_happy_customers", value: "200+" },
       { key: "stat_properties", value: "10k+" },
       { key: "stat_years", value: "16+" },
@@ -44,7 +44,7 @@ describe("GET /api/hero (KAN-47)", () => {
     expect(body.data.heading).toBe("Discover Your Dream Property with Estatein");
     expect(body.data.subheading).toContain("Your journey");
     expect(body.data.primaryCta).toEqual({ text: "Browse Properties", href: "/properties" });
-    expect(body.data.secondaryCta).toEqual({ text: "Learn More", href: "#learn-more" });
+    expect(body.data.secondaryCta).toEqual({ text: "Learn More", href: "/learn-more" });
     expect(body.data.stats).toHaveLength(3);
     expect(body.data.features).toHaveLength(4);
     expect(body.data.features[0].title).toBe("Find Your Dream Home");
