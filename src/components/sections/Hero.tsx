@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
 import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
 
-const HERO_IMAGE = "/images/hero-building.png";
+const HERO_IMAGE = "/images/hero-building.jpg";
 
 const DEFAULT_FEATURES: HeroFeature[] = [
   { title: "Find Your Dream Home", description: "" },
