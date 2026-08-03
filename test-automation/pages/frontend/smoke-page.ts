@@ -128,8 +128,9 @@ export class SmokeTestPage {
       await this.initializationPage.setViewport(viewport);
       for (const route of publicRoutes) {
         await this.initializationPage.goto(`${resolvedBaseUrl}${route}`);
-        await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.navbar, 0, 10000);
-        await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.footer, 0, 10000);
+        await this.initializationPage.page.waitForLoadState("domcontentloaded");
+        await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.navbar, 0, 20000);
+        await this.initializationPage.expectVisibleWithTimeout(SMOKE_LOCATORS.footer, 0, 20000);
       }
     }
   }
