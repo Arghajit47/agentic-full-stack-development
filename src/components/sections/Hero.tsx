@@ -96,8 +96,27 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
     <section
       aria-labelledby="hero-heading"
       data-testid="hero-section"
-      className="-mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]"
+      className="relative -mt-[50px] flex flex-col overflow-hidden xl:-mt-[70px] desktop:-mt-[100px]"
     >
+      {/* Abstract design corner decorations */}
+      <Image
+        src="/images/abstract-design-left.png"
+        alt=""
+        aria-hidden="true"
+        width={473}
+        height={258}
+        className="pointer-events-none absolute bottom-0 left-0 select-none opacity-40"
+        priority={false}
+      />
+      <Image
+        src="/images/abstract-design-right.png"
+        alt=""
+        aria-hidden="true"
+        width={555}
+        height={259}
+        className="pointer-events-none absolute bottom-0 right-0 select-none opacity-40"
+        priority={false}
+      />
       <div className="relative mx-auto my-8 grid w-full max-w-[1920px] grid-cols-1 content-center px-4 md:my-0 md:grid-cols-2 md:gap-[60px] md:px-6 lg:px-8 xl:px-12 desktop:gap-20">
         {/* Text column */}
         <div className="order-2 flex flex-col justify-center gap-[60px] md:order-1">
@@ -180,15 +199,8 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="relative z-20 h-full w-full object-cover"
+              className="z-20 object-cover"
               data-testid="hero-image"
-            />
-            <Image
-              src="/images/abstract-design-hero.png"
-              alt=""
-              aria-hidden="true"
-              fill
-              className="absolute left-1/2 top-1/2 z-10 h-full w-full -translate-x-1/2 -translate-y-1/2 object-contain"
             />
           </div>
         </div>
