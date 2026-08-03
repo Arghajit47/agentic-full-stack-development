@@ -64,7 +64,7 @@ function buildImages(id: number, galleryUrls: string[], title: string): Property
     : [
         {
           id: 1,
-          url: `/images/properties/property-${(id % 6) + 1}.jpg`,
+          url: `/images/properties/property-${((id - 1) % 220) + 1}.jpg`,
           alt: `${title} - Main Image`,
           caption: title,
         },
