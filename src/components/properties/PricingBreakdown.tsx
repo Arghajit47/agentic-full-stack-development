@@ -39,7 +39,7 @@ export interface PricingBreakdownProps {
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="bg-[#1A1A1A] border border-[#262626] rounded-full px-3 py-1 text-xs text-[#999999] whitespace-nowrap">
+    <span className="hidden sm:inline bg-[#1A1A1A] border border-[#262626] rounded-full px-3 py-1 text-xs text-[#999999] whitespace-nowrap">
       {children}
     </span>
   );
