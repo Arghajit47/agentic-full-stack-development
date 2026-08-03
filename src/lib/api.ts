@@ -110,9 +110,66 @@ export function useServices() {
   });
 }
 
+const DEFAULT_ABOUT_US_DATA: AboutUsData = {
+  journey: {
+    heading: "Our Journey",
+    body: "Our story is one of continuous growth and evolution. We started as a small team with a big vision: to transform the real estate experience for everyone.",
+    imageUrl: "/images/about-hero.png",
+    stats: [
+      { value: "200+", label: "Happy Customers", icon: "Home" },
+      { value: "10k+", label: "Properties For Clients", icon: "Home" },
+      { value: "16+", label: "Years of Experience", icon: "Home" },
+    ],
+  },
+  values: {
+    heading: "Our Values",
+    body: "Our values are the foundation of our service and everything we do at Estatein.",
+    cards: [
+      { title: "Trust", description: "Trust is the cornerstone of every successful real estate transaction.", icon: "ShieldCheck" },
+      { title: "Excellence", description: "We strive for excellence in every interaction.", icon: "Star" },
+      { title: "Client-Centric", description: "Your needs and goals are our top priority.", icon: "Heart" },
+    ],
+  },
+  achievements: {
+    heading: "Our Achievements",
+    body: "Our track record speaks for itself, with notable achievements and milestones that reflect our commitment to excellence.",
+    cards: [
+      { title: "3+ Years of Excellence", description: "With over 3 years in the industry, we've amassed a wealth of knowledge." },
+      { title: "Happy Clients", description: "We've helped hundreds of clients find their perfect properties." },
+      { title: "Property Portfolio", description: "An extensive portfolio spanning residential and commercial properties." },
+    ],
+  },
+  howItWorks: {
+    heading: "Navigating the Estatein Experience",
+    body: "At Estatein, we've streamlined the real estate journey for your convenience.",
+    steps: [
+      { stepNumber: "Step 01", title: "Discover a World of Possibilities", description: "Your journey begins with exploring our carefully curated property listings." },
+      { stepNumber: "Step 02", title: "Narrowing Down Your Choices", description: "Once you've discovered your potential dream property, let's narrow down the choices." },
+      { stepNumber: "Step 03", title: "Personalized Guidance", description: "With your shortlisted properties in hand, our dedicated agents guide you." },
+    ],
+  },
+  team: {
+    heading: "Meet the Estatein Team",
+    body: "At Estatein, our success is driven by the dedication and expertise of our team.",
+    members: [
+      { name: "Max Mitchell", role: "Founder", imageUrl: "/images/team/team-max.jpg", twitterUrl: "https://twitter.com/estatein" },
+      { name: "Sarah Johnson", role: "Chief Real Estate Officer", imageUrl: "/images/team/team-sarah.png", twitterUrl: "https://twitter.com/estatein" },
+      { name: "David Park", role: "Head of Property Management", imageUrl: "/images/team/team-david.png", twitterUrl: "https://twitter.com/estatein" },
+    ],
+  },
+  clients: {
+    heading: "Our Valued Clients",
+    subheading: "At Estatein, we have had the privilege of working with a diverse clientele.",
+    testimonials: [
+      { since: "Since 2019", company: "ABC Corporation", domain: "Commercial Real Estate", category: "Luxury Home Development", quote: "Estatein's expertise in finding the perfect office space for our growing team was outstanding.", websiteUrl: "https://example.com" },
+    ],
+  },
+};
+
 export function useAboutUs() {
   return useSWR<AboutUsData, Error>(isBrowser ? "/api/about-us" : null, fetcher, {
     revalidateOnFocus: false,
+    fallbackData: DEFAULT_ABOUT_US_DATA,
   });
 }
 

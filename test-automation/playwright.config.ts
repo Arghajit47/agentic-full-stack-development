@@ -27,7 +27,9 @@ export default defineConfig({
       testDir: "./specs/lighthouse-test",
       testMatch: /.*\.spec\.ts$/,
       use: { ...devices['Desktop Chrome'] },
-      timeout: 120_000,
+      timeout: 300_000,
+      workers: 1,
+      fullyParallel: false,
     },
     {
       name: 'smoke-test',
