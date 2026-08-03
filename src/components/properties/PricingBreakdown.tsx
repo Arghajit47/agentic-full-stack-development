@@ -104,10 +104,10 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
       </div>
 
       {/* Main layout: Listing Price (left) + Cards (right) */}
-      <div className="flex gap-8 items-start">
+      <div className="flex flex-col gap-6 sm:flex-row sm:gap-8 sm:items-start">
         {/* Left: Listing Price */}
         {listingPrice != null && (
-          <div data-testid="pricing-listing-price" className="w-48 shrink-0 sticky top-8">
+          <div data-testid="pricing-listing-price" className="w-full sm:w-48 sm:shrink-0 sm:sticky sm:top-8">
             <p className="text-[#999999] text-sm mb-1">Listing Price</p>
             <p className="text-3xl font-bold text-white">{formatCurrency(listingPrice)}</p>
           </div>
@@ -179,7 +179,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Total Initial Costs</h3>
             <div className="border-t border-[#262626] mb-4" />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <CostCell
                 label="Listing Price"
                 value={listingPrice != null ? formatCurrency(listingPrice) : "—"}
@@ -209,7 +209,7 @@ export function PricingBreakdown({ data, listingPrice, className = "" }: Pricing
           >
             <h3 className="text-[#999999] text-sm font-medium mb-3">Monthly Expenses</h3>
             <div className="border-t border-[#262626] mb-4" />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <CostCell
                 label="Property Taxes"
                 value={formatCurrency(monthlyCosts.propertyTaxesMonthly)}
