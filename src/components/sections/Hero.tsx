@@ -1,8 +1,73 @@
 "use client";
 
+import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import { Home, TrendingUp, Building2, Lightbulb, ArrowUpRight, Loader2, RotateCcw } from "lucide-react";
 import { type HeroContentData, type HeroFeature, type HeroStat } from "@/lib/api";
+
+function parseStatValue(raw: string): { number: number; suffix: string } {
+  const match = raw.match(/^(\d+)(.*)/);
+  if (!match) return { number: 0, suffix: raw };
+  return { number: parseInt(match[1], 10), suffix: match[2] };
+}
+
+interface AnimatedStatProps {
+  value: string;
+  label: string;
+  testId: string;
+  className: string;
+}
+
+function AnimatedStat({ value, label, testId, className }: AnimatedStatProps) {
+  const { number, suffix } = useMemo(() => parseStatValue(value), [value]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [displayCount, setDisplayCount] = useState<number | null>(null);
+  const animatingRef = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || animatingRef.current) return;
+        animatingRef.current = true;
+        observer.disconnect();
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const duration = 1500;
+        const start = performance.now();
+
+        const step = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setDisplayCount(Math.round(number * eased));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+
+        requestAnimationFrame(step);
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [number]);
+
+  const displayValue = displayCount === null ? value : `${displayCount}${suffix}`;
+
+  return (
+    <div ref={ref} data-testid={testId} className={className}>
+      <span className="text-2xl font-bold leading-normal text-white md:text-[30px] desktop:text-[40px]">
+        {displayValue}
+      </span>
+      <span className="text-center text-[14px] font-medium leading-normal text-[#999999] md:text-left xl:text-base desktop:text-lg">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 const HERO_IMAGE = "/images/hero-building.jpg";
 
@@ -177,14 +242,13 @@ export function Hero({ hero, isLoading, error, retry }: HeroProps) {
 
           <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 desktop:gap-5">
             {data.stats.map((stat, i) => (
-              <div
+              <AnimatedStat
                 key={stat.label}
-                data-testid={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
+                value={stat.value}
+                label={stat.label}
+                testId={`hero-stat-${stat.label.toLowerCase().replace(/\s+/g, "-")}`}
                 className={`flex flex-col items-center gap-[2px] rounded-xl border border-[#262626] bg-[#141414] p-4 md:items-start md:p-3.5 desktop:p-4${i === data.stats.length - 1 ? " col-span-2 md:col-span-1" : ""}`}
-              >
-                <span className="text-2xl font-bold leading-normal text-white md:text-[30px] desktop:text-[40px]">{stat.value}</span>
-                <span className="text-center text-[14px] font-medium leading-normal text-[#999999] md:text-left xl:text-base desktop:text-lg">{stat.label}</span>
-              </div>
+              />
             ))}
           </div>
         </div>
