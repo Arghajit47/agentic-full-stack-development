@@ -105,10 +105,10 @@ export class HomePage {
           `${item.bathrooms}`,
           cardIndex
         );
-        await this.initializationPage.expectAttribute(
+        await this.initializationPage.expectAttributeContains(
           HOMEPAGE_LOCATORS.propertyImages,
           "src",
-          item.imageUrl,
+          encodeURIComponent(item.imageUrl),
           cardIndex
         );
       }
