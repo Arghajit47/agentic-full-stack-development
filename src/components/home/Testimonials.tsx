@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFeaturedReviews, type FeaturedReview } from "@/lib/api";
 import { useMounted } from "@/lib/use-mounted";
@@ -41,6 +41,7 @@ export function Testimonials({
 
   const [startIndex, setStartIndex] = useState(0);
   const cardsVisible = useResponsiveCardCount();
+  const isPausedRef = useRef(false);
 
   const visibleCards = useMemo(
     () => reviews.slice(startIndex, startIndex + cardsVisible),
@@ -54,11 +55,26 @@ export function Testimonials({
   const goRight = () =>
     canGoRight && setStartIndex((i) => Math.min(reviews.length - cardsVisible, i + cardsVisible));
 
+  // Auto-advance every 4s; wraps to the beginning when at the last page
+  useEffect(() => {
+    if (isLoading || reviews.length === 0) return;
+    const interval = setInterval(() => {
+      if (isPausedRef.current) return;
+      setStartIndex((i) => {
+        const next = i + cardsVisible;
+        return next >= reviews.length ? 0 : next;
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isLoading, reviews.length, cardsVisible]);
+
   return (
     <section
       aria-labelledby="testimonials-heading"
       data-testid="testimonials-section"
       className="mx-auto w-full max-w-[1920px] bg-zinc-950 px-4 py-16 text-zinc-100 sm:px-6 lg:px-8"
+      onMouseEnter={() => { isPausedRef.current = true; }}
+      onMouseLeave={() => { isPausedRef.current = false; }}
     >
       <div className="mb-10 text-left">
         <h2
