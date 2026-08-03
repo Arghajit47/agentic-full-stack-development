@@ -42,7 +42,7 @@ test.describe("Learn More page", () => {
 
   test("Hero CTA links to /learn-more", async ({ page }) => {
     await page.goto(UI_ROUTES.HOME);
-    const learnMoreBtn = page.getByRole("link", { name: "Learn More" });
+    const learnMoreBtn = page.getByTestId("hero-learn-more");
     await expect(learnMoreBtn).toHaveAttribute("href", "/learn-more");
   });
 });
