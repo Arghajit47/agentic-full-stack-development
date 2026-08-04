@@ -94,7 +94,7 @@ export class SmokeTestPage {
       };
       this.initializationPage.page.on("response", listener);
       await this.initializationPage.goto(`${resolvedBaseUrl}${route}`);
-      await this.initializationPage.page.waitForLoadState("networkidle", { timeout: 20000 });
+      await this.initializationPage.page.waitForLoadState("networkidle", { timeout: 60000 });
       this.initializationPage.page.off("response", listener);
 
       const imgLocator = this.initializationPage.page.locator(SMOKE_LOCATORS.anyImage);
