@@ -1,6 +1,31 @@
 import { PrismaClient } from "@prisma/client";
+import * as fs from "fs";
+import * as path from "path";
 
 const prisma = new PrismaClient();
+
+function getPropertyImages(folderIndex: number): string[] {
+  const folderPath = path.join(
+    process.cwd(),
+    "public",
+    "images",
+    "properties",
+    `property-${folderIndex}`
+  );
+  try {
+    return fs
+      .readdirSync(folderPath)
+      .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f))
+      .sort((a, b) => {
+        const numA = parseInt(a.match(/_thumb_(\d+)/)?.[1] ?? "0", 10);
+        const numB = parseInt(b.match(/_thumb_(\d+)/)?.[1] ?? "0", 10);
+        return numA - numB;
+      })
+      .map((f) => `/images/properties/property-${folderIndex}/${f}`);
+  } catch {
+    return [];
+  }
+}
 
 const PROPERTY_TITLES = [
   "Seawide Serenity Villa",
@@ -229,14 +254,9 @@ async function main() {
     const titleIndex = i % PROPERTY_TITLES.length;
     const suffix = i >= PROPERTY_TITLES.length ? ` ${Math.floor(i / PROPERTY_TITLES.length) + 1}` : "";
     const title = `${PROPERTY_TITLES[titleIndex]}${suffix}`;
-    const imageIndex = i + 1; // 1 to 220
     const featureList = FEATURES[i % FEATURES.length];
-    const galleryUrls = [
-      `/images/properties/property-${imageIndex}.jpg`,
-      `/images/properties/property-${((imageIndex) % 220) + 1}.jpg`,
-      `/images/properties/property-${((imageIndex + 1) % 220) + 1}.jpg`,
-      `/images/properties/property-${((imageIndex + 2) % 220) + 1}.jpg`,
-    ];
+    const folderIndex = (i % 11) + 1;
+    const folderImages = getPropertyImages(folderIndex);
 
     return {
       slug: slugify(title),
@@ -248,9 +268,9 @@ async function main() {
       bathrooms: 1 + (i % 4),
       areaSqft: 800 + i * 120,
       propertyType: PROPERTY_TYPES[i % PROPERTY_TYPES.length],
-      imageUrl: `/images/properties/property-${imageIndex}.jpg`,
+      imageUrl: folderImages[0] ?? `/images/properties/property-${folderIndex}/placeholder.jpg`,
       isFeatured: i < 6 || i % 10 === 0,
-      galleryUrls: JSON.stringify(galleryUrls),
+      galleryUrls: JSON.stringify(folderImages),
       features: JSON.stringify(featureList),
     };
   });
@@ -517,12 +537,12 @@ async function main() {
 
   // ─── Gallery Images (KAN-45) ──────────────────────────────────────────────────
   const galleryImages = [
-    { imageUrl: "/images/properties/property-1.jpg", caption: "Luxury Villa Exterior", order: 1 },
-    { imageUrl: "/images/properties/property-2.jpg", caption: "Modern Living Room", order: 2 },
-    { imageUrl: "/images/properties/property-3.jpg", caption: "Spacious Kitchen", order: 3 },
-    { imageUrl: "/images/properties/property-4.jpg", caption: "Master Bedroom Suite", order: 4 },
-    { imageUrl: "/images/properties/property-5.jpg", caption: "Outdoor Entertainment Area", order: 5 },
-    { imageUrl: "/images/properties/property-6.jpg", caption: "Swimming Pool & Garden", order: 6 },
+    { imageUrl: getPropertyImages(1)[0], caption: "Luxury Villa Exterior", order: 1 },
+    { imageUrl: getPropertyImages(2)[0], caption: "Modern Living Room", order: 2 },
+    { imageUrl: getPropertyImages(3)[0], caption: "Spacious Kitchen", order: 3 },
+    { imageUrl: getPropertyImages(4)[0], caption: "Master Bedroom Suite", order: 4 },
+    { imageUrl: getPropertyImages(5)[0], caption: "Outdoor Entertainment Area", order: 5 },
+    { imageUrl: getPropertyImages(6)[0], caption: "Swimming Pool & Garden", order: 6 },
   ];
 
   for (const image of galleryImages) {
