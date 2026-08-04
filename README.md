@@ -38,6 +38,7 @@ The codebase itself is the artifact. The real deliverable is proof that a struct
 | `/services` | Three service sections (Property Selling, Management, Investment Advisory) |
 | `/about-us` | Company story, team, achievements |
 | `/contact` | General enquiry + property enquiry forms |
+| `/learn-more` | About Estatein — who we are, stats, services overview, CTA |
 | `/terms` | Terms & conditions |
 
 ---
@@ -228,6 +229,7 @@ agentic-full-stack-development/
 │   │   ├── about-us/            # About page + route handler
 │   │   ├── contact/             # Contact page + route handler
 │   │   ├── terms/               # Terms page
+│   │   ├── learn-more/          # Learn More page (who we are, stats, services)
 │   │   └── api/                 # All API route handlers
 │   ├── components/
 │   │   ├── sections/            # Page sections (Hero, PropertiesGrid, ServicesPreview…)

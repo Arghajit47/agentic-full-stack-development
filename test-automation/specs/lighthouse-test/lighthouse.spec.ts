@@ -19,3 +19,7 @@ test("Lighthouse scores: About Us page at all resolutions", async ({ lighthouseA
 test("Lighthouse scores: Contact page at all resolutions", async ({ lighthouseAuditPage }, testInfo) => {
   await lighthouseAuditPage.assertScoresForPage("Contact", "/contact", testInfo);
 });
+
+test("Lighthouse scores: Learn More page at all resolutions", async ({ lighthouseAuditPage }, testInfo) => {
+  await lighthouseAuditPage.assertScoresForPage("Learn More", "/learn-more", testInfo);
+});
