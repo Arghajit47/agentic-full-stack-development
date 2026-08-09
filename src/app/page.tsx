@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
-import { CTASection } from "@/components/sections/CTASection";
 import { useHero } from "@/lib/api";
 import { useMounted } from "@/lib/use-mounted";
 
@@ -75,7 +74,6 @@ export default function Home() {
         heading={settings.reviews_heading}
         subheading={settings.reviews_subheading}
       />
-      <CTASection />
     </div>
   );
 }

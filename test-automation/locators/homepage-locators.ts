@@ -28,8 +28,4 @@ export const HOMEPAGE_LOCATORS = {
     heroImage: '[data-testid="hero-image"]',
     heroAbstractLeft: '[data-testid="hero-section"] img[src*="abstract-design-left"]',
     heroAbstractRight: '[data-testid="hero-section"] img[src*="abstract-design-right"]',
-    ctaSection: '[data-testid="cta-section"]',
-    ctaHeading: '[data-testid="cta-heading"]',
-    ctaBody: '[data-testid="cta-body"]',
-    ctaButton: '[data-testid="cta-button"]',
 } as const;

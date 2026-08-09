@@ -89,7 +89,3 @@ test("Hero discover badge is on the left at mobile and right at desktop", async 
 test("Hero section has abstract design corner decorations", async ({ homepage }) => {
   await homepage.assertHeroAbstractDecorations();
 });
-
-test("CTA section renders with heading, body, and Open Account button", async ({ homepage }) => {
-  await homepage.assertCtaSection();
-});
