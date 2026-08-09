@@ -259,6 +259,31 @@ export class HomePage {
     await this.initializationPage.expectNumberGreaterThan(badgeBox1440!.x + badgeBox1440!.width, imageBox1440!.x);
   }
 
+  async assertCtaSection(): Promise<void> {
+    await this.initializationPage.goto(UI_ROUTES.HOME);
+    await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.ctaSection);
+    await this.initializationPage.expectTextContains(
+      HOMEPAGE_LOCATORS.ctaHeading,
+      UI_TEXT.CTA_HEADING_START
+    );
+    await this.initializationPage.expectTextContains(
+      HOMEPAGE_LOCATORS.ctaHeading,
+      UI_TEXT.CTA_HEADING_ACCENT
+    );
+    const button = this.initializationPage.page.locator(HOMEPAGE_LOCATORS.ctaButton);
+    await this.initializationPage.expectVisible(button);
+    await this.initializationPage.expectTextContains(
+      HOMEPAGE_LOCATORS.ctaButton,
+      UI_TEXT.CTA_BUTTON_LABEL
+    );
+    await this.initializationPage.expectAttributeContains(
+      HOMEPAGE_LOCATORS.ctaButton,
+      "href",
+      "/",
+      0
+    );
+  }
+
   async assertHeroAbstractDecorations(): Promise<void> {
     await this.initializationPage.goto(UI_ROUTES.HOME);
     await this.initializationPage.expectVisible(HOMEPAGE_LOCATORS.heroSection);
