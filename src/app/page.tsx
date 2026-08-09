@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
+import { CTASection } from "@/components/sections/CTASection";
+import { useHero } from "@/lib/api";
+import { useMounted } from "@/lib/use-mounted";
 
 const FeaturedProperties = dynamic(
   () => import("@/components/home/FeaturedProperties").then((m) => ({ default: m.FeaturedProperties })),
@@ -13,8 +16,6 @@ const Testimonials = dynamic(
   () => import("@/components/home/Testimonials").then((m) => ({ default: m.Testimonials })),
   { ssr: false }
 );
-import { useHero } from "@/lib/api";
-import { useMounted } from "@/lib/use-mounted";
 
 interface Settings {
   properties_heading?: string;
@@ -74,6 +75,7 @@ export default function Home() {
         heading={settings.reviews_heading}
         subheading={settings.reviews_subheading}
       />
+      <CTASection />
     </div>
   );
 }
