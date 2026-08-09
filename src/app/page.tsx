@@ -4,15 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Hero, FeatureCards } from "@/components/sections/Hero";
+import { CTASection } from "@/components/sections/CTASection";
+import { useHero } from "@/lib/api";
+import { useMounted } from "@/lib/use-mounted";
 
 const FeaturedProperties = dynamic(
   () => import("@/components/home/FeaturedProperties").then((m) => ({ default: m.FeaturedProperties })),
   { ssr: false }
 );
-import { Testimonials } from "@/components/home/Testimonials";
-import { CTASection } from "@/components/sections/CTASection";
-import { useHero } from "@/lib/api";
-import { useMounted } from "@/lib/use-mounted";
+const Testimonials = dynamic(
+  () => import("@/components/home/Testimonials").then((m) => ({ default: m.Testimonials })),
+  { ssr: false }
+);
 
 interface Settings {
   properties_heading?: string;
