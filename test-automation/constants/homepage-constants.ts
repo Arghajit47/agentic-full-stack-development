@@ -46,9 +46,6 @@ export const UI_TEXT = {
   CTA_LABEL: "View All Properties",
   NO_PROPERTIES: "No properties found",
   NO_REVIEWS: "No reviews yet",
-  CTA_HEADING_START: "Start your financial journey with ",
-  CTA_HEADING_ACCENT: "YourBank today!",
-  CTA_BUTTON_LABEL: "Open Account",
   // KAN-58 — Properties page SearchFilterBar
   PROPERTIES_PAGE_HEADING: "Find Your Dream Property",
   SEARCH_SUBMIT_BTN: "Find Property",
