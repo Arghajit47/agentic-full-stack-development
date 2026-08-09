@@ -9,10 +9,8 @@ const FeaturedProperties = dynamic(
   () => import("@/components/home/FeaturedProperties").then((m) => ({ default: m.FeaturedProperties })),
   { ssr: false }
 );
-const Testimonials = dynamic(
-  () => import("@/components/home/Testimonials").then((m) => ({ default: m.Testimonials })),
-  { ssr: false }
-);
+import { Testimonials } from "@/components/home/Testimonials";
+import { CTASection } from "@/components/sections/CTASection";
 import { useHero } from "@/lib/api";
 import { useMounted } from "@/lib/use-mounted";
 
@@ -74,6 +72,7 @@ export default function Home() {
         heading={settings.reviews_heading}
         subheading={settings.reviews_subheading}
       />
+      <CTASection />
     </div>
   );
 }
